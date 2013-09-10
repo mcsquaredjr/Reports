@@ -239,7 +239,7 @@ class Input_Form(object):
         
 
 if __name__ == '__main__':
-    pyjd.setup("formdemo.html")
+    pyjd.setup("form.html")
     app = Input_Form()
     app.onModuleLoad()
     pyjd.run()

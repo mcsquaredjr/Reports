@@ -6,8 +6,14 @@ from flask import render_template
 from flask import jsonify
 from flask import request
 from flask import Markup
+from flask import Blueprint
 import json
 import markdown2
+
+from utils.reportmaker import Report_Maker
+from services.projects import projects_page
+from services.form import form_page
+
 
 SUCC_MSG = \
 '''
@@ -34,46 +40,20 @@ ERR_MSG = \
 </div>
 '''
 
-class Report_Maker(object):
-    '''
-    Store submitted data and generate good-looking HTML
-    '''
-    def __init__(self):
-        # Keep all submitted reports in array of dicts
-        self.data = []
 
-    def add_data(self, new_data):
-        '''Append collected data
-        '''
-        self.data.append(new_data)
 
-    def get_data(self):
-        '''Return collected data
-        '''
-        return self.data
-
-    def data2md(self):
-        '''Convert submitted data to markdown'''
-        mmd_txt = ''
-        for entry in self.data:
-            keys = sorted(entry.keys())
-            #mmd_txt += '# Neo report\n'
-            mmd_txt += '## ' + entry['project'] + '\n'
-            for key in keys:
-                if key != 'project':
-                    mmd_txt += '### ' + key + '\n'
-                    mmd_txt += entry[key] + '\n'
-
-        return mmd_txt.replace('\n', '\n\n')
 
 report_maker = Report_Maker()
-
 app = Flask(__name__)
 app.debug = True
 
-@app.route('/')
-def index():
-    return serve('reportform.html')
+app.register_blueprint(projects_page)
+app.register_blueprint(form_page)
+
+
+## @app.route('/form')
+## def index():
+##     return serve('form.html')
     
 @app.route('/process/', methods=['GET', 'POST'])
 def process():
@@ -105,7 +85,7 @@ def show_report(name=None):
 # Load requested file here 
 @app.route('/<requestedfile>')
 def serve(requestedfile):
-    with file('output/' + requestedfile) as f:
+    with file('_form/' + requestedfile) as f:
         return f.read()
     
 if __name__ == '__main__':
