@@ -12,9 +12,6 @@ import markdown2
 from jinja2 import Template
 
 from utils.reportmaker import Report_Maker
-from formpage.form import form_page
-from projectspage.projects import projects_page
-
 
 SUCC_MSG = \
 '''
