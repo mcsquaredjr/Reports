@@ -55,7 +55,12 @@ def form():
 @app.route('/projects')
 def projects():
     projects_tmpl = Template(serve('projects.html'))
-    return projects_tmpl.render(title='Projects and Milestones')
+    return projects_tmpl.render(title='Projects')
+
+@app.route('/milestones')
+def milestones():
+    projects_tmpl = Template(serve('milestones.html'))
+    return projects_tmpl.render(title='Milestones')
 
 
 

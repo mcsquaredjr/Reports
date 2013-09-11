@@ -24025,101 +24025,67 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
 		return $p['_create_class']('Data_Service', $p['tuple']($bases), $data);
 	})();
-	$m['Form_Row'] = (function(){
+	$m['Projects_Editor'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
 		$cls_definition['__module__'] = 'projects';
-		$method = $pyjs__bind_method2('__init__', function(name, widget, help) {
+		$method = $pyjs__bind_method2('__init__', function() {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
-				name = arguments[1];
-				widget = arguments[2];
-				help = arguments[3];
 			}
-			if (typeof help == 'undefined') help=arguments['callee']['__args__'][5][1];
-
+			var lbl;
 			$m['SimplePanel']['__init__'](self);
-			self['mainpanel'] = $m['VerticalPanel']();
-			self['lbl'] = $m['Label'](name);
-			self['hlp'] = $m['Label'](help);
-			self['lbl']['setStyleName']('h3');
-			self['hlp']['setStyleName']('text-muted');
-			self['wdg'] = widget;
-			self['mainpanel']['add']($p['getattr'](self, 'lbl'));
-			self['mainpanel']['add']($p['getattr'](self, 'wdg'));
-			self['mainpanel']['add']($p['getattr'](self, 'hlp'));
+			self['hpanel'] = $m['HorizontalPanel']();
+			self['hpanel']['setSpacing'](10);
+			self['hpanel']['setVerticalAlignment']($p['getattr']($m['HasAlignment'], 'ALIGN_BOTTOM'));
+			self['hpanel']['setHorizontalAlignment']($p['getattr']($m['HasAlignment'], 'ALIGN_RIGHT'));
+			self['$$name'] = $m['TextBox']();
+			self['$$name']['setStyleName']('form-control');
+			self['status'] = $m['ListBox']();
+			self['status']['addItem']('Active');
+			self['status']['addItem']('Inactive');
+			self['status']['setVisibleItemCount'](0);
+			self['status']['setStyleName']('form-control input-lg');
+			self['status']['setSize']('100px', '34px');
+			lbl = $m['Label']('');
+			self['add_btn'] = $m['Button']('Add');
+			self['add_btn']['setStyleName']('btn btn-primary');
+			self['del_btn'] = $m['Button']('Delete');
+			self['del_btn']['setStyleName']('btn btn-danger');
+			self['hpanel']['add']($p['getattr'](self, '$$name'));
+			self['hpanel']['add']($p['getattr'](self, 'status'));
+			self['hpanel']['add'](lbl);
+			self['hpanel']['add']($p['getattr'](self, 'add_btn'));
+			self['hpanel']['setSpacing'](30);
+			self['hpanel']['add']($p['getattr'](self, 'del_btn'));
+			self['hpanel']['setCellWidth']($p['getattr'](self, '$$name'), '50%');
+			self['hpanel']['setCellWidth']($p['getattr'](self, 'status'), '20%');
+			self['hpanel']['setCellWidth'](lbl, '10%');
+			self['hpanel']['setCellWidth']($p['getattr'](self, 'add_btn'), '10%');
+			self['hpanel']['setCellWidth']($p['getattr'](self, 'del_btn'), '10%');
 			return null;
 		}
-	, 1, [null,null,['self'],['name'],['widget'],['help', '']]);
+	, 1, [null,null,['self']]);
 		$cls_definition['__init__'] = $method;
-		$method = $pyjs__bind_method2('panel', function() {
+		$method = $pyjs__bind_method2('get_panel', function() {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
 			}
 
-			return $p['getattr'](self, 'mainpanel');
+			return $p['getattr'](self, 'hpanel');
 		}
 	, 1, [null,null,['self']]);
-		$cls_definition['panel'] = $method;
-		$method = $pyjs__bind_method2('widget', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-
-			return $p['getattr'](self, 'wdg');
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['widget'] = $method;
-		$method = $pyjs__bind_method2('help', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-
-			return $p['getattr'](self, 'hlp');
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['help'] = $method;
+		$cls_definition['get_panel'] = $method;
 		var $bases = new Array($m['SimplePanel']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
-		return $p['_create_class']('Form_Row', $p['tuple']($bases), $data);
+		return $p['_create_class']('Projects_Editor', $p['tuple']($bases), $data);
 	})();
-	$m['Text_Area_Row'] = (function(){
-		var $cls_definition = new Object();
-		var $method;
-		$cls_definition['__module__'] = 'projects';
-		$method = $pyjs__bind_method2('__init__', function(name, help) {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-				name = arguments[1];
-				help = arguments[2];
-			}
-			var widget;
-			widget = $m['TextArea']();
-			widget['setCharacterWidth'](72);
-			widget['setStyleName']('form-control');
-			widget['setVisibleLines'](5);
-			$pyjs_kwargs_call($m['Form_Row'], '__init__', null, null, [{'help':help}, self, name, widget]);
-			return null;
-		}
-	, 1, [null,null,['self'],['name'],['help']]);
-		$cls_definition['__init__'] = $method;
-		var $bases = new Array($m['Form_Row']);
-		var $data = $p['dict']();
-		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
-		return $p['_create_class']('Text_Area_Row', $p['tuple']($bases), $data);
-	})();
-	$m['Projects_Editor'] = (function(){
+	$m['Projects_View'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
 		$cls_definition['__module__'] = 'projects';
@@ -24129,18 +24095,13 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			} else {
 				var self = arguments[0];
 			}
-			var proj_list;
+			var editor;
 			self['remote'] = $m['Data_Service']();
 			self['panel'] = $m['VerticalPanel']();
 			self['panel']['setSpacing'](10);
-			proj_list = $m['ListBox']();
-			proj_list['addItem']('Operations');
-			proj_list['addItem']('Engineering Services');
-			proj_list['setVisibleItemCount'](0);
-			proj_list['setStyleName']('form-control input-lg');
-			self['panel']['add'](proj_list);
+			editor = $m['Projects_Editor']();
 			self['root'] = $m['RootPanel']('projects_');
-			self['root']['add']($p['getattr'](self, 'panel'));
+			self['root']['add'](editor['get_panel']());
 			return null;
 		}
 	, 1, [null,null,['self']]);
@@ -24148,11 +24109,11 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 		var $bases = new Array($p['object']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
-		return $p['_create_class']('Projects_Editor', $p['tuple']($bases), $data);
+		return $p['_create_class']('Projects_View', $p['tuple']($bases), $data);
 	})();
 	if ($p['bool']($p['op_eq']((typeof __name__ == "undefined"?$m['__name__']:__name__), '__main__'))) {
 		$m['pyjd']['setup']('projects.html');
-		$m['app'] = $m['Projects_Editor']();
+		$m['app'] = $m['Projects_View']();
 		$m['app']['onModuleLoad']();
 		$m['pyjd']['run']();
 	}

@@ -22,52 +22,57 @@ class Data_Service(JSONProxy):
         JSONProxy.__init__(self, 'process/')
 
         
-class Form_Row(SimplePanel):
+class Projects_Editor(SimplePanel):
     '''
-    Create row that will be put in the Form
+    Create and edit projects
     '''
-    def __init__(self, name, widget, help=''):
+    def __init__(self):
         SimplePanel.__init__(self)
-        # Container
-        self.mainpanel = VerticalPanel()
+        self.hpanel = HorizontalPanel()
+        self.hpanel.setSpacing(10)
+        self.hpanel.setVerticalAlignment(HasAlignment.ALIGN_BOTTOM)
+        self.hpanel.setHorizontalAlignment(HasAlignment.ALIGN_RIGHT)
 
-        self.lbl = Label(name)
-        self.hlp = Label(help)
-        self.lbl.setStyleName('h3')
-        self.hlp.setStyleName('text-muted')
+        self.name = TextBox()
+        self.name.setStyleName('form-control')
         
-        self.wdg = widget
-        self.mainpanel.add(self.lbl)
-        self.mainpanel.add(self.wdg)
-        self.mainpanel.add(self.hlp)
+        self.status = ListBox()
+        self.status.addItem('Active')
+        self.status.addItem('Inactive')
+        self.status.setVisibleItemCount(0)
+        self.status.setStyleName('form-control input-lg')
+        self.status.setSize('100px', '34px')
         
-    def panel(self):
-        return self.mainpanel
+        lbl = Label('')
 
-    def widget(self):
-        return self.wdg
+        self.add_btn = Button('Add')
+        self.add_btn.setStyleName('btn btn-primary')
+        self.del_btn = Button('Delete')
+        self.del_btn.setStyleName('btn btn-danger')
 
-    def help(self):
-        return self.hlp
+        self.hpanel.add(self.name)
+        self.hpanel.add(self.status)
+        self.hpanel.add(lbl)
+        
+        self.hpanel.add(self.add_btn)
+        self.hpanel.setSpacing(30)
+
+        self.hpanel.add(self.del_btn)
+
+        self.hpanel.setCellWidth(self.name, '50%')
+        self.hpanel.setCellWidth(self.status, '20%')
+        self.hpanel.setCellWidth(lbl, '10%')
+        
+        self.hpanel.setCellWidth(self.add_btn, '10%')
+        self.hpanel.setCellWidth(self.del_btn, '10%')
+
+    def get_panel(self):
+        return self.hpanel
     
 
-class Text_Area_Row(Form_Row):
-    '''Text area with initial configuration to be used in the form.
-    '''
-    def __init__(self, name, help):
-        widget = TextArea()
-        widget.setCharacterWidth(72)
-        widget.setStyleName('form-control')
-        widget.setVisibleLines(5)
-        Form_Row.__init__(self, name, widget, help=help)
-
-
-    
-
-class Projects_Editor(object):
+class Projects_View(object):
     '''Input form that modifies itself depending on the proejct.
     '''
-
     def onModuleLoad(self):
         '''Create initial view of the panel.
         '''
@@ -77,23 +82,15 @@ class Projects_Editor(object):
         self.panel = VerticalPanel()
         self.panel.setSpacing(10)
 
-        # Create list of projects and populate it with items TODO: change
-        # to read data from a configuration file
-        proj_list = ListBox()
-        proj_list.addItem('Operations')
-        proj_list.addItem('Engineering Services')
-        
-        proj_list.setVisibleItemCount(0)
-        proj_list.setStyleName('form-control input-lg')
-        self.panel.add(proj_list)
+        editor = Projects_Editor()
         
         self.root = RootPanel('projects_')
-        self.root.add(self.panel)
+        self.root.add(editor.get_panel())
         
 
 if __name__ == '__main__':
     pyjd.setup("projects.html")
-    app = Projects_Editor()
+    app = Projects_View()
     app.onModuleLoad()
     pyjd.run()
         
