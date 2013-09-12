@@ -1,0 +1,7 @@
+.user-UnselectedRow {
+  background: #ffffff;
+}
+.user-SelectedRow td {
+  background: #ffaaaa;
+
+}
