@@ -15,6 +15,7 @@ from pyjamas.ui.ListBox import ListBox
 from pyjamas.ui.FormPanel import FormPanel
 from pyjamas.ui.TextBox import TextBox
 from pyjamas.ui.Grid import Grid
+from pyjamas.ui import KeyboardListener
 
 from pyjamas import Window
 from pyjamas.ui import HasAlignment
@@ -71,6 +72,7 @@ class Projects_Editor(SimplePanel):
         #self.hpanel.setHorizontalAlignment(HasAlignment.ALIGN_RIGHT)
 
         self.name = TextBox()
+
         self.name.setStyleName('form-control')
         
         self.status = ListBox()
@@ -83,6 +85,7 @@ class Projects_Editor(SimplePanel):
         lbl = Label('')
 
         self.add_btn = Button('Add')
+        self.add_btn.setEnabled(False)
         self.add_btn.setStyleName('btn btn-primary')
         self.del_btn = Button('Delete')
         self.del_btn.setEnabled(False)
@@ -218,6 +221,8 @@ class Projects_Controller(object):
             data = args[0]
             self.model.add_row(data)
             grid.add_row(data)
+            editor.name.setText('')
+            editor.name.setFocus(True)
             
         if msg == DEL_ROW_MSG:
             row = args[0]
@@ -225,7 +230,10 @@ class Projects_Controller(object):
             grid.remove_row(row)
             editor.del_btn.setEnabled(False)
             editor.name.setText('')
+            editor.name.setFocus(True)
             editor.add_btn.setText('Add')
+            editor.add_btn.setEnabled(False)
+            
         
         if msg == SEL_ROW_MSG:
             row = args[0]
@@ -234,11 +242,16 @@ class Projects_Controller(object):
             editor.status.selectValue(row_data[1])
             #change title on the add button to edit rows
             editor.add_btn.setText('Change')
+            editor.add_btn.setEnabled(True)
             editor.del_btn.setEnabled(True)
+            editor.name.setFocus(True)
             
         if msg == DESEL_ROW_MSG:
             editor.add_btn.setText('Add')
             editor.del_btn.setEnabled(False)
+            editor.add_btn.setEnabled(False)
+            editor.name.setFocus(True)
+            editor.name.setText('')
             
         if msg == EDT_ROW_MSG:
             row = args[0]
@@ -276,12 +289,10 @@ class Projects_View(Abstract_View):
         self.grid.create_grid(1, 2, ['Project Name', 'Project State'])
         self.tbl_panel.add(self.grid)
         self.editor = Projects_Editor()
-
-        self.editor.add_btn.addClickListener(getattr(self, 'on_add_btn_click'))
-        self.editor.del_btn.addClickListener(getattr(self, 'on_del_btn_click'))
+        
 
         self.submit_btn = Button('Submit')
-        self.submit_btn.setStyleName('btn btn-primary')
+        self.submit_btn.setStyleName('btn btn-primary btn-lg')
         hpanel = HorizontalPanel()
         hpanel.setHorizontalAlignment(HasAlignment.ALIGN_RIGHT)
         hpanel.add(self.submit_btn)
@@ -295,17 +306,23 @@ class Projects_View(Abstract_View):
         spacer3.setHeight('20px')
         self.root.add(spacer3)
         self.root.add(hpanel)
+        self._add_listeners()
+        # should be the last statement after all other things are done
+        self.editor.name.setFocus(True)
+        
+    def _add_listeners(self):
+        '''Register listeners here.
+        '''
+        self.editor.add_btn.addClickListener(getattr(self, 'on_add_btn_click'))
+        self.editor.del_btn.addClickListener(getattr(self, 'on_del_btn_click'))
+        self.editor.name.addKeyboardListener(self)
         
 
     def register(self, controller):
-        '''Register controller for a view and related controls
+        '''Register controller for a view and related controls.
         '''
         self.controller = controller
         self.grid.register(controller)
-        
-
-    def get_grid(self):
-        return self.grid
 
 
     def on_add_btn_click(self, event):
@@ -319,6 +336,7 @@ class Projects_View(Abstract_View):
         else:
             self.controller.process_msg(EDT_ROW_MSG, self.grid.selected_row, data)
 
+
     def on_del_btn_click(self, event):
         '''Process click on Add button.
         '''
@@ -326,6 +344,31 @@ class Projects_View(Abstract_View):
             self.controller.process_msg(DEL_ROW_MSG, self.grid.selected_row)
 
 
+    def onKeyDown(self, sender, keycode, modifiers):
+        pass
+
+    def onKeyUp(self, sender, keycode, modifiers):
+        project_name = self.editor.get_name_txt()
+        if project_name.strip() != '':
+            self.editor.add_btn.setEnabled(True)
+        else:
+            self.editor.add_btn.setEnabled(False)
+        
+
+    def onKeyPress(self, sender, keycode, modifiers):
+        '''Let users input using keyboard.
+        '''
+        project_name = self.editor.get_name_txt()
+        status = self.editor.get_status()
+        data = [project_name, status]
+        
+        if keycode == KeyboardListener.KEY_ESCAPE:
+            pass
+        elif keycode == KeyboardListener.KEY_ENTER:
+            if self.editor.add_btn.getText() == 'Add' and self.editor.add_btn.isEnabled():
+                self.controller.process_msg(ADD_ROW_MSG, data)
+            elif self.editor.add_btn.getText() == 'Change' and self.editor.add_btn.isEnabled():
+                self.controller.process_msg(EDT_ROW_MSG, self.grid.selected_row, data)
 
         
         

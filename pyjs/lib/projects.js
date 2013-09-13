@@ -23,6 +23,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 	$m['FormPanel'] = $p['___import___']('pyjamas.ui.FormPanel.FormPanel', null, null, false);
 	$m['TextBox'] = $p['___import___']('pyjamas.ui.TextBox.TextBox', null, null, false);
 	$m['Grid'] = $p['___import___']('pyjamas.ui.Grid.Grid', null, null, false);
+	$m['KeyboardListener'] = $p['___import___']('pyjamas.ui.KeyboardListener', null, null, false);
 	$m['Window'] = $p['___import___']('pyjamas.Window', null, null, false);
 	$m['HasAlignment'] = $p['___import___']('pyjamas.ui.HasAlignment', null, null, false);
 	$m['JSONProxy'] = $p['___import___']('pyjamas.JSONService.JSONProxy', null, null, false);
@@ -113,6 +114,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			self['status']['setSize']('100px', '34px');
 			lbl = $m['Label']('');
 			self['add_btn'] = $m['Button']('Add');
+			self['add_btn']['setEnabled'](false);
 			self['add_btn']['setStyleName']('btn btn-primary');
 			self['del_btn'] = $m['Button']('Delete');
 			self['del_btn']['setEnabled'](false);
@@ -459,6 +461,8 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				data = args['__getitem__'](0);
 				self['model']['add_row'](data);
 				grid['add_row'](data);
+				editor['$$name']['setText']('');
+				editor['$$name']['setFocus'](true);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['DEL_ROW_MSG']))) {
 				row = args['__getitem__'](0);
@@ -466,7 +470,9 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				grid['remove_row'](row);
 				editor['del_btn']['setEnabled'](false);
 				editor['$$name']['setText']('');
+				editor['$$name']['setFocus'](true);
 				editor['add_btn']['setText']('Add');
+				editor['add_btn']['setEnabled'](false);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['SEL_ROW_MSG']))) {
 				row = args['__getitem__'](0);
@@ -474,11 +480,16 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				editor['$$name']['setText'](row_data['__getitem__'](0));
 				editor['status']['selectValue'](row_data['__getitem__'](1));
 				editor['add_btn']['setText']('Change');
+				editor['add_btn']['setEnabled'](true);
 				editor['del_btn']['setEnabled'](true);
+				editor['$$name']['setFocus'](true);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['DESEL_ROW_MSG']))) {
 				editor['add_btn']['setText']('Add');
 				editor['del_btn']['setEnabled'](false);
+				editor['add_btn']['setEnabled'](false);
+				editor['$$name']['setFocus'](true);
+				editor['$$name']['setText']('');
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['EDT_ROW_MSG']))) {
 				row = args['__getitem__'](0);
@@ -530,10 +541,8 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			self['grid']['create_grid'](1, 2, $p['list'](['Project Name', 'Project State']));
 			self['tbl_panel']['add']($p['getattr'](self, 'grid'));
 			self['editor'] = $m['Projects_Editor']();
-			self['editor']['add_btn']['addClickListener']($p['getattr'](self, 'on_add_btn_click'));
-			self['editor']['del_btn']['addClickListener']($p['getattr'](self, 'on_del_btn_click'));
 			self['submit_btn'] = $m['Button']('Submit');
-			self['submit_btn']['setStyleName']('btn btn-primary');
+			self['submit_btn']['setStyleName']('btn btn-primary btn-lg');
 			hpanel = $m['HorizontalPanel']();
 			hpanel['setHorizontalAlignment']($p['getattr']($m['HasAlignment'], 'ALIGN_RIGHT'));
 			hpanel['add']($p['getattr'](self, 'submit_btn'));
@@ -546,10 +555,26 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			spacer3['setHeight']('20px');
 			self['root']['add'](spacer3);
 			self['root']['add'](hpanel);
+			self['_add_listeners']();
+			self['editor']['$$name']['setFocus'](true);
 			return null;
 		}
 	, 1, [null,null,['self']]);
 		$cls_definition['onModuleLoad'] = $method;
+		$method = $pyjs__bind_method2('_add_listeners', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			self['editor']['add_btn']['addClickListener']($p['getattr'](self, 'on_add_btn_click'));
+			self['editor']['del_btn']['addClickListener']($p['getattr'](self, 'on_del_btn_click'));
+			self['editor']['$$name']['addKeyboardListener'](self);
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['_add_listeners'] = $method;
 		$method = $pyjs__bind_method2('register', function(controller) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -564,17 +589,6 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self'],['controller']]);
 		$cls_definition['register'] = $method;
-		$method = $pyjs__bind_method2('get_grid', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-
-			return $p['getattr'](self, 'grid');
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['get_grid'] = $method;
 		$method = $pyjs__bind_method2('on_add_btn_click', function(event) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -611,6 +625,68 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self'],['event']]);
 		$cls_definition['on_del_btn_click'] = $method;
+		$method = $pyjs__bind_method2('onKeyDown', function(sender, keycode, modifiers) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				sender = arguments[1];
+				keycode = arguments[2];
+				modifiers = arguments[3];
+			}
+
+ 			return null;
+		}
+	, 1, [null,null,['self'],['sender'],['keycode'],['modifiers']]);
+		$cls_definition['onKeyDown'] = $method;
+		$method = $pyjs__bind_method2('onKeyUp', function(sender, keycode, modifiers) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				sender = arguments[1];
+				keycode = arguments[2];
+				modifiers = arguments[3];
+			}
+			var project_name;
+			project_name = self['editor']['get_name_txt']();
+			if ($p['bool'](!$p['op_eq'](project_name['strip'](), ''))) {
+				self['editor']['add_btn']['setEnabled'](true);
+			}
+			else {
+				self['editor']['add_btn']['setEnabled'](false);
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['sender'],['keycode'],['modifiers']]);
+		$cls_definition['onKeyUp'] = $method;
+		$method = $pyjs__bind_method2('onKeyPress', function(sender, keycode, modifiers) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				sender = arguments[1];
+				keycode = arguments[2];
+				modifiers = arguments[3];
+			}
+			var status,project_name,$and1,$and3,$and4,$and2,data;
+			project_name = self['editor']['get_name_txt']();
+			status = self['editor']['get_status']();
+			data = $p['list']([project_name, status]);
+			if ($p['bool']($p['op_eq'](keycode, $p['getattr']($m['KeyboardListener'], 'KEY_ESCAPE')))) {
+			}
+			else if ($p['bool']($p['op_eq'](keycode, $p['getattr']($m['KeyboardListener'], 'KEY_ENTER')))) {
+				if ($p['bool'](($p['bool']($and1=$p['op_eq'](self['editor']['add_btn']['getText'](), 'Add'))?self['editor']['add_btn']['isEnabled']():$and1))) {
+					self['controller']['process_msg']($m['ADD_ROW_MSG'], data);
+				}
+				else if ($p['bool'](($p['bool']($and3=$p['op_eq'](self['editor']['add_btn']['getText'](), 'Change'))?self['editor']['add_btn']['isEnabled']():$and3))) {
+					self['controller']['process_msg']($m['EDT_ROW_MSG'], $p['getattr']($p['getattr'](self, 'grid'), 'selected_row'), data);
+				}
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['sender'],['keycode'],['modifiers']]);
+		$cls_definition['onKeyPress'] = $method;
 		var $bases = new Array($m['Abstract_View']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
@@ -634,5 +710,5 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.ScrollPanel.ScrollPanel', 'pyjamas.ui.ScrollPanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLTable.HTMLTable', 'pyjamas.ui.HTMLTable', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.ui.Grid.Grid', 'pyjamas.ui.Grid', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json']
+PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.ScrollPanel.ScrollPanel', 'pyjamas.ui.ScrollPanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLTable.HTMLTable', 'pyjamas.ui.HTMLTable', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.ui.Grid.Grid', 'pyjamas.ui.Grid', 'pyjamas.ui.KeyboardListener', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json']
 */
