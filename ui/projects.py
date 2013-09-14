@@ -1,3 +1,8 @@
+# Classes to create Project Editor form
+
+__author__ = 'Serge Boyko'
+__date__ = '13-Sept-2013'
+
 import pyjd
 from pyjamas.ui.RootPanel import RootPanel
 from pyjamas.ui.SimplePanel import SimplePanel
@@ -23,7 +28,10 @@ from pyjamas.JSONService import JSONProxy
 from pyjamas.HTTPRequest import HTTPRequest
 import json
 
+from common import Abstract_View
+from common import Reports_Grid
 
+# Define some global constants here
 ADD_ROW_MSG = 'add-row-msg'
 DEL_ROW_MSG = 'del-row-msg'
 EDT_ROW_MSG = 'edt-row-msg'
@@ -34,32 +42,8 @@ DESEL_ROW_MSG = 'desel-row-msg'
 
 
 ######################################################################
-#                     ABSTRACT VIEW CLASS                            #
-######################################################################
-
-class Abstract_View(object):
-    '''Abstract view to provide reference to controller. Composite Views
-    may override register method to register controller for related
-    views.
-    '''
-    def __init__(self):
-        self.controller = None
-        
-    def register(self, controller):
-        self.controller = controller
-
-######################################################################
-#                     DATA SERVICE CLASS                             #
-######################################################################
-
-class Data_Service(JSONProxy):
-    def __init__(self):
-        JSONProxy.__init__(self, 'process/')
-
-######################################################################
 #                     PROJECTS EDITOR CLASS                          #
 ######################################################################
-        
 class Projects_Editor(SimplePanel):
     '''
     Create and edit projects
@@ -69,10 +53,8 @@ class Projects_Editor(SimplePanel):
         SimplePanel.__init__(self)
         self.hpanel = HorizontalPanel(Width='475px')
         self.hpanel.setVerticalAlignment(HasAlignment.ALIGN_BOTTOM)
-        #self.hpanel.setHorizontalAlignment(HasAlignment.ALIGN_RIGHT)
-
+        
         self.name = TextBox()
-
         self.name.setStyleName('form-control')
         
         self.status = ListBox()
@@ -85,10 +67,8 @@ class Projects_Editor(SimplePanel):
         lbl = Label('')
 
         self.add_btn = Button('Add')
-        self.add_btn.setEnabled(False)
         self.add_btn.setStyleName('btn btn-primary')
         self.del_btn = Button('Delete')
-        self.del_btn.setEnabled(False)
         self.del_btn.setStyleName('btn btn-danger')
 
         self.hpanel.add(self.name)
@@ -99,85 +79,23 @@ class Projects_Editor(SimplePanel):
 
  
     def get_name_txt(self):
+        '''Return project name.
+        '''
         return self.name.getText()
 
     def get_status(self):
+        '''Return project status.
+        '''
         return self.status.getItemText(self.status.getSelectedIndex())
-
-
-
-######################################################################
-#                     REPORTS GRID CLASS                             #
-######################################################################
-
-class Reports_Grid(Grid, Abstract_View):
-    def __init__(self):
-        Grid.__init__(self)
-        Abstract_View.__init__(self)
-        self.selected_row = 0
-        self.setStyleName('table')
-        self.controller = None
-        
-
-    def create_grid(self, rows, cols, headers):
-        self.resize(rows, cols)
-        self.addTableListener(self)
-        for i, header in enumerate(headers):
-            html_header = '<h4>{0}</h4>'.format(header)
-            self.setHTML(0, i, html_header)
-
-
-    def load_data(self, data):
-        for el in data:
-            self.add_row(el)
-            
-    def add_row(self, data):
-        num_cols = self.getColumnCount()
-        # We need to get actual tb element before appending to it
-        self.addRows(self.getBodyElement(), 1, num_cols)
-        row = self.getRowCount()
-        for i in range(0, num_cols):
-            self.setText(self.getRowCount(), i, data[i])
-        # There is a bug in pyjs that prevents getRowCount to return correct
-        # number of rows, here is a fix
-        self.numRows += 1
-
-    def change_row(self, row, data):
-        for i in range(0, self.getColumnCount()):
-            self.setText(row, i, data[i])
-
-    def remove_row(self, row):
-        self.removeRow(row)
-    
-    
-    def onCellClicked(self, sender, row, col):
-        self.select_row(row)
-
-    def select_row(self, row):
-        self.style_row(self.selected_row, False)
-        self.style_row(row, True)
-        self.selected_row = row
-        if self.controller is not None:
-            if row > 0:
-                self.controller.process_msg(SEL_ROW_MSG, row)
-            else:
-                self.controller.process_msg(DESEL_ROW_MSG)    
-
-    def style_row(self, row, selected):
-        if row > 0: #and row < self.getRowCount():
-            if selected:
-                self.getRowFormatter().addStyleName(row, "user-SelectedRow")
-            else:
-                self.getRowFormatter().removeStyleName(row, "user-SelectedRow")
-
-    
 
 
 ######################################################################
 #                     PROJECTS MODEL CLASS                           #
 ######################################################################
-
 class Projects_Model(object):
+    '''Holds data presented in table.
+    '''
+    # TODO: expand to include methods to load and save to DB
     def __init__(self):
         self.data = []
 
@@ -203,16 +121,21 @@ class Projects_Model(object):
 ######################################################################
 
 class Projects_Controller(object):
+    '''Controller class, it has to be registered with managed views to be notified
+    about user inputs'''
     def __init__(self):
         self.model = None
         self.view = None
 
     def register(self, model, view):
+        '''Register model and view.
+        '''
         self.model = model
         self.view = view
                 
     def process_msg(self, msg, *args):
-        '''Process message and update model and view.
+        '''Process message and update model and view. Views and model sent messages
+        about user actions or model updates and pass the data via messages to controller.
         '''
         grid = self.view.grid
         editor = self.view.editor
@@ -223,6 +146,7 @@ class Projects_Controller(object):
             grid.add_row(data)
             editor.name.setText('')
             editor.name.setFocus(True)
+            editor.add_btn.setEnabled(False)
             
         if msg == DEL_ROW_MSG:
             row = args[0]
@@ -233,7 +157,6 @@ class Projects_Controller(object):
             editor.name.setFocus(True)
             editor.add_btn.setText('Add')
             editor.add_btn.setEnabled(False)
-            
         
         if msg == SEL_ROW_MSG:
             row = args[0]
@@ -266,14 +189,13 @@ class Projects_Controller(object):
 class Projects_View(Abstract_View):
     def __init__(self):
         Abstract_View.__init__(self)
-    
-    '''Input form that modifies itself depending on the proejct.
+    '''Project editor view.
     '''
     def onModuleLoad(self):
         '''Create initial view of the panel.
         '''
-        self.remote = Data_Service()
-        
+        # Register data service here
+        self.remote = None
         # Container that keeps everything
         self.panel = VerticalPanel()
         self.panel.setSpacing(10)
@@ -288,11 +210,11 @@ class Projects_View(Abstract_View):
         self.grid = Reports_Grid()
         self.grid.create_grid(1, 2, ['Project Name', 'Project State'])
         self.tbl_panel.add(self.grid)
-        self.editor = Projects_Editor()
-        
 
+        self.editor = Projects_Editor()
         self.submit_btn = Button('Submit')
         self.submit_btn.setStyleName('btn btn-primary btn-lg')
+
         hpanel = HorizontalPanel()
         hpanel.setHorizontalAlignment(HasAlignment.ALIGN_RIGHT)
         hpanel.add(self.submit_btn)
@@ -302,13 +224,15 @@ class Projects_View(Abstract_View):
         self.root.add(self.editor.hpanel)
         self.root.add(spacer2)
         self.root.add(self.tbl_panel)
+
         spacer3 = Label()
         spacer3.setHeight('20px')
+
         self.root.add(spacer3)
         self.root.add(hpanel)
+        # Add listeners and initialize components
         self._add_listeners()
-        # should be the last statement after all other things are done
-        self.editor.name.setFocus(True)
+        self._iniate_states()
         
     def _add_listeners(self):
         '''Register listeners here.
@@ -316,6 +240,11 @@ class Projects_View(Abstract_View):
         self.editor.add_btn.addClickListener(getattr(self, 'on_add_btn_click'))
         self.editor.del_btn.addClickListener(getattr(self, 'on_del_btn_click'))
         self.editor.name.addKeyboardListener(self)
+
+    def _iniate_states(self):
+         self.editor.add_btn.setEnabled(False)
+         self.editor.del_btn.setEnabled(False)
+         self.editor.name.setFocus(True)   
         
 
     def register(self, controller):
@@ -348,6 +277,9 @@ class Projects_View(Abstract_View):
         pass
 
     def onKeyUp(self, sender, keycode, modifiers):
+        # We are managing view control states here, though might send
+        # a message to controller as well, but since we are not passing any data,
+        # we do not bother about controller
         project_name = self.editor.get_name_txt()
         if project_name.strip() != '':
             self.editor.add_btn.setEnabled(True)
@@ -363,14 +295,14 @@ class Projects_View(Abstract_View):
         data = [project_name, status]
         
         if keycode == KeyboardListener.KEY_ESCAPE:
-            pass
+            pass   # TODO: should we do something useful here?
         elif keycode == KeyboardListener.KEY_ENTER:
             if self.editor.add_btn.getText() == 'Add' and self.editor.add_btn.isEnabled():
                 self.controller.process_msg(ADD_ROW_MSG, data)
             elif self.editor.add_btn.getText() == 'Change' and self.editor.add_btn.isEnabled():
                 self.controller.process_msg(EDT_ROW_MSG, self.grid.selected_row, data)
 
-        
+
         
 if __name__ == '__main__':
     pyjd.setup("projects.html")
