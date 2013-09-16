@@ -19,14 +19,26 @@ from pyjamas.ui.TextBox import TextBox
 from pyjamas.ui.Grid import Grid
 from pyjamas.ui import KeyboardListener
 
-from pyjamas import Window
+from pyjamas.ui.Calendar import DateField
+from pyjamas.ui.Calendar import Calendar 
+from pyjamas.ui.Calendar import CalendarPopup
+from pyjamas.ui import Event
+from pyjamas.ui.Image import Image
+from pyjamas.ui.HyperlinkImage import HyperlinkImage  
+
+from pyjamas import Window, DOM
 from pyjamas.ui import HasAlignment
 from pyjamas.JSONService import JSONProxy
 from pyjamas.HTTPRequest import HTTPRequest
 import json
+import re 
+import time
+from regextextbox import RegexTextBox
+
 
 SEL_ROW_MSG = 'sel-row-msg'
 DESEL_ROW_MSG = 'desel-row-msg'
+CAL_DATE_MSG = 'cal-date-msg'
 
 ######################################################################
 #                     ABSTRACT VIEW CLASS                            #
@@ -109,4 +121,85 @@ class Reports_Grid(Grid, Abstract_View):
             else:
                 self.getRowFormatter().removeStyleName(row, "user-SelectedRow")
 
+
+
+                
+######################################################################
+#                     REPORT DATE FIELD CLASS                        #
+######################################################################
+class Report_Date_Field(DateField, Abstract_View):
+    '''Custom report date field with validation. The code borrows heavily
+    from the datefield PyJs example (as you may see from the syntax)
+    '''
+    # Override icon location
+    img_base = '' 
+    icon_img = '/static/kalendar.png'
     
+    def __init__(self, cal_ID=None):
+        DateField.__init__(self, format='%d/%m/%Y')
+        Abstract_View.__init__(self)
+        self._blurListeners = []
+        self._invalidListeners = []
+        self._validListeners = []
+        self._regex = None
+        # Unique identifier to name a calendar, any string
+        self.cal_ID = cal_ID
+        # We need to forward events to textbox, so we need to override
+        # the onBrowserEvent
+        self.getTextBox().onBrowserEvent = self.onBrowserEvent
+        
+        
+        
+    def setRegex(self, regex):
+        self._regex = regex
+        self._blurListeners.append(self.validate)
+
+    def validate(self, event):
+        if self._regex is None:
+            return
+        
+        if re.match(self._regex, self.getTextBox().getText()):
+            _listeners = self._validListeners
+        else:
+            _listeners = self._invalidListeners
+
+        for _listener in _listeners:
+            _listener(self)
+
+    def appendInvalidListener(self, listener):
+        self._invalidListeners.append(listener)
+
+    def appendValidListener(self, listener):
+        self._validListeners.append(listener)
+
+    def onBlur(self):
+        # added parameter to validate
+        self.validate()
+
+    def onDateSelected(self, yyyy, mm, dd): 
+        secs = time.mktime((int(yyyy), int(mm), int(dd), 0, 0, 0, 0, 0, -1)) 
+        d = time.strftime(self.format, time.localtime(secs))
+        self.tbox.setFocus(True)
+        self.tbox.setText(d)
+        self.tbox.setFocus(False)
+        if self.controller is not None:
+            self.controller.process_msg(CAL_DATE_MSG, self.cal_ID)
+        
+
+        
+
+    def onBrowserEvent(self, event):
+        TextBox.onBrowserEvent(self, event)
+        #Window.alert('was I ever called?')
+        type = DOM.eventGetType(event)
+        if type == "blur":
+            for _listener in self._blurListeners:
+                if hasattr(_listener, 'onBlur'): 
+                    _listener.onBlur(self)
+                else:
+                    _listener(self)
+
+        
+        
+        
+        

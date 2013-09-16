@@ -24,13 +24,24 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 	$m['TextBox'] = $p['___import___']('pyjamas.ui.TextBox.TextBox', null, null, false);
 	$m['Grid'] = $p['___import___']('pyjamas.ui.Grid.Grid', null, null, false);
 	$m['KeyboardListener'] = $p['___import___']('pyjamas.ui.KeyboardListener', null, null, false);
+	$m['DateField'] = $p['___import___']('pyjamas.ui.Calendar.DateField', null, null, false);
+	$m['Calendar'] = $p['___import___']('pyjamas.ui.Calendar.Calendar', null, null, false);
+	$m['CalendarPopup'] = $p['___import___']('pyjamas.ui.Calendar.CalendarPopup', null, null, false);
+	$m['Event'] = $p['___import___']('pyjamas.ui.Event', null, null, false);
+	$m['Image'] = $p['___import___']('pyjamas.ui.Image.Image', null, null, false);
+	$m['HyperlinkImage'] = $p['___import___']('pyjamas.ui.HyperlinkImage.HyperlinkImage', null, null, false);
 	$m['Window'] = $p['___import___']('pyjamas.Window', null, null, false);
+	$m['DOM'] = $p['___import___']('pyjamas.DOM', null, null, false);
 	$m['HasAlignment'] = $p['___import___']('pyjamas.ui.HasAlignment', null, null, false);
 	$m['JSONProxy'] = $p['___import___']('pyjamas.JSONService.JSONProxy', null, null, false);
 	$m['HTTPRequest'] = $p['___import___']('pyjamas.HTTPRequest.HTTPRequest', null, null, false);
 	$m['json'] = $p['___import___']('json', null);
+	$m['re'] = $p['___import___']('re', null);
+	$m['time'] = $p['___import___']('time', null);
+	$m['RegexTextBox'] = $p['___import___']('regextextbox.RegexTextBox', null, null, false);
 	$m['SEL_ROW_MSG'] = 'sel-row-msg';
 	$m['DESEL_ROW_MSG'] = 'desel-row-msg';
+	$m['CAL_DATE_MSG'] = 'cal-date-msg';
 	$m['Abstract_View'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -246,6 +257,168 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
 		return $p['_create_class']('Reports_Grid', $p['tuple']($bases), $data);
 	})();
+	$m['Report_Date_Field'] = (function(){
+		var $cls_definition = new Object();
+		var $method;
+		$cls_definition['__module__'] = 'common';
+		$cls_definition['img_base'] = '';
+		$cls_definition['icon_img'] = '/static/kalendar.png';
+		$method = $pyjs__bind_method2('__init__', function(cal_ID) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				cal_ID = arguments[1];
+			}
+			if (typeof cal_ID == 'undefined') cal_ID=arguments['callee']['__args__'][3][1];
+
+			$pyjs_kwargs_call($m['DateField'], '__init__', null, null, [{'format':'%d/%m/%Y'}, self]);
+			$m['Abstract_View']['__init__'](self);
+			self['_blurListeners'] = $p['list']([]);
+			self['_invalidListeners'] = $p['list']([]);
+			self['_validListeners'] = $p['list']([]);
+			self['_regex'] = null;
+			self['cal_ID'] = cal_ID;
+			self['getTextBox']()['onBrowserEvent'] = $p['getattr'](self, 'onBrowserEvent');
+			return null;
+		}
+	, 1, [null,null,['self'],['cal_ID', null]]);
+		$cls_definition['__init__'] = $method;
+		$method = $pyjs__bind_method2('setRegex', function(regex) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				regex = arguments[1];
+			}
+
+			self['_regex'] = regex;
+			self['_blurListeners']['append']($p['getattr'](self, 'validate'));
+			return null;
+		}
+	, 1, [null,null,['self'],['regex']]);
+		$cls_definition['setRegex'] = $method;
+		$method = $pyjs__bind_method2('validate', function(event) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				event = arguments[1];
+			}
+			var $iter5_nextval,_listener,$iter5_array,_listeners,$iter5_iter,$iter5_idx,$iter5_type;
+			if ($p['bool'](($p['getattr'](self, '_regex') === null))) {
+				return null;
+			}
+			if ($p['bool']($m['re']['match']($p['getattr'](self, '_regex'), self['getTextBox']()['getText']()))) {
+				_listeners = $p['getattr'](self, '_validListeners');
+			}
+			else {
+				_listeners = $p['getattr'](self, '_invalidListeners');
+			}
+			$iter5_iter = _listeners;
+			$iter5_nextval=$p['__iter_prepare']($iter5_iter,false);
+			while (typeof($p['__wrapped_next']($iter5_nextval)['$nextval']) != 'undefined') {
+				_listener = $iter5_nextval['$nextval'];
+				_listener(self);
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['event']]);
+		$cls_definition['validate'] = $method;
+		$method = $pyjs__bind_method2('appendInvalidListener', function(listener) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				listener = arguments[1];
+			}
+
+			self['_invalidListeners']['append'](listener);
+			return null;
+		}
+	, 1, [null,null,['self'],['listener']]);
+		$cls_definition['appendInvalidListener'] = $method;
+		$method = $pyjs__bind_method2('appendValidListener', function(listener) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				listener = arguments[1];
+			}
+
+			self['_validListeners']['append'](listener);
+			return null;
+		}
+	, 1, [null,null,['self'],['listener']]);
+		$cls_definition['appendValidListener'] = $method;
+		$method = $pyjs__bind_method2('onBlur', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			self['validate']();
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['onBlur'] = $method;
+		$method = $pyjs__bind_method2('onDateSelected', function(yyyy, mm, dd) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				yyyy = arguments[1];
+				mm = arguments[2];
+				dd = arguments[3];
+			}
+			var d,secs;
+			secs = $m['time']['mktime']($p['tuple']([$p['float_int'](yyyy), $p['float_int'](mm), $p['float_int'](dd), 0, 0, 0, 0, 0, (typeof ($usub1=1)=='number'?
+				-$usub1:
+				$p['op_usub']($usub1))]));
+			d = $m['time']['strftime']($p['getattr'](self, 'format'), $m['time']['localtime'](secs));
+			self['tbox']['setFocus'](true);
+			self['tbox']['setText'](d);
+			self['tbox']['setFocus'](false);
+			if ($p['bool'](($p['getattr'](self, 'controller') !== null))) {
+				self['controller']['process_msg']($m['CAL_DATE_MSG'], $p['getattr'](self, 'cal_ID'));
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['yyyy'],['mm'],['dd']]);
+		$cls_definition['onDateSelected'] = $method;
+		$method = $pyjs__bind_method2('onBrowserEvent', function(event) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				event = arguments[1];
+			}
+			var _listener,$iter6_idx,$iter6_type,$iter6_array,$iter6_iter,type,$iter6_nextval;
+			$m['TextBox']['onBrowserEvent'](self, event);
+			type = $m['DOM']['eventGetType'](event);
+			if ($p['bool']($p['op_eq'](type, 'blur'))) {
+				$iter6_iter = $p['getattr'](self, '_blurListeners');
+				$iter6_nextval=$p['__iter_prepare']($iter6_iter,false);
+				while (typeof($p['__wrapped_next']($iter6_nextval)['$nextval']) != 'undefined') {
+					_listener = $iter6_nextval['$nextval'];
+					if ($p['bool']($p['hasattr'](_listener, 'onBlur'))) {
+						_listener['onBlur'](self);
+					}
+					else {
+						_listener(self);
+					}
+				}
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['event']]);
+		$cls_definition['onBrowserEvent'] = $method;
+		var $bases = new Array($m['DateField'],$m['Abstract_View']);
+		var $data = $p['dict']();
+		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
+		return $p['_create_class']('Report_Date_Field', $p['tuple']($bases), $data);
+	})();
 	return this;
 }; /* end common */
 
@@ -254,5 +427,5 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.ScrollPanel.ScrollPanel', 'pyjamas.ui.ScrollPanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLTable.HTMLTable', 'pyjamas.ui.HTMLTable', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.ui.Grid.Grid', 'pyjamas.ui.Grid', 'pyjamas.ui.KeyboardListener', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json']
+PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.ScrollPanel.ScrollPanel', 'pyjamas.ui.ScrollPanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLTable.HTMLTable', 'pyjamas.ui.HTMLTable', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.ui.Grid.Grid', 'pyjamas.ui.Grid', 'pyjamas.ui.KeyboardListener', 'pyjamas.ui.Calendar.DateField', 'pyjamas.ui.Calendar', 'pyjamas.ui.Calendar.Calendar', 'pyjamas.ui.Calendar.CalendarPopup', 'pyjamas.ui.Event', 'pyjamas.ui.Image.Image', 'pyjamas.ui.Image', 'pyjamas.ui.HyperlinkImage.HyperlinkImage', 'pyjamas.ui.HyperlinkImage', 'pyjamas.Window', 'pyjamas.DOM', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 're', 'time', 'regextextbox.RegexTextBox', 'regextextbox']
 */
