@@ -61,7 +61,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			self['status']['setVisibleItemCount'](0);
 			self['status']['setStyleName']('form-control input-lg');
 			self['status']['setSize']('100px', '34px');
-			lbl = $m['Label']('');
+			lbl = $pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'10px'}, '']);
 			self['add_btn'] = $m['Button']('Add');
 			self['add_btn']['setStyleName']('btn btn-primary');
 			self['del_btn'] = $m['Button']('Delete');

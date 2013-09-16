@@ -64,7 +64,7 @@ class Projects_Editor(SimplePanel):
         self.status.setStyleName('form-control input-lg')
         self.status.setSize('100px', '34px')
         
-        lbl = Label('')
+        lbl = Label('', Width='10px')
 
         self.add_btn = Button('Add')
         self.add_btn.setStyleName('btn btn-primary')

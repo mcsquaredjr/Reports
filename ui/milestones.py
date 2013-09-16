@@ -27,7 +27,6 @@ from pyjamas.ui import KeyboardListener
 from pyjamas.ui.Image import Image
 from pyjamas.ui.HyperlinkImage import HyperlinkImage  
 
-
 from pyjamas import Window
 from pyjamas.ui import HasAlignment
 from pyjamas.JSONService import JSONProxy
@@ -72,7 +71,7 @@ class Milestones_Editor(SimplePanel):
     def __init__(self):
         # We need to use old form of inheritance because of pyjamas
         SimplePanel.__init__(self)
-        self.hpanel = HorizontalPanel(Width='775px')
+        self.hpanel = HorizontalPanel(Width='735px')
         self.hpanel.setVerticalAlignment(HasAlignment.ALIGN_TOP)
         
         self.name = TextBox()
@@ -116,7 +115,7 @@ class Milestones_Editor(SimplePanel):
         self.hpanel.add(self.status)
         self.hpanel.add(spacer2)
         self.hpanel.add(self.start)
-        self.hpanel.add(spacer3)
+        #self.hpanel.add(spacer3)
         self.hpanel.add(self.end)
         self.hpanel.add(self.add_btn)
         self.hpanel.add(self.del_btn)
@@ -260,7 +259,7 @@ class Milestones_View(Abstract_View):
         spacer2= Label()
         spacer2.setHeight('10px')
         
-        self.tbl_panel = VerticalPanel(Width='775px')
+        self.tbl_panel = VerticalPanel(Width='735px')
         # First is a row count
         self.grid = Reports_Grid()
         self.grid.create_grid(1, 4, ['Milestone Name', 'Milestone State', 'Start Date', 'End Date'])
@@ -363,8 +362,7 @@ class Milestones_View(Abstract_View):
 
 
 
-                
-        
+
 if __name__ == '__main__':
     pyjd.setup("milestones.html")
     view = Milestones_View()
