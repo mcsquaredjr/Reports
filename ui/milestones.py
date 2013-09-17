@@ -206,6 +206,10 @@ class Milestones_Controller(object):
             editor.add_btn.setEnabled(False)
             editor.start.getTextBox().setText('')
             editor.end.getTextBox().setText('')
+            # need to return to initial state
+            editor.start.valid = None
+            editor.end.valid = None
+            
 
             
         if msg == DEL_ROW_MSG:
@@ -367,6 +371,7 @@ class Milestones_View(Abstract_View):
         # a message to controller as well, but since we are not passing any data,
         # we do not bother about controller
         (valid, data) = self.editor.get_milestone_data()
+        #Window.alert('Valid is {0}, data is {1}'.format(valid, data))
         if valid:
             self.editor.add_btn.setEnabled(True)
         else:

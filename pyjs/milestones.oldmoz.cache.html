@@ -21220,6 +21220,8 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				editor['add_btn']['setEnabled'](false);
 				editor['start']['getTextBox']()['setText']('');
 				editor['end']['getTextBox']()['setText']('');
+				$p['getattr'](editor, 'start')['valid'] = null;
+				$p['getattr'](editor, 'end')['valid'] = null;
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['DEL_ROW_MSG']))) {
 				row = args['__getitem__'](0);
