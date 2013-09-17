@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <!--<link rel="shortcut icon" href="../../assets/ico/favicon.png">-->
+
+    <link rel="icon" type="image/png" href="http://www.example.com/png-favicon.png"/>
+
+    <title>Register New User</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/signin.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="container">
+
+      <form class="form-signin" method="POST" action="">
+        <h2 class="form-signin-heading">Enter Credentials</h2>
+        <!--<input type="text" class="form-control" placeholder="Email address" value="{{ request.form.email }}" autofocus>
+        <input type="password" class="form-control" placeholder="Password" value="{{ request.form.password }}">
+        <input type="password" class="form-control" placeholder="Repeat password" value="{{ request.form.passwordRepeat }}">-->
+        {{ form.email(class_="form-control", placeholder="Email Address") }}
+        {{ form.password(class_="form-control", placeholder="Password") }}
+        {{ form.confirm(class_="form-control", placeholder="Repeat Password") }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Register</button>
+      </form>
+
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+  </body>
+</html>

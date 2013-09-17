@@ -1,0 +1,94 @@
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Login Form</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="../static/css/jumbotron.css" rel="stylesheet">
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+
+    <div class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="#">Interactive Form</a>
+        </div>
+        <div class="navbar-collapse collapse">
+          <ul class="nav navbar-nav">
+            <li class="active"><a href="#">Home</a></li>
+            <li><a href="#about">About</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="/register">Register</a></li>
+          </ul>
+          <form class="navbar-form navbar-right" method="POST" action="">
+            <div class="form-group">
+              <!--<input type="text" placeholder="Email" class="form-control">-->
+              {{ form.email(class_="form-control", placeholder="Email") }}
+            </div>
+            <div class="form-group">
+              <!--<input type="password" placeholder="Password" class="form-control" value="{{ form.password }}"> -->
+              {{ form.password(class_="form-control", placeholder="Password") }}
+            </div>
+            <button type="submit" class="btn btn-success">Sign in</button>
+          </form>
+        </div><!--/.navbar-collapse -->
+      </div>
+    </div>
+
+    <!-- Main jumbotron for a primary marketing message or call to action -->
+    <div class="jumbotron">
+      <div class="container">
+        <h1>Welcome to Reports</h1>
+	<h2>Reports is friendly and easy to use reporting engine developed
+	for ClusterStor.</h2>
+
+      </div>
+    </div>
+
+    <div class="container">
+
+      
+      <p>Right now the site is under active development. Once the
+	development is complete (in a couple of weeks) the
+	information on this page will be replaced with something a
+	bit more useful.</p>
+      <p> The site is being developed using Python and Flask, its
+      reporting engine is powered by PytatoBugs. We hope you will enjoy using
+	it! </p> 
+
+      <p></p>
+      <hr>
+      <footer>
+        <p>&copy; Xyratex 2013</p>
+      </footer>
+    </div> <!-- /container -->
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="../static/js/jquery.js"></script>
+    <script src="../static/js/bootstrap.min.js"></script>
+  </body>
+</html>

@@ -209,9 +209,7 @@ class Milestones_Controller(object):
             # need to return to initial state
             editor.start.valid = None
             editor.end.valid = None
-            
 
-            
         if msg == DEL_ROW_MSG:
             row = args[0]
             self.model.remove_row(row)
