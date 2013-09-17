@@ -193,6 +193,13 @@ class Report_Date_Field(DateField, Abstract_View):
         #if self.controller is not None:
         #    self.controller.process_msg(CAL_DATE_MSG, self.cal_ID)
 
+
+    def onTodayClicked(self, event): 
+        today = time.strftime(self.format)
+        self.tbox.setFocus(True)
+        self.tbox.setText(today)
+        self.tbox.setFocus(False)
+        
         
     def onBrowserEvent(self, event):
         TextBox.onBrowserEvent(self, event)

@@ -31448,6 +31448,22 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self'],['yyyy'],['mm'],['dd']]);
 		$cls_definition['onDateSelected'] = $method;
+		$method = $pyjs__bind_method2('onTodayClicked', function(event) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				event = arguments[1];
+			}
+			var today;
+			today = $m['time']['strftime']($p['getattr'](self, 'format'));
+			self['tbox']['setFocus'](true);
+			self['tbox']['setText'](today);
+			self['tbox']['setFocus'](false);
+			return null;
+		}
+	, 1, [null,null,['self'],['event']]);
+		$cls_definition['onTodayClicked'] = $method;
 		$method = $pyjs__bind_method2('onBrowserEvent', function(event) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
