@@ -147,12 +147,14 @@ class Report_Date_Field(DateField, Abstract_View):
         # We need to forward events to textbox, so we need to override
         # the onBrowserEvent
         self.getTextBox().onBrowserEvent = self.onBrowserEvent
-        
-        
+        # Flag telling if the validation was successful 
+        self.valid = None
+
         
     def setRegex(self, regex):
         self._regex = regex
         self._blurListeners.append(self.validate)
+
 
     def validate(self, event):
         if self._regex is None:
@@ -160,21 +162,27 @@ class Report_Date_Field(DateField, Abstract_View):
         
         if re.match(self._regex, self.getTextBox().getText()):
             _listeners = self._validListeners
+            self.valid = True
         else:
             _listeners = self._invalidListeners
+            self.valid = False
 
         for _listener in _listeners:
             _listener(self)
 
+
     def appendInvalidListener(self, listener):
         self._invalidListeners.append(listener)
+
 
     def appendValidListener(self, listener):
         self._validListeners.append(listener)
 
+
     def onBlur(self):
         # added parameter to validate
         self.validate()
+
 
     def onDateSelected(self, yyyy, mm, dd): 
         secs = time.mktime((int(yyyy), int(mm), int(dd), 0, 0, 0, 0, 0, -1)) 
@@ -182,12 +190,10 @@ class Report_Date_Field(DateField, Abstract_View):
         self.tbox.setFocus(True)
         self.tbox.setText(d)
         self.tbox.setFocus(False)
-        if self.controller is not None:
-            self.controller.process_msg(CAL_DATE_MSG, self.cal_ID)
-        
+        #if self.controller is not None:
+        #    self.controller.process_msg(CAL_DATE_MSG, self.cal_ID)
 
         
-
     def onBrowserEvent(self, event):
         TextBox.onBrowserEvent(self, event)
         #Window.alert('was I ever called?')
@@ -196,10 +202,13 @@ class Report_Date_Field(DateField, Abstract_View):
             for _listener in self._blurListeners:
                 if hasattr(_listener, 'onBlur'): 
                     _listener.onBlur(self)
+                    
                 else:
                     _listener(self)
-
-        
+                    if self.controller is not None:
+                        self.controller.process_msg(CAL_DATE_MSG, self.cal_ID)
+                    
+                    
         
         
         

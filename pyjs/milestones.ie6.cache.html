@@ -23364,26 +23364,6 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 	$m['DESEL_ROW_MSG'] = 'desel-row-msg';
 	$m['CAL_DATE_MSG'] = 'cal-date-msg';
 	$m['DATE_MATCHER'] = '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$';
-	$m['display_ok'] = function(obj) {
-
-		obj['setStyleName']('form-input');
-		return null;
-	};
-	$m['display_ok']['__name__'] = 'display_ok';
-
-	$m['display_ok']['__bind_type__'] = 0;
-	$m['display_ok']['__args__'] = [null,null,['obj']];
-	$m['display_error'] = function(obj) {
-
-		if ($p['bool'](($p['cmp']($p['len'](obj['getTextBox']()['getText']()), 0) == 1))) {
-			obj['setStyleName']('form-group has-error');
-		}
-		return null;
-	};
-	$m['display_error']['__name__'] = 'display_error';
-
-	$m['display_error']['__bind_type__'] = 0;
-	$m['display_error']['__args__'] = [null,null,['obj']];
 	$m['Milestones_Editor'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -23403,14 +23383,14 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 			self['start'] = $pyjs_kwargs_call(null, $m['Report_Date_Field'], null, null, [{'cal_ID':'start'}]);
 			self['start']['getTextBox']()['setStyleName']('form-control');
 			self['start']['setRegex']($m['DATE_MATCHER']);
-			self['start']['appendValidListener']($m['display_ok']);
-			self['start']['appendInvalidListener']($m['display_error']);
+			self['start']['appendValidListener']($p['getattr'](self, '_display_ok'));
+			self['start']['appendInvalidListener']($p['getattr'](self, '_display_error'));
 			self['start']['validate'](null);
 			self['end'] = $pyjs_kwargs_call(null, $m['Report_Date_Field'], null, null, [{'cal_ID':'end'}]);
 			self['end']['getTextBox']()['setStyleName']('form-control');
 			self['end']['setRegex']($m['DATE_MATCHER']);
-			self['end']['appendValidListener']($m['display_ok']);
-			self['end']['appendInvalidListener']($m['display_error']);
+			self['end']['appendValidListener']($p['getattr'](self, '_display_ok'));
+			self['end']['appendInvalidListener']($p['getattr'](self, '_display_error'));
 			self['end']['validate'](null);
 			self['status'] = $m['ListBox']();
 			self['status']['addItem']('Active');
@@ -23459,6 +23439,54 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self']]);
 		$cls_definition['get_status'] = $method;
+		$method = $pyjs__bind_method2('get_milestone_data', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+			var end_txt,$and2,$and1,$and3,start_txt,valid,name_txt,data,status_txt;
+			valid = false;
+			name_txt = self['get_name_txt']();
+			status_txt = self['get_status']();
+			start_txt = self['start']['getTextBox']()['getText']();
+			end_txt = self['end']['getTextBox']()['getText']();
+			data = $p['list']([name_txt, status_txt, start_txt, end_txt]);
+			if ($p['bool'](($p['bool']($and1=($p['cmp']($p['len'](name_txt['strip']()), 0) == 1))?($p['bool']($and2=$p['op_eq']($p['getattr']($p['getattr'](self, 'start'), 'valid'), true))?$p['op_eq']($p['getattr']($p['getattr'](self, 'end'), 'valid'), true):$and2):$and1))) {
+				valid = true;
+			}
+			return $p['tuple']([valid, data]);
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['get_milestone_data'] = $method;
+		$method = $pyjs__bind_method2('_display_ok', function(obj) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				obj = arguments[1];
+			}
+
+			obj['setStyleName']('form-input');
+			return null;
+		}
+	, 1, [null,null,['self'],['obj']]);
+		$cls_definition['_display_ok'] = $method;
+		$method = $pyjs__bind_method2('_display_error', function(obj) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				obj = arguments[1];
+			}
+
+			if ($p['bool'](($p['cmp']($p['len'](obj['getTextBox']()['getText']()), 0) == 1))) {
+				obj['setStyleName']('form-group has-error');
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['obj']]);
+		$cls_definition['_display_error'] = $method;
 		var $bases = new Array($m['SimplePanel']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
@@ -23592,6 +23620,8 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				editor['$$name']['setText']('');
 				editor['$$name']['setFocus'](true);
 				editor['add_btn']['setEnabled'](false);
+				editor['start']['getTextBox']()['setText']('');
+				editor['end']['getTextBox']()['setText']('');
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['DEL_ROW_MSG']))) {
 				row = args['__getitem__'](0);
@@ -23602,12 +23632,16 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				editor['$$name']['setFocus'](true);
 				editor['add_btn']['setText']('Add');
 				editor['add_btn']['setEnabled'](false);
+				editor['start']['getTextBox']()['setText']('');
+				editor['end']['getTextBox']()['setText']('');
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['SEL_ROW_MSG']))) {
 				row = args['__getitem__'](0);
 				row_data = self['model']['get_row'](row);
 				editor['$$name']['setText'](row_data['__getitem__'](0));
 				editor['status']['selectValue'](row_data['__getitem__'](1));
+				editor['start']['getTextBox']()['setText'](row_data['__getitem__'](2));
+				editor['end']['getTextBox']()['setText'](row_data['__getitem__'](3));
 				editor['add_btn']['setText']('Change');
 				editor['add_btn']['setEnabled'](true);
 				editor['del_btn']['setEnabled'](true);
@@ -23619,6 +23653,8 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				editor['add_btn']['setEnabled'](false);
 				editor['$$name']['setFocus'](true);
 				editor['$$name']['setText']('');
+				editor['start']['getTextBox']()['setText']('');
+				editor['end']['getTextBox']()['setText']('');
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['EDT_ROW_MSG']))) {
 				row = args['__getitem__'](0);
@@ -23627,6 +23663,7 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				grid['change_row'](row, new_data);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['CAL_DATE_MSG']))) {
+				self['_validate_editor']();
 				cal_id = args['__getitem__'](0);
 				if ($p['bool']($p['op_eq'](cal_id, 'start'))) {
 					self['view']['editor']['end']['getTextBox']()['setFocus'](true);
@@ -23641,6 +23678,26 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 		}
 	, 1, ['args',null,['self'],['msg']]);
 		$cls_definition['process_msg'] = $method;
+		$method = $pyjs__bind_method2('_validate_editor', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+			var valid,data;
+			var $tupleassign1 = $p['__ass_unpack'](self['view']['editor']['get_milestone_data'](), 2, null);
+			valid = $tupleassign1[0];
+			data = $tupleassign1[1];
+			if ($p['bool'](valid)) {
+				self['view']['editor']['add_btn']['setEnabled'](true);
+			}
+			else {
+				self['view']['editor']['add_btn']['setEnabled'](false);
+			}
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['_validate_editor'] = $method;
 		var $bases = new Array($p['object']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
@@ -23752,10 +23809,10 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				var self = arguments[0];
 				event = arguments[1];
 			}
-			var status,project_name,data;
-			project_name = self['editor']['get_name_txt']();
-			status = self['editor']['get_status']();
-			data = $p['list']([project_name, status]);
+			var valid,data;
+			var $tupleassign2 = $p['__ass_unpack'](self['editor']['get_milestone_data'](), 2, null);
+			valid = $tupleassign2[0];
+			data = $tupleassign2[1];
 			if ($p['bool']($p['op_eq'](self['editor']['add_btn']['getText'](), 'Add'))) {
 				self['controller']['process_msg']($m['ADD_ROW_MSG'], data);
 			}
@@ -23804,9 +23861,11 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				keycode = arguments[2];
 				modifiers = arguments[3];
 			}
-			var project_name;
-			project_name = self['editor']['get_name_txt']();
-			if ($p['bool'](!$p['op_eq'](project_name['strip'](), ''))) {
+			var valid,data;
+			var $tupleassign3 = $p['__ass_unpack'](self['editor']['get_milestone_data'](), 2, null);
+			valid = $tupleassign3[0];
+			data = $tupleassign3[1];
+			if ($p['bool'](valid)) {
 				self['editor']['add_btn']['setEnabled'](true);
 			}
 			else {
@@ -23825,17 +23884,17 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				keycode = arguments[2];
 				modifiers = arguments[3];
 			}
-			var status,project_name,$and1,$and3,$and4,$and2,data;
-			project_name = self['editor']['get_name_txt']();
-			status = self['editor']['get_status']();
-			data = $p['list']([project_name, status]);
+			var $and4,$and5,$and6,$and7,valid,data;
+			var $tupleassign4 = $p['__ass_unpack'](self['editor']['get_milestone_data'](), 2, null);
+			valid = $tupleassign4[0];
+			data = $tupleassign4[1];
 			if ($p['bool']($p['op_eq'](keycode, $p['getattr']($m['KeyboardListener'], 'KEY_ESCAPE')))) {
 			}
 			else if ($p['bool']($p['op_eq'](keycode, $p['getattr']($m['KeyboardListener'], 'KEY_ENTER')))) {
-				if ($p['bool'](($p['bool']($and1=$p['op_eq'](self['editor']['add_btn']['getText'](), 'Add'))?self['editor']['add_btn']['isEnabled']():$and1))) {
+				if ($p['bool'](($p['bool']($and4=$p['op_eq'](self['editor']['add_btn']['getText'](), 'Add'))?self['editor']['add_btn']['isEnabled']():$and4))) {
 					self['controller']['process_msg']($m['ADD_ROW_MSG'], data);
 				}
-				else if ($p['bool'](($p['bool']($and3=$p['op_eq'](self['editor']['add_btn']['getText'](), 'Change'))?self['editor']['add_btn']['isEnabled']():$and3))) {
+				else if ($p['bool'](($p['bool']($and6=$p['op_eq'](self['editor']['add_btn']['getText'](), 'Change'))?self['editor']['add_btn']['isEnabled']():$and6))) {
 					self['controller']['process_msg']($m['EDT_ROW_MSG'], $p['getattr']($p['getattr'](self, 'grid'), 'selected_row'), data);
 				}
 			}
@@ -33160,6 +33219,7 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 			self['_regex'] = null;
 			self['cal_ID'] = cal_ID;
 			self['getTextBox']()['onBrowserEvent'] = $p['getattr'](self, 'onBrowserEvent');
+			self['valid'] = null;
 			return null;
 		}
 	, 1, [null,null,['self'],['cal_ID', null]]);
@@ -33191,9 +33251,11 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 			}
 			if ($p['bool']($m['re']['match']($p['getattr'](self, '_regex'), self['getTextBox']()['getText']()))) {
 				_listeners = $p['getattr'](self, '_validListeners');
+				self['valid'] = true;
 			}
 			else {
 				_listeners = $p['getattr'](self, '_invalidListeners');
+				self['valid'] = false;
 			}
 			$iter5_iter = _listeners;
 			$iter5_nextval=$p['__iter_prepare']($iter5_iter,false);
@@ -33260,9 +33322,6 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 			self['tbox']['setFocus'](true);
 			self['tbox']['setText'](d);
 			self['tbox']['setFocus'](false);
-			if ($p['bool'](($p['getattr'](self, 'controller') !== null))) {
-				self['controller']['process_msg']($m['CAL_DATE_MSG'], $p['getattr'](self, 'cal_ID'));
-			}
 			return null;
 		}
 	, 1, [null,null,['self'],['yyyy'],['mm'],['dd']]);
@@ -33287,6 +33346,9 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 					}
 					else {
 						_listener(self);
+						if ($p['bool'](($p['getattr'](self, 'controller') !== null))) {
+							self['controller']['process_msg']($m['CAL_DATE_MSG'], $p['getattr'](self, 'cal_ID'));
+						}
 					}
 				}
 			}

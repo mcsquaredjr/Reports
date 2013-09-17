@@ -175,6 +175,7 @@ class Projects_Controller(object):
             editor.add_btn.setEnabled(False)
             editor.name.setFocus(True)
             editor.name.setText('')
+           
             
         if msg == EDT_ROW_MSG:
             row = args[0]

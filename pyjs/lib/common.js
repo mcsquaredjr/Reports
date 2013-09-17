@@ -280,6 +280,7 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 			self['_regex'] = null;
 			self['cal_ID'] = cal_ID;
 			self['getTextBox']()['onBrowserEvent'] = $p['getattr'](self, 'onBrowserEvent');
+			self['valid'] = null;
 			return null;
 		}
 	, 1, [null,null,['self'],['cal_ID', null]]);
@@ -311,9 +312,11 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 			}
 			if ($p['bool']($m['re']['match']($p['getattr'](self, '_regex'), self['getTextBox']()['getText']()))) {
 				_listeners = $p['getattr'](self, '_validListeners');
+				self['valid'] = true;
 			}
 			else {
 				_listeners = $p['getattr'](self, '_invalidListeners');
+				self['valid'] = false;
 			}
 			$iter5_iter = _listeners;
 			$iter5_nextval=$p['__iter_prepare']($iter5_iter,false);
@@ -380,9 +383,6 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 			self['tbox']['setFocus'](true);
 			self['tbox']['setText'](d);
 			self['tbox']['setFocus'](false);
-			if ($p['bool'](($p['getattr'](self, 'controller') !== null))) {
-				self['controller']['process_msg']($m['CAL_DATE_MSG'], $p['getattr'](self, 'cal_ID'));
-			}
 			return null;
 		}
 	, 1, [null,null,['self'],['yyyy'],['mm'],['dd']]);
@@ -407,6 +407,9 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 					}
 					else {
 						_listener(self);
+						if ($p['bool'](($p['getattr'](self, 'controller') !== null))) {
+							self['controller']['process_msg']($m['CAL_DATE_MSG'], $p['getattr'](self, 'cal_ID'));
+						}
 					}
 				}
 			}

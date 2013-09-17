@@ -50,17 +50,6 @@ DATE_MATCHER = \
 r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
 
 
-def display_ok(obj):
-    obj.setStyleName('form-input')
-
-
-def display_error(obj):
-    if len(obj.getTextBox().getText()) > 0:
-        obj.setStyleName('form-group has-error')
-
-    
-    
-
 ######################################################################
 #                     MILESTONES EDITOR CLASS                        #
 ######################################################################
@@ -81,15 +70,15 @@ class Milestones_Editor(SimplePanel):
         
         self.start.getTextBox().setStyleName('form-control')
         self.start.setRegex(DATE_MATCHER)
-        self.start.appendValidListener(display_ok)
-        self.start.appendInvalidListener(display_error)
+        self.start.appendValidListener(self._display_ok)
+        self.start.appendInvalidListener(self._display_error)
         self.start.validate(None)
 
         self.end = Report_Date_Field(cal_ID='end')
         self.end.getTextBox().setStyleName('form-control')
         self.end.setRegex(DATE_MATCHER)
-        self.end.appendValidListener(display_ok)
-        self.end.appendInvalidListener(display_error)
+        self.end.appendValidListener(self._display_ok)
+        self.end.appendInvalidListener(self._display_error)
         self.end.validate(None)
 
         #Window.alert(self.start.getTextBox().__class__)i
@@ -126,14 +115,39 @@ class Milestones_Editor(SimplePanel):
         '''
         return self.name.getText()
 
+
     def get_status(self):
         '''Return project status.
         '''
         return self.status.getItemText(self.status.getSelectedIndex())
 
 
+    def get_milestone_data(self):
+        '''Return all data for a milestone and validation result.
+        '''
+        valid = False
+        name_txt = self.get_name_txt()
+        status_txt = self.get_status()
+        start_txt = self.start.getTextBox().getText()
+        end_txt = self.end.getTextBox().getText()
+        data = [name_txt, status_txt, start_txt, end_txt]
+        # We are only valid if these conditions are met
+        if len(name_txt.strip()) > 0 and self.start.valid == True and self.end.valid == True:
+            valid = True 
+        return (valid, data)
+
+
+    def _display_ok(self, obj):
+        obj.setStyleName('form-input')
+
+
+    def _display_error(self, obj):
+        if len(obj.getTextBox().getText()) > 0:
+            obj.setStyleName('form-group has-error')        
+        
+
 ######################################################################
-#                     PROJECTS MODEL CLASS                           #
+#                     MILESTONES MODEL CLASS                         #
 ######################################################################
 class Milestones_Model(object):
     '''Holds data presented in table.
@@ -190,6 +204,9 @@ class Milestones_Controller(object):
             editor.name.setText('')
             editor.name.setFocus(True)
             editor.add_btn.setEnabled(False)
+            editor.start.getTextBox().setText('')
+            editor.end.getTextBox().setText('')
+
             
         if msg == DEL_ROW_MSG:
             row = args[0]
@@ -200,12 +217,16 @@ class Milestones_Controller(object):
             editor.name.setFocus(True)
             editor.add_btn.setText('Add')
             editor.add_btn.setEnabled(False)
+            editor.start.getTextBox().setText('')
+            editor.end.getTextBox().setText('')
         
         if msg == SEL_ROW_MSG:
             row = args[0]
             row_data = self.model.get_row(row)
             editor.name.setText(row_data[0])
             editor.status.selectValue(row_data[1])
+            editor.start.getTextBox().setText(row_data[2])
+            editor.end.getTextBox().setText(row_data[3])
             #change title on the add button to edit rows
             editor.add_btn.setText('Change')
             editor.add_btn.setEnabled(True)
@@ -218,6 +239,9 @@ class Milestones_Controller(object):
             editor.add_btn.setEnabled(False)
             editor.name.setFocus(True)
             editor.name.setText('')
+            editor.start.getTextBox().setText('')
+            editor.end.getTextBox().setText('')
+            
             
         if msg == EDT_ROW_MSG:
             row = args[0]
@@ -225,16 +249,22 @@ class Milestones_Controller(object):
             self.model.edit_row(row, new_data)
             grid.change_row(row, new_data)
 
-        
         if msg == CAL_DATE_MSG:
+            self._validate_editor()
             cal_id = args[0]
             if cal_id == 'start':
                 self.view.editor.end.getTextBox().setFocus(True)
             else:
                 if self.view.editor.add_btn.isEnabled():
                     self.view.editor.add_btn.setFocus(True)
-                
-                
+
+
+    def _validate_editor(self):
+        (valid, data) = self.view.editor.get_milestone_data()
+        if valid:
+            self.view.editor.add_btn.setEnabled(True)
+        else:
+            self.view.editor.add_btn.setEnabled(False)
                     
 ######################################################################
 #                    MILESTONES VIEW CLASS                           #
@@ -294,6 +324,7 @@ class Milestones_View(Abstract_View):
         self.editor.add_btn.addClickListener(getattr(self, 'on_add_btn_click'))
         self.editor.del_btn.addClickListener(getattr(self, 'on_del_btn_click'))
         self.editor.name.addKeyboardListener(self)
+        
 
     def _iniate_states(self):
          self.editor.add_btn.setEnabled(False)
@@ -313,9 +344,7 @@ class Milestones_View(Abstract_View):
     def on_add_btn_click(self, event):
         '''Process click on Add button.
         '''
-        project_name = self.editor.get_name_txt()
-        status = self.editor.get_status()
-        data = [project_name, status]
+        (valid, data) = self.editor.get_milestone_data()
         if self.editor.add_btn.getText() == 'Add':
             self.controller.process_msg(ADD_ROW_MSG, data)
         else:
@@ -337,8 +366,8 @@ class Milestones_View(Abstract_View):
         # We are managing view control states here, though might send
         # a message to controller as well, but since we are not passing any data,
         # we do not bother about controller
-        project_name = self.editor.get_name_txt()
-        if project_name.strip() != '':
+        (valid, data) = self.editor.get_milestone_data()
+        if valid:
             self.editor.add_btn.setEnabled(True)
         else:
             self.editor.add_btn.setEnabled(False)
@@ -347,10 +376,8 @@ class Milestones_View(Abstract_View):
     def onKeyPress(self, sender, keycode, modifiers):
         '''Let users input using keyboard.
         '''
-        project_name = self.editor.get_name_txt()
-        status = self.editor.get_status()
-        data = [project_name, status]
-        
+        (valid, data) = self.editor.get_milestone_data()
+       
         if keycode == KeyboardListener.KEY_ESCAPE:
             pass   # TODO: should we do something useful here?
         elif keycode == KeyboardListener.KEY_ENTER:
