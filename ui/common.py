@@ -133,7 +133,7 @@ class Report_Date_Field(DateField, Abstract_View):
     '''
     # Override icon location
     img_base = '' 
-    icon_img = '/static/kalendar.png'
+    icon_img = '/static/img/kalendar.png'
     
     def __init__(self, cal_ID=None):
         DateField.__init__(self, format='%d/%m/%Y')
