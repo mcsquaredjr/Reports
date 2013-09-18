@@ -65,8 +65,10 @@ db = SQLAlchemy(app)
 # Create user model. For simplicity, it will store passwords in plain text.
 # Obviously that's not right thing to do in real world application.
 class User(db.Model):
-    email = db.Column(db.String(120), primary_key=True)
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(64), unique=True)
     password = db.Column(db.String(64))
+    usertype = db.Column(db.Integer)
 
     # Flask-Login integration
     def is_authenticated(self):
@@ -79,15 +81,21 @@ class User(db.Model):
         return False
 
     def get_id(self):
-        return self.email
+        return self.id
+
+    def is_admin(self):
+        return self.usertype == 1
+
+    # Required for administrative interface
+    def __unicode__(self):
+        return self.username
 
 # Define login and registration forms (for flask-login)
-class LoginForm(form.Form):
+class Login_Form(form.Form):
     email = fields.TextField(validators=[validators.required()])
     password = fields.PasswordField(validators=[validators.required()])
 
     def post_validate(self):
-        print 'validate_login'
         user = self.get_user()
 
         if user is None:
@@ -99,17 +107,14 @@ class LoginForm(form.Form):
         return True
 
     def get_user(self):
-        print 'get_user'
         users = db.session.query(User).filter_by(email=self.email.data)
-        print users.count()
-        print 'get_user exit'
         if users.count() == 0:
             return None
 
         return users.first()
 
 
-class RegistrationForm(form.Form):
+class Registration_Form(form.Form):
     email = fields.TextField(validators=[validators.required()])
     password = fields.PasswordField(validators=[
         validators.required(),
@@ -130,40 +135,53 @@ def init_login():
 
 
 # Create customized model view class
-class MyModelView(sqla.ModelView):
+class Model_View(sqla.ModelView):
     def is_accessible(self):
-        return login.urrent_user.is_authenticated()
+        return login.current_user.is_authenticated()
 
+
+# Create customized index view class
+class Admin_Index_View(admin.AdminIndexView):
+    def is_accessible(self):
+        return login.current_user.is_authenticated()
 
 
 @app.route('/', methods=('GET', 'POST'))
 def login_view():
-    form = LoginForm(request.form)
+    form = Login_Form(request.form)
     if helpers.validate_form_on_submit(form) and form.post_validate():
-    #if form.validate_on_submit() and form.post_validaste():
         user = form.get_user()
         login.login_user(user)
-        return redirect(url_for('report_form'))
+        return redirect(url_for('login_view'))
 
-    return render_template('login.html', form=form)
+    return render_template('login.html', form=form, user=login.current_user)
 
 
-@app.route('/register/', methods=('GET', 'POST'))
+@app.route('/register', methods=('GET', 'POST'))
 def register_view():
-    form = RegistrationForm(request.form)
+    form = Registration_Form(request.form)
 
     if helpers.validate_form_on_submit(form):
-    #if form.validate_on_submit():
-        
         user = User()
+
         form.populate_obj(user)
+
+        # Set user permissions
+        user.usertype = 0;
+
         db.session.add(user)
         db.session.commit()
+
         login.login_user(user)
-        return redirect(url_for('report_form'))
+        return redirect(url_for('login_view'))
+
     return render_template('register.html', form=form)
 
 
+@app.route('/my_account', methods=['POST', 'GET'])
+@login_required
+def my_account_view():
+    return render_template('my_account.html')
 
 @app.route('/form')
 @login_required
@@ -185,7 +203,7 @@ def report_form():
 @login_required
 def logout_view():
     login.logout_user()
-    return redirect(url_for('login'))
+    return redirect(url_for('login_view'))
 
 
 @app.route('/projects')
@@ -224,6 +242,7 @@ def success():
     
 @app.route('/report/')
 @app.route('/report/<name>')
+@login_required
 def show_report(name=None):
     mmd_report = report_maker.data2md()
     html_report = Markup(markdown2.markdown(mmd_report))
@@ -240,6 +259,13 @@ if __name__ == '__main__':
 
     # Initialize flask-login
     init_login()
+    
+    # Create admin
+    admin = admin.Admin(app, 'Auth', index_view=Admin_Index_View())
+    
+    # Add view
+    admin.add_view(Model_View(User, db.session))
+    
     # Create DB
     db.create_all()
     # Bind to PORT if defined, otherwise default to 5000.
