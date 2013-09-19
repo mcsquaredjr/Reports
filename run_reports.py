@@ -212,7 +212,6 @@ def projects():
     projects_tmpl = Template(serve('projects.html'))
     return projects_tmpl.render(title='Projects')
 
-
 @app.route('/milestones')
 @login_required
 def milestones():
