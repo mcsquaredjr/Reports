@@ -149,10 +149,19 @@ class Admin_Index_View(admin.AdminIndexView):
 @app.route('/', methods=('GET', 'POST'))
 def login_view():
     form = Login_Form(request.form)
-    if helpers.validate_form_on_submit(form) and form.post_validate():
-        user = form.get_user()
-        login.login_user(user)
-        return redirect(url_for('report_form'))
+    try:
+        if helpers.validate_form_on_submit(form) and form.post_validate():
+            user = form.get_user()
+            login.login_user(user)
+            return redirect(url_for('report_form'))
+    except validators.ValidationError as e:
+        form.email.data = ''
+        form.password.data = ''
+        print e
+    except:
+        form.email.data = ''
+        form.password.data = ''
+        print 'Unknown error!'
 
     return render_template('login.html', form=form, user=login.current_user)
 
