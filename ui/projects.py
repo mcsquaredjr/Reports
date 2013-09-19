@@ -98,14 +98,50 @@ class Projects_Model(object):
     # TODO: expand to include methods to load and save to DB
     def __init__(self):
         self.data = []
+        self.data_deleted = []
+        self.load()
+
+    def load(self):
+        self.data.append(['Project1', 'Active'])
+        self.data.append(['Project2', 'Inactive'])
+        self.data.append(['Project3', 'Inactive'])
+        self.data_deleted.append(['Project4', 'Deleted'])
+        self.data_deleted.append(['Project5', 'Deleted'])
+        self.data_deleted.append(['Project6', 'Deleted'])
+
+    def save():
+        # TODO:
+        return True
 
     def add_row(self, new_data):
-        self.data.append(new_data)
+        key = new_data[0]
+        exist = False
+        
+        # search in active/inactive data
+        for el in self.data:
+            if el[0] == key:
+                exist = True
+                break
+
+        # search in deleted data
+        if not exist:
+            for el in self.data_deleted:
+                if el[0] == key:
+                    exist = True
+                    break
+
+        if not exist:
+            self.data.append(new_data)
+
+        return not exist
 
     def remove_row(self, row):
         # we need to take into account header, thus index is minus 1
         row_data = self.data[row-1]
         self.data.remove(row_data)
+        # change status to 'Deleted'
+        row_data[1] = 'Deleted'
+        self.data_deleted.append(row_data)
 
     def edit_row(self, row, new_data):
         self.data[row-1] = new_data
@@ -113,6 +149,9 @@ class Projects_Model(object):
     def get_row(self, row):
         row_data = self.data[row-1]
         return row_data
+
+    def rows_count(self):
+        return len(self.data)
 
 
 
@@ -132,6 +171,11 @@ class Projects_Controller(object):
         '''
         self.model = model
         self.view = view
+
+        # Load data from model to view
+        for i in range(self.model.rows_count()):
+            data = self.model.get_row(i)
+            self.view.grid.add_row(data)
                 
     def process_msg(self, msg, *args):
         '''Process message and update model and view. Views and model sent messages
@@ -142,11 +186,14 @@ class Projects_Controller(object):
 
         if msg == ADD_ROW_MSG:
             data = args[0]
-            self.model.add_row(data)
-            grid.add_row(data)
-            editor.name.setText('')
+
+            if self.model.add_row(data):
+                grid.add_row(data)
+            
+                editor.name.setText('')
+                editor.add_btn.setEnabled(False)
+
             editor.name.setFocus(True)
-            editor.add_btn.setEnabled(False)
             
         if msg == DEL_ROW_MSG:
             row = args[0]
@@ -203,7 +250,7 @@ class Projects_View(Abstract_View):
 
         spacer1 = Label()
         spacer1.setHeight('10px')
-        spacer2= Label()
+        spacer2 = Label()
         spacer2.setHeight('10px')
         
         self.tbl_panel = VerticalPanel(Width='475px')
