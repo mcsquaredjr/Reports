@@ -56,10 +56,12 @@
                   <li class="divider"></li>
                   <li class="dropdown-header">Users</li>
                   <li><a href="#">Users admin</a></li>
-
                 </ul>
               </li>
             </ul>
+            {% if user and user.is_authenticated() %}
+              <p class="navbar-text pull-right">Welcome {{ user.email }} !</p>  
+            {% endif %}
           </div><!--/.nav-collapse -->
         </div>
       </div>

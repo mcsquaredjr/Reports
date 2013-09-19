@@ -152,10 +152,9 @@ def login_view():
     if helpers.validate_form_on_submit(form) and form.post_validate():
         user = form.get_user()
         login.login_user(user)
-        return redirect(url_for('login_view'))
+        return redirect(url_for('report_form'))
 
     return render_template('login.html', form=form, user=login.current_user)
-
 
 @app.route('/register', methods=('GET', 'POST'))
 def register_view():
@@ -177,27 +176,11 @@ def register_view():
 
     return render_template('register.html', form=form)
 
-
-@app.route('/my_account', methods=['POST', 'GET'])
-@login_required
-def my_account_view():
-    return render_template('my_account.html')
-
 @app.route('/form')
 @login_required
 def report_form():
-    return serve('form.html')
-
-
-## @app.route('/main', methods=['POST', 'GET'])
-## @login_required
-## def main():
-##     print "Need login."
-##     if request.method == 'POST':
-##         """ json available through request.json """
-##         print request.json
-##     return render_template('main.html')
-
+    form_tmpl = Template(serve('form.html'))
+    return form_tmpl.render(user=login.current_user)
 
 @app.route('/logout/')
 @login_required
@@ -205,19 +188,17 @@ def logout_view():
     login.logout_user()
     return redirect(url_for('login_view'))
 
-
 @app.route('/projects')
 @login_required
 def projects():
     projects_tmpl = Template(serve('projects.html'))
-    return projects_tmpl.render(title='Projects')
-
+    return projects_tmpl.render(title='Projects', user=login.current_user)
 
 @app.route('/milestones')
 @login_required
 def milestones():
     projects_tmpl = Template(serve('milestones.html'))
-    return projects_tmpl.render(title='Milestones')
+    return projects_tmpl.render(title='Milestones', user=login.current_user)
 
 
 @app.route('/process/', methods=['GET', 'POST'])
@@ -246,7 +227,7 @@ def success():
 def show_report(name=None):
     mmd_report = report_maker.data2md()
     html_report = Markup(markdown2.markdown(mmd_report))
-    return render_template('report.html',report=html_report)
+    return render_template('report.html', report=html_report, user=login.current_user)
     
 
 # Load requested file here 
