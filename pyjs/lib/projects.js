@@ -267,16 +267,11 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				model = arguments[1];
 				view = arguments[2];
 			}
-			var $iter3_idx,i,$iter3_array,$iter3_iter,$iter3_type,data,$iter3_nextval;
+			var data;
 			self['model'] = model;
 			self['view'] = view;
-			$iter3_iter = $p['range'](self['model']['rows_count']());
-			$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
-			while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
-				i = $iter3_nextval['$nextval'];
-				data = self['model']['get_row'](i);
-				self['view']['grid']['add_row'](data);
-			}
+			data = $p['getattr']($p['getattr'](self, 'model'), 'data');
+			self['view']['grid']['load_data'](data);
 			return null;
 		}
 	, 1, [null,null,['self'],['model'],['view']]);
