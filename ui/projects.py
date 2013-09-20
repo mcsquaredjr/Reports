@@ -171,11 +171,9 @@ class Projects_Controller(object):
         '''
         self.model = model
         self.view = view
+        data = self.model.data
+        self.view.grid.load_data(data)
 
-        # Load data from model to view
-        for i in range(self.model.rows_count()):
-            data = self.model.get_row(i)
-            self.view.grid.add_row(data)
                 
     def process_msg(self, msg, *args):
         '''Process message and update model and view. Views and model sent messages
