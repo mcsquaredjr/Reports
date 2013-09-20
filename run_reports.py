@@ -185,6 +185,14 @@ def register_view():
 
     return render_template('register.html', form=form)
 
+@app.route('/my_account', methods=['POST', 'GET'])
+@login_required
+def my_account_view():
+    return render_template('my_account.html')
+
+
+
+
 @app.route('/form')
 @login_required
 def report_form():
