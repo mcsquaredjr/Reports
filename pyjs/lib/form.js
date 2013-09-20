@@ -25,6 +25,8 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 	$m['JSONProxy'] = $p['___import___']('pyjamas.JSONService.JSONProxy', null, null, false);
 	$m['HTTPRequest'] = $p['___import___']('pyjamas.HTTPRequest.HTTPRequest', null, null, false);
 	$m['json'] = $p['___import___']('json', null);
+	$m['Report_Date_Field'] = $p['___import___']('common.Report_Date_Field', null, null, false);
+	$m['DATE_MATCHER'] = '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$';
 	$m['Data_Service'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -112,6 +114,160 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
 		return $p['_create_class']('Form_Row', $p['tuple']($bases), $data);
+	})();
+	$m['Milestones_Row'] = (function(){
+		var $cls_definition = new Object();
+		var $method;
+		$cls_definition['__module__'] = 'form';
+		$method = $pyjs__bind_method2('__init__', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			$m['SimplePanel']['__init__'](self);
+			self['hpanel'] = $m['HorizontalPanel']();
+			self['hpanel']['setVerticalAlignment']($p['getattr']($m['HasAlignment'], 'ALIGN_TOP'));
+			self['$$name'] = $m['TextBox']();
+			self['$$name']['setStyleName']('form-control');
+			self['start'] = $m['Label']('12/01/2013');
+			self['start']['setStyleName']('form-control text-normal');
+			self['end'] = $pyjs_kwargs_call(null, $m['Report_Date_Field'], null, null, [{'cal_ID':'end'}]);
+			self['end']['getTextBox']()['setStyleName']('form-control');
+			self['end']['setRegex']($m['DATE_MATCHER']);
+			self['end']['appendValidListener']($p['getattr'](self, '_display_ok'));
+			self['end']['appendInvalidListener']($p['getattr'](self, '_display_error'));
+			self['end']['validate'](null);
+			self['hpanel']['add']($p['getattr'](self, '$$name'));
+			self['hpanel']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'10px'}]));
+			self['hpanel']['add']($p['getattr'](self, 'start'));
+			self['hpanel']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'10px'}]));
+			self['hpanel']['add']($p['getattr'](self, 'end'));
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['__init__'] = $method;
+		$method = $pyjs__bind_method2('get_name_txt', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			return self['$$name']['getText']();
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['get_name_txt'] = $method;
+		$method = $pyjs__bind_method2('get_milestone_data', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+			var end_txt,$and1,start_txt,valid,name_txt,data,$and2;
+			valid = false;
+			name_txt = self['get_name_txt']();
+			start_txt = self['start']['getText']();
+			end_txt = self['end']['getTextBox']()['getText']();
+			data = $p['list']([name_txt, start_txt, end_txt]);
+			if ($p['bool'](($p['bool']($and1=($p['cmp']($p['len'](name_txt['strip']()), 0) == 1))?$p['op_eq']($p['getattr']($p['getattr'](self, 'end'), 'valid'), true):$and1))) {
+				valid = true;
+			}
+			return $p['tuple']([valid, data]);
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['get_milestone_data'] = $method;
+		$method = $pyjs__bind_method2('_display_ok', function(obj) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				obj = arguments[1];
+			}
+
+			obj['setStyleName']('form-input');
+			return null;
+		}
+	, 1, [null,null,['self'],['obj']]);
+		$cls_definition['_display_ok'] = $method;
+		$method = $pyjs__bind_method2('_display_error', function(obj) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				obj = arguments[1];
+			}
+
+			if ($p['bool'](($p['cmp']($p['len'](obj['getTextBox']()['getText']()), 0) == 1))) {
+				obj['setStyleName']('form-group has-error');
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['obj']]);
+		$cls_definition['_display_error'] = $method;
+		var $bases = new Array($m['SimplePanel']);
+		var $data = $p['dict']();
+		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
+		return $p['_create_class']('Milestones_Row', $p['tuple']($bases), $data);
+	})();
+	$m['Impediments'] = (function(){
+		var $cls_definition = new Object();
+		var $method;
+		$cls_definition['__module__'] = 'form';
+		$method = $pyjs__bind_method2('__init__', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+			var hpanel,status_panel,desc_lbl,desc_panel;
+			$m['SimplePanel']['__init__'](self);
+			self['vpanel'] = $m['VerticalPanel']();
+			desc_panel = $m['VerticalPanel']();
+			self['desc_box'] = $m['TextBox']();
+			self['desc_box']['setVisibleLength'](44);
+			self['desc_box']['setStyleName']('form-control');
+			desc_lbl = $m['Label']('impediment description');
+			desc_lbl['setStyleName']('text-muted');
+			desc_panel['add']($p['getattr'](self, 'desc_box'));
+			desc_panel['add'](desc_lbl);
+			status_panel = $m['VerticalPanel']();
+			self['status_lst'] = $pyjs_kwargs_call(null, $m['ListBox'], null, null, [{'Height':'34px'}]);
+			self['status_lst']['setStyleName']('form-control input-lg');
+			self['status_lst']['addItem']('Open');
+			self['status_lst']['addItem']('Closed');
+			self['status_lbl'] = $m['Label']('added on: 02/02/2013');
+			self['status_lbl']['setStyleName']('text-muted');
+			status_panel = $m['VerticalPanel']();
+			status_panel['add']($p['getattr'](self, 'status_lst'));
+			status_panel['add']($p['getattr'](self, 'status_lbl'));
+			self['$$comment'] = (typeof Text_Area_Row == "undefined"?$m['Text_Area_Row']:Text_Area_Row)('', 'why it exists or is being closed');
+			hpanel = $m['HorizontalPanel']();
+			hpanel['add'](desc_panel);
+			hpanel['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'10px'}]));
+			hpanel['add'](status_panel);
+			self['vpanel']['add'](hpanel);
+			self['vpanel']['add'](self['$$comment']['panel']());
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['__init__'] = $method;
+		$method = $pyjs__bind_method2('get_impediment_data', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+ 			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['get_impediment_data'] = $method;
+		var $bases = new Array($m['SimplePanel']);
+		var $data = $p['dict']();
+		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
+		return $p['_create_class']('Impediments', $p['tuple']($bases), $data);
 	})();
 	$m['Text_Area_Row'] = (function(){
 		var $cls_definition = new Object();
@@ -244,6 +400,128 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
 		return $p['_create_class']('Eng_Services_Fields', $p['tuple']($bases), $data);
 	})();
+	$m['Dev_Fields'] = (function(){
+		var $cls_definition = new Object();
+		var $method;
+		$cls_definition['__module__'] = 'form';
+		$method = $pyjs__bind_method2('__init__', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+			var hp_impd,milestone_panel,hp_mlst,impediment_panel;
+			$m['VerticalPanel']['__init__'](self);
+			self['status_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of the project'}, 'Status']);
+			self['main_mlst_panel'] = $m['VerticalPanel']();
+			hp_mlst = $m['HorizontalPanel']();
+			self['add_milestone_btn'] = $m['Button']('Add', $p['getattr'](self, 'add_milestone'));
+			self['add_milestone_btn']['setStyleName']('btn btn-info');
+			self['remove_milestone_btn'] = $m['Button']('Remove', $p['getattr'](self, 'remove_milestone'));
+			self['remove_milestone_btn']['setStyleName']('btn btn-danger');
+			milestone_panel = $m['VerticalPanel']();
+			self['milestone_row'] = $pyjs_kwargs_call(null, $m['Form_Row'], null, null, [{'help':'add milestone and provide expected completion date'}, 'Milestones', milestone_panel]);
+			hp_mlst['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'330px'}]));
+			hp_mlst['add']($p['getattr'](self, 'add_milestone_btn'));
+			hp_mlst['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'10px'}]));
+			hp_mlst['add']($p['getattr'](self, 'remove_milestone_btn'));
+			self['main_mlst_panel']['add'](self['milestone_row']['panel']());
+			self['main_mlst_panel']['add'](hp_mlst);
+			self['risks_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'short / long term risks'}, 'Risks']);
+			self['main_impd_panel'] = $m['VerticalPanel']();
+			hp_impd = $m['HorizontalPanel']();
+			self['add_impediment_btn'] = $m['Button']('Add', $p['getattr'](self, 'add_impediment'));
+			self['add_impediment_btn']['setStyleName']('btn btn-info');
+			self['remove_impediment_btn'] = $m['Button']('Remove', $p['getattr'](self, 'remove_impediment'));
+			self['remove_impediment_btn']['setStyleName']('btn btn-danger');
+			impediment_panel = $m['VerticalPanel']();
+			self['impediment_row'] = $pyjs_kwargs_call(null, $m['Form_Row'], null, null, [{'help':'add impediments, one per section, please'}, 'Impediments', impediment_panel]);
+			hp_impd['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'330px'}]));
+			hp_impd['add']($p['getattr'](self, 'add_impediment_btn'));
+			hp_impd['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'10px'}]));
+			hp_impd['add']($p['getattr'](self, 'remove_impediment_btn'));
+			self['main_impd_panel']['add'](self['impediment_row']['panel']());
+			self['main_impd_panel']['add'](hp_impd);
+			self['add'](self['status_area']['panel']());
+			self['add'](self['risks_area']['panel']());
+			self['add']($p['getattr'](self, 'main_mlst_panel'));
+			self['add']($p['getattr'](self, 'main_impd_panel'));
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['__init__'] = $method;
+		$method = $pyjs__bind_method2('prep_data', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+			var data;
+			data = $p['dict']();
+			data['__setitem__']('project', 'Dev Project');
+			data['__setitem__']('Status', self['status_area']['widget']()['getText']());
+			data['__setitem__']('Risks', self['risks_area']['widget']()['getText']());
+			return data;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['prep_data'] = $method;
+		$method = $pyjs__bind_method2('add_milestone', function(sender) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				sender = arguments[1];
+			}
+			var milestone;
+			milestone = $m['Milestones_Row']();
+			self['milestone_row']['widget']()['add']($p['getattr'](milestone, 'hpanel'));
+			return null;
+		}
+	, 1, [null,null,['self'],['sender']]);
+		$cls_definition['add_milestone'] = $method;
+		$method = $pyjs__bind_method2('remove_milestone', function(sender) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				sender = arguments[1];
+			}
+
+ 			return null;
+		}
+	, 1, [null,null,['self'],['sender']]);
+		$cls_definition['remove_milestone'] = $method;
+		$method = $pyjs__bind_method2('add_impediment', function(sender) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				sender = arguments[1];
+			}
+			var impediment;
+			impediment = $m['Impediments']();
+			self['impediment_row']['widget']()['add']($p['getattr'](impediment, 'vpanel'));
+			return null;
+		}
+	, 1, [null,null,['self'],['sender']]);
+		$cls_definition['add_impediment'] = $method;
+		$method = $pyjs__bind_method2('remove_impediment', function(sender) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				sender = arguments[1];
+			}
+
+ 			return null;
+		}
+	, 1, [null,null,['self'],['sender']]);
+		$cls_definition['remove_impediment'] = $method;
+		var $bases = new Array($m['VerticalPanel']);
+		var $data = $p['dict']();
+		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
+		return $p['_create_class']('Dev_Fields', $p['tuple']($bases), $data);
+	})();
 	$m['Input_Form'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -259,9 +537,10 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			self['cur_project_panel'] = null;
 			self['panel'] = $m['VerticalPanel']();
 			self['panel']['setSpacing'](10);
-			proj_list = $m['ListBox']();
+			proj_list = $pyjs_kwargs_call(null, $m['ListBox'], null, null, [{'Height':'34px'}]);
 			proj_list['addItem']('Operations');
 			proj_list['addItem']('Engineering Services');
+			proj_list['addItem']('Dev Project');
 			proj_list['setVisibleItemCount'](0);
 			proj_list['addChangeListener']($p['getattr'](self, 'on_project_changed'));
 			proj_list['setStyleName']('form-control input-lg');
@@ -286,7 +565,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var self = arguments[0];
 				project = arguments[1];
 			}
-			var eng_services_fields,operations_fiedls;
+			var dev_fields,eng_services_fields,operations_fiedls;
 			if ($p['bool']($p['op_eq'](project, 'Operations'))) {
 				if ($p['bool'](($p['getattr'](self, 'cur_project_panel') !== null))) {
 					self['project_panel']['remove']($p['getattr'](self, 'cur_project_panel'));
@@ -302,6 +581,14 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				eng_services_fields = $m['Eng_Services_Fields']();
 				self['project_panel']['add'](eng_services_fields);
 				self['cur_project_panel'] = eng_services_fields;
+			}
+			else {
+				if ($p['bool'](($p['getattr'](self, 'cur_project_panel') !== null))) {
+					self['project_panel']['remove']($p['getattr'](self, 'cur_project_panel'));
+				}
+				dev_fields = $m['Dev_Fields']();
+				self['project_panel']['add'](dev_fields);
+				self['cur_project_panel'] = dev_fields;
 			}
 			return null;
 		}
@@ -399,5 +686,5 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json']
+PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Report_Date_Field', 'common']
 */
