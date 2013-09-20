@@ -201,7 +201,11 @@ def logout_view():
 @login_required
 def projects():
     projects_tmpl = Template(serve('projects.html'))
+
     return projects_tmpl.render(title='Projects', user=login.current_user)
+
+
+
 
 @app.route('/milestones')
 @login_required
