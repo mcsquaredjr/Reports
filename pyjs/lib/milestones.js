@@ -187,10 +187,38 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 			}
 
 			self['data'] = $p['list']([]);
+			self['data_deleted'] = $p['list']([]);
+			self['load']();
 			return null;
 		}
 	, 1, [null,null,['self']]);
 		$cls_definition['__init__'] = $method;
+		$method = $pyjs__bind_method2('load', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			self['data']['append']($p['list'](['Milestone1', 'Active', '20/09/2013', '30/09/2013']));
+			self['data']['append']($p['list'](['Milestone2', 'Inactive', '20/09/2013', '30/09/2013']));
+			self['data']['append']($p['list'](['Milestone3', 'Inactive', '20/09/2013', '30/09/2013']));
+			self['data_deleted']['append']($p['list'](['Milestone4', 'Deleted', '20/09/2013', '30/09/2013']));
+			self['data_deleted']['append']($p['list'](['Milestone5', 'Deleted', '20/09/2013', '30/09/2013']));
+			self['data_deleted']['append']($p['list'](['Milestone6', 'Deleted', '20/09/2013', '30/09/2013']));
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['load'] = $method;
+		$method = $pyjs__bind_method2('save', function() {
+			if (this['__is_instance__'] === true) {
+			} else {
+			}
+
+			return true;
+		}
+	, 1, [null,null]);
+		$cls_definition['save'] = $method;
 		$method = $pyjs__bind_method2('add_row', function(new_data) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -198,9 +226,33 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				var self = arguments[0];
 				new_data = arguments[1];
 			}
-
-			self['data']['append'](new_data);
-			return null;
+			var $iter2_nextval,$iter1_nextval,$iter1_type,$iter2_iter,el,$iter1_iter,$iter2_idx,exist,$iter1_array,key,$iter2_type,$iter2_array,$iter1_idx;
+			key = new_data['__getitem__'](0);
+			exist = false;
+			$iter1_iter = $p['getattr'](self, 'data');
+			$iter1_nextval=$p['__iter_prepare']($iter1_iter,false);
+			while (typeof($p['__wrapped_next']($iter1_nextval)['$nextval']) != 'undefined') {
+				el = $iter1_nextval['$nextval'];
+				if ($p['bool']($p['op_eq'](el['__getitem__'](0), key))) {
+					exist = true;
+					break;
+				}
+			}
+			if ($p['bool'](!$p['bool'](exist))) {
+				$iter2_iter = $p['getattr'](self, 'data_deleted');
+				$iter2_nextval=$p['__iter_prepare']($iter2_iter,false);
+				while (typeof($p['__wrapped_next']($iter2_nextval)['$nextval']) != 'undefined') {
+					el = $iter2_nextval['$nextval'];
+					if ($p['bool']($p['op_eq'](el['__getitem__'](0), key))) {
+						exist = true;
+						break;
+					}
+				}
+			}
+			if ($p['bool'](!$p['bool'](exist))) {
+				self['data']['append'](new_data);
+			}
+			return !$p['bool'](exist);
 		}
 	, 1, [null,null,['self'],['new_data']]);
 		$cls_definition['add_row'] = $method;
@@ -214,6 +266,8 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 			var $sub2,row_data,$sub1;
 			row_data = $p['getattr'](self, 'data')['__getitem__']($p['__op_sub']($sub1=row,$sub2=1));
 			self['data']['remove'](row_data);
+			row_data['__setitem__'](1, 'Deleted');
+			self['data_deleted']['append'](row_data);
 			return null;
 		}
 	, 1, [null,null,['self'],['row']]);
@@ -275,9 +329,11 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				model = arguments[1];
 				view = arguments[2];
 			}
-
+			var data;
 			self['model'] = model;
 			self['view'] = view;
+			data = $p['getattr']($p['getattr'](self, 'model'), 'data');
+			self['view']['grid']['load_data'](data);
 			return null;
 		}
 	, 1, [null,null,['self'],['model'],['view']]);
@@ -298,15 +354,16 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 			editor = $p['getattr']($p['getattr'](self, 'view'), 'editor');
 			if ($p['bool']($p['op_eq'](msg, $m['ADD_ROW_MSG']))) {
 				data = args['__getitem__'](0);
-				self['model']['add_row'](data);
-				grid['add_row'](data);
-				editor['$$name']['setText']('');
+				if ($p['bool'](self['model']['add_row'](data))) {
+					grid['add_row'](data);
+					editor['$$name']['setText']('');
+					editor['add_btn']['setEnabled'](false);
+					editor['start']['getTextBox']()['setText']('');
+					editor['end']['getTextBox']()['setText']('');
+					$p['getattr'](editor, 'start')['valid'] = null;
+					$p['getattr'](editor, 'end')['valid'] = null;
+				}
 				editor['$$name']['setFocus'](true);
-				editor['add_btn']['setEnabled'](false);
-				editor['start']['getTextBox']()['setText']('');
-				editor['end']['getTextBox']()['setText']('');
-				$p['getattr'](editor, 'start')['valid'] = null;
-				$p['getattr'](editor, 'end')['valid'] = null;
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['DEL_ROW_MSG']))) {
 				row = args['__getitem__'](0);
