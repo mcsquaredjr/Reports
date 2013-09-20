@@ -190,9 +190,6 @@ def register_view():
 def my_account_view():
     return render_template('my_account.html')
 
-
-
-
 @app.route('/form')
 @login_required
 def report_form():
