@@ -141,6 +141,7 @@ class Impediments(SimplePanel):
 
         desc_panel = VerticalPanel()
         self.desc_box = TextBox()
+        self.desc_box.setVisibleLength(44)
         self.desc_box.setStyleName('form-control')
         desc_lbl = Label('impediment description')
         desc_lbl.setStyleName('text-muted')
@@ -152,7 +153,7 @@ class Impediments(SimplePanel):
         self.status_lst.setStyleName('form-control input-lg')
         self.status_lst.addItem('Open')
         self.status_lst.addItem('Closed')
-        self.status_lbl = Label('added on: ')
+        self.status_lbl = Label('added on: 02/02/2013')
         self.status_lbl.setStyleName('text-muted')
         status_panel = VerticalPanel()
         status_panel.add(self.status_lst)
@@ -326,9 +327,11 @@ class Dev_Fields(VerticalPanel):
         
         hp_mlst.add(Label(Width='330px'))
 
-        hp_mlst.add(self.remove_milestone_btn)
-        hp_mlst.add(Label(Width='10px'))
         hp_mlst.add(self.add_milestone_btn)
+        hp_mlst.add(Label(Width='10px'))
+        hp_mlst.add(self.remove_milestone_btn)
+
+        
         
         self.main_mlst_panel.add(self.milestone_row.panel())
         self.main_mlst_panel.add(hp_mlst)
@@ -355,10 +358,11 @@ class Dev_Fields(VerticalPanel):
                                        help='add impediments, one per section, please')
         
         hp_impd.add(Label(Width='330px'))
-        hp_impd.add(self.remove_impediment_btn)
-        hp_impd.add(Label(Width='10px'))
-        hp_impd.add(self.add_impediment_btn)
         
+
+        hp_impd.add(self.add_impediment_btn)
+        hp_impd.add(Label(Width='10px'))
+        hp_impd.add(self.remove_impediment_btn)
         self.main_impd_panel.add(self.impediment_row.panel())
         self.main_impd_panel.add(hp_impd)
         
