@@ -25,6 +25,8 @@ from jinja2 import Template
 
 from utils.reportmaker import Report_Maker
 
+from functools import wraps
+
 SUCC_MSG = \
 '''
 <div class="alert alert-success">
@@ -146,6 +148,15 @@ class Admin_Index_View(admin.AdminIndexView):
         return login.current_user.is_authenticated()
 
 
+def admin_required(f):
+    @wraps(f)
+    def _check(*args, **kwargs):
+        user = login.current_user
+        if user is not None and user.is_admin():
+            return fn(*args, **kwargs)
+        return redirect(url_for('login_view'))
+    return _check
+
 @app.route('/', methods=('GET', 'POST'))
 def login_view():
     form = Login_Form(request.form)
@@ -204,6 +215,7 @@ def logout_view():
 
 @app.route('/projects')
 @login_required
+@admin_required
 def projects():
     projects_tmpl = Template(serve('projects.html'))
 
@@ -214,6 +226,7 @@ def projects():
 
 @app.route('/milestones')
 @login_required
+@admin_required
 def milestones():
     projects_tmpl = Template(serve('milestones.html'))
     return projects_tmpl.render(title='Milestones', user=login.current_user)
