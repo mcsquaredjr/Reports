@@ -81,8 +81,6 @@ class Milestones_Editor(SimplePanel):
         self.end.appendInvalidListener(self._display_error)
         self.end.validate(None)
 
-        #Window.alert(self.start.getTextBox().__class__)i
-        
         self.status = ListBox()
         self.status.addItem('Active')
         self.status.addItem('Inactive')
