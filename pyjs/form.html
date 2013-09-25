@@ -49,8 +49,10 @@
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Actions <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="/reports">Generate report now</a></li>
+                  {% if user and user.is_authenticated() and user.is_admin() %}
                   <li><a href="/projects">Projects editor</a></li>
                   <li><a href="/milestones">Milestones editor</a></li>
+                  {% endif %}
                   <li class="divider"></li>
                   <li class="dropdown-header">Users</li>
                   <li><a href="#">Users admin</a></li>
