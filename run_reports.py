@@ -153,7 +153,7 @@ def admin_required(f):
     def _check(*args, **kwargs):
         user = login.current_user
         if user is not None and user.is_admin():
-            return fn(*args, **kwargs)
+            return f(*args, **kwargs)
         return redirect(url_for('login_view'))
     return _check
 

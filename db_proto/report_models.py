@@ -28,8 +28,6 @@ class Project_State(db.Model):
         return '<Project_State %r>' % (self.name)
 
 
-
-
 ######################################################################
 #                      CLASS MILESTONE_STATE                         #
 ######################################################################
@@ -169,8 +167,6 @@ class Report(db.Model):
     # We should not tie users to authors probably to have some flexibility,
     # i.e. theoretically one user may report to different projects
     author = db.Column(db.String(32))
-
-    
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
     project = db.relationship('Project',
                              backref=db.backref('reports', order_by=id))

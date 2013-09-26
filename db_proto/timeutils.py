@@ -1,7 +1,8 @@
-# Some useful time utility functiond
+# Some useful time utility functions
 
 
 import datetime
+import time
 
 def today():
     '''Return date for today.
@@ -36,13 +37,17 @@ def to_date(date_time_obj):
     used in Reports, i.e. dd/mm/yyyy'''
     return date_time_obj.strftime('%d/%m/%Y')
 
-
+def to_date_time_obj(date_str):
+    '''Convert string in dd/mm/yyyy to datetime object.
+    '''
+    return datetime.datetime.fromtimestamp(time.mktime(time.strptime(date_str, '%d/%m/%Y')))
 
 if __name__ == '__main__':
     # Test functions above
-    # today
     print 'Today in Python is: {0}'.format(today())
     print 'Current week is: {0}'.format(this_week())
     print 'Current week is: {0}'.format(get_week_from_obj(today()))
     print 'Now is: {0}'.format(now())    
     print 'Now formatted to date: {0}'.format(to_date(now()))
+    print 'Converted to Python: {0}'.format(to_date_time_obj('01/12/2010'))
+    print "And back: '{0}'".format(to_date(to_date_time_obj('01/12/2010')))
