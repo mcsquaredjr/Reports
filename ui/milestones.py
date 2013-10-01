@@ -46,6 +46,10 @@ CNG_ROW_MSG = 'cng-row-msg'
 DESEL_ROW_MSG = 'desel-row-msg'
 CAL_DATE_MSG = 'cal-date-msg'
 
+# Already existance in db
+EXIST_IN_DB_STATUS = 1
+NOT_EXIST_IN_DB_STATUS = 0
+
 DATE_MATCHER = \
 r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
 
@@ -157,36 +161,43 @@ class Milestones_Model(object):
         self.load()
 
     def load(self):
-        self.data.append(['Milestone1', 'Active', '20/09/2013', '30/09/2013'])
-        self.data.append(['Milestone2', 'Inactive', '20/09/2013', '30/09/2013'])
-        self.data.append(['Milestone3', 'Inactive', '20/09/2013', '30/09/2013'])
-        self.data_deleted.append(['Milestone4', 'Deleted', '20/09/2013', '30/09/2013'])
-        self.data_deleted.append(['Milestone5', 'Deleted', '20/09/2013', '30/09/2013'])
-        self.data_deleted.append(['Milestone6', 'Deleted', '20/09/2013', '30/09/2013'])
+        self.data.append([0, 'Milestone1', 'Active', '20/09/2013', '30/09/2013'])
+        self.data.append([1, 'Milestone2', 'Inactive', '20/09/2013', '30/09/2013'])
+        self.data.append([2, 'Milestone3', 'Inactive', '20/09/2013', '30/09/2013'])
+        self.data_deleted.append([3, 'Milestone4', 'Deleted', '20/09/2013', '30/09/2013'])
+        self.data_deleted.append([4, 'Milestone5', 'Deleted', '20/09/2013', '30/09/2013'])
+        self.data_deleted.append([5, 'Milestone6', 'Deleted', '20/09/2013', '30/09/2013'])
+
+        # status 1 - already exist in db, 0 - not exist
+        for el in self.data:
+            el.append(EXIST_IN_DB_STATUS)
+
+        for el in self.data_deleted:
+            el.append(EXIST_IN_DB_STATUS)
 
     def save():
         # TODO:
         return True
 
     def add_row(self, new_data):
-        key = new_data[0]
+        milestone_name = new_data[0]
         exist = False
         
         # search in active/inactive data
         for el in self.data:
-            if el[0] == key:
+            if el[1] == milestone_name:
                 exist = True
                 break
 
         # search in deleted data
         if not exist:
             for el in self.data_deleted:
-                if el[0] == key:
+                if el[1] == milestone_name:
                     exist = True
                     break
 
         if not exist:
-            self.data.append(new_data)
+            self.data.append([None, milestone_name, new_data[1], new_data[2], new_data[3], NOT_EXIST_IN_DB_STATUS])
 
         return not exist
 
@@ -194,12 +205,16 @@ class Milestones_Model(object):
         # we need to take into account header, thus index is minus 1
         row_data = self.data[row-1]
         self.data.remove(row_data)
-         # change status to 'Deleted'
-        row_data[1] = 'Deleted'
-        self.data_deleted.append(row_data)
+        if row_data[5] == EXIST_IN_DB_STATUS:
+            # change status to 'Deleted'
+            row_data[2] = 'Deleted'
+            self.data_deleted.append(row_data)
 
     def edit_row(self, row, new_data):
-        self.data[row-1] = new_data
+        self.data[row-1][1] = new_data[0]
+        self.data[row-1][2] = new_data[1]
+        self.data[row-1][3] = new_data[2]
+        self.data[row-1][4] = new_data[3]
 
     def get_row(self, row):
         row_data = self.data[row-1]
@@ -223,7 +238,9 @@ class Milestones_Controller(object):
         self.view = view
 
         data = self.model.data
-        self.view.grid.load_data(data)
+        for row in data:
+            self.view.grid.add_row([ row[1], row[2], row[3], row[4] ])
+        #self.view.grid.load_data(data)
                 
     def process_msg(self, msg, *args):
         '''Process message and update model and view. Views and model sent messages
@@ -262,10 +279,10 @@ class Milestones_Controller(object):
         if msg == SEL_ROW_MSG:
             row = args[0]
             row_data = self.model.get_row(row)
-            editor.name.setText(row_data[0])
-            editor.status.selectValue(row_data[1])
-            editor.start.getTextBox().setText(row_data[2])
-            editor.end.getTextBox().setText(row_data[3])
+            editor.name.setText(row_data[1])
+            editor.status.selectValue(row_data[2])
+            editor.start.getTextBox().setText(row_data[3])
+            editor.end.getTextBox().setText(row_data[4])
             #change title on the add button to edit rows
             editor.add_btn.setText('Change')
             editor.add_btn.setEnabled(True)
