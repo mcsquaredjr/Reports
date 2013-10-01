@@ -1,7 +1,10 @@
 #!/usr/bin/env python
 
 import os
-from flask import Flask
+import json
+import markdown2
+from jinja2 import Template
+
 from flask import render_template
 from flask import jsonify
 from flask import request
@@ -9,23 +12,27 @@ from flask import redirect
 from flask import Markup
 from flask import Blueprint
 from flask import url_for
-from flask.ext.sqlalchemy import SQLAlchemy
-
-from wtforms import form, fields, validators
 from flask.ext import admin, login
 from flask.ext.admin.contrib import sqlamodel as sqla
+from wtforms import form, fields, validators
+from flask.ext.security import login_required
+from functools import wraps
 
 from utils import helpers
-from flask.ext.security import login_required
-
-
-import json
-import markdown2
-from jinja2 import Template
-
+from utils.reportmaker import Report_Maker
 from utils.reportmaker import Report_Maker
 
-from functools import wraps
+from app import app
+from app import db
+
+from db_proto.report_models import db
+from db_proto.report_models import User
+from db_proto.report_models import Project_State
+from db_proto.report_models import Project
+
+from db_proto.report_queries import commit_projects
+
+
 
 SUCC_MSG = \
 '''
@@ -53,44 +60,7 @@ ERR_MSG = \
 '''
 
 report_maker = Report_Maker()
-app = Flask(__name__)
-app.debug = True
 
-# Create dummy secrey key so we can use sessions
-app.config['SECRET_KEY'] = '123456790'
-
-# Create in-memory database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-app.config['SQLALCHEMY_ECHO'] = True
-db = SQLAlchemy(app)
-
-# Create user model. For simplicity, it will store passwords in plain text.
-# Obviously that's not right thing to do in real world application.
-class User(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    email = db.Column(db.String(64), unique=True)
-    password = db.Column(db.String(64))
-    usertype = db.Column(db.Integer)
-
-    # Flask-Login integration
-    def is_authenticated(self):
-        return True
-
-    def is_active(self):
-        return True
-
-    def is_anonymous(self):
-        return False
-
-    def get_id(self):
-        return self.id
-
-    def is_admin(self):
-        return self.usertype == 1
-
-    # Required for administrative interface
-    def __unicode__(self):
-        return self.username
 
 # Define login and registration forms (for flask-login)
 class Login_Form(form.Form):
@@ -236,12 +206,20 @@ def milestones():
 def process():
     if request.method == 'POST':
         data = json.loads(request.data)
-        
-        if data['method'] != 'send_data':
-            return 'error' #do some proper error handling, not this!
-        else:    
+
+        if data['method'] == 'send_data':
+            # We send report data here   
             answer = data['params']['message']
             report_maker.add_data(json.loads(answer))
+        elif data['method'] == 'send_projects':
+            # We want to commit projects data in the db
+            answer = data['params']['message']
+            commit_projects(json.loads(answer))
+        else:
+            # We don't know what we are doing
+            # TODO: do proper processing here
+            return 'Error!' 
+            
         return jsonify(result=answer)
     
 
@@ -269,6 +247,7 @@ def serve(requestedfile):
     
 if __name__ == '__main__':
 
+    db.create_all()
     # Initialize flask-login
     init_login()
     
@@ -277,9 +256,7 @@ if __name__ == '__main__':
     
     # Add view
     admin.add_view(Model_View(User, db.session))
-    
-    # Create DB
-    db.create_all()
+  
     # Bind to PORT if defined, otherwise default to 5000.
     port = int(os.environ.get('PORT', 8002))
     app.run(host='0.0.0.0', port=port)

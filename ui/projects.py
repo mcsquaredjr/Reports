@@ -30,6 +30,8 @@ import json
 
 from common import Abstract_View
 from common import Reports_Grid
+from common import Data_Service
+
 
 # Define some global constants here
 ADD_ROW_MSG = 'add-row-msg'
@@ -38,7 +40,7 @@ EDT_ROW_MSG = 'edt-row-msg'
 SEL_ROW_MSG = 'sel-row-msg'
 CNG_ROW_MSG = 'cng-row-msg'
 DESEL_ROW_MSG = 'desel-row-msg'
-
+COMMIT_PRJ_MSG = 'commit-prj-msg'
 
 
 ######################################################################
@@ -109,7 +111,7 @@ class Projects_Model(object):
         self.data_deleted.append(['Project5', 'Deleted'])
         self.data_deleted.append(['Project6', 'Deleted'])
 
-    def save():
+    def save(self):
         # TODO:
         return True
 
@@ -165,12 +167,15 @@ class Projects_Controller(object):
     def __init__(self):
         self.model = None
         self.view = None
+        self.remote = Data_Service()
+        
 
     def register(self, model, view):
         '''Register model and view.
         '''
         self.model = model
         self.view = view
+        # We load data when we register model
         data = self.model.data
         self.view.grid.load_data(data)
 
@@ -227,7 +232,23 @@ class Projects_Controller(object):
             new_data = args[1]
             self.model.edit_row(row, new_data)
             grid.change_row(row, new_data)
-    
+
+        if msg == COMMIT_PRJ_MSG:
+            # communicate to remote via json rpc and send data there
+            data = self.model.data + self.model.data_deleted
+            self.remote.sendRequest('send_projects',
+                                    {'message': json.dumps(data)}, self)
+
+
+    def onRemoteError(self, code, errorobj, request_info):
+        Window.alert('Error updating project data.')
+        
+
+    def onRemoteResponse(self, response, request_info):
+        '''Executed if remote processesing was OK.
+        '''
+        Window.alert(response)
+
 ######################################################################
 #                     PROJECTS VIEW CLASS                            #
 ######################################################################
@@ -240,8 +261,6 @@ class Projects_View(Abstract_View):
     def onModuleLoad(self):
         '''Create initial view of the panel.
         '''
-        # Register data service here
-        self.remote = None
         # Container that keeps everything
         self.panel = VerticalPanel()
         self.panel.setSpacing(10)
@@ -258,7 +277,7 @@ class Projects_View(Abstract_View):
         self.tbl_panel.add(self.grid)
 
         self.editor = Projects_Editor()
-        self.submit_btn = Button('Submit')
+        self.submit_btn = Button('Submit', getattr(self, 'send_data'))
         self.submit_btn.setStyleName('btn btn-primary btn-lg')
 
         hpanel = HorizontalPanel()
@@ -318,6 +337,11 @@ class Projects_View(Abstract_View):
         if self.grid.selected_row > 0:
             self.controller.process_msg(DEL_ROW_MSG, self.grid.selected_row)
 
+    def send_data(self):
+        '''Notify controller that we need to send data to db and let it
+        do the work'''
+        self.controller.process_msg(COMMIT_PRJ_MSG)
+        
 
     def onKeyDown(self, sender, keycode, modifiers):
         pass

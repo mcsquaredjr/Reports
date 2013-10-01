@@ -2543,6 +2543,27 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 	$m['SEL_ROW_MSG'] = 'sel-row-msg';
 	$m['DESEL_ROW_MSG'] = 'desel-row-msg';
 	$m['CAL_DATE_MSG'] = 'cal-date-msg';
+	$m['Data_Service'] = (function(){
+		var $cls_definition = new Object();
+		var $method;
+		$cls_definition['__module__'] = 'common';
+		$method = $pyjs__bind_method2('__init__', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			$m['JSONProxy']['__init__'](self, 'process/');
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['__init__'] = $method;
+		var $bases = new Array($m['JSONProxy']);
+		var $data = $p['dict']();
+		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
+		return $p['_create_class']('Data_Service', $p['tuple']($bases), $data);
+	})();
 	$m['Abstract_View'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -27747,12 +27768,14 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 	$m['json'] = $p['___import___']('json', null);
 	$m['Abstract_View'] = $p['___import___']('common.Abstract_View', null, null, false);
 	$m['Reports_Grid'] = $p['___import___']('common.Reports_Grid', null, null, false);
+	$m['Data_Service'] = $p['___import___']('common.Data_Service', null, null, false);
 	$m['ADD_ROW_MSG'] = 'add-row-msg';
 	$m['DEL_ROW_MSG'] = 'del-row-msg';
 	$m['EDT_ROW_MSG'] = 'edt-row-msg';
 	$m['SEL_ROW_MSG'] = 'sel-row-msg';
 	$m['CNG_ROW_MSG'] = 'cng-row-msg';
 	$m['DESEL_ROW_MSG'] = 'desel-row-msg';
+	$m['COMMIT_PRJ_MSG'] = 'commit-prj-msg';
 	$m['Projects_Editor'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -27853,12 +27876,14 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 		$cls_definition['load'] = $method;
 		$method = $pyjs__bind_method2('save', function() {
 			if (this['__is_instance__'] === true) {
+				var self = this;
 			} else {
+				var self = arguments[0];
 			}
 
 			return true;
 		}
-	, 1, [null,null]);
+	, 1, [null,null,['self']]);
 		$cls_definition['save'] = $method;
 		$method = $pyjs__bind_method2('add_row', function(new_data) {
 			if (this['__is_instance__'] === true) {
@@ -27969,6 +27994,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 
 			self['model'] = null;
 			self['view'] = null;
+			self['remote'] = $m['Data_Service']();
 			return null;
 		}
 	, 1, [null,null,['self']]);
@@ -28001,7 +28027,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				var args = $p['tuple']($pyjs_array_slice['call'](arguments,2,arguments['length']));
 
 			}
-			var new_data,row_data,grid,editor,data,row;
+			var new_data,$add2,row_data,grid,editor,$add1,data,row;
 			grid = $p['getattr']($p['getattr'](self, 'view'), 'grid');
 			editor = $p['getattr']($p['getattr'](self, 'view'), 'editor');
 			if ($p['bool']($p['op_eq'](msg, $m['ADD_ROW_MSG']))) {
@@ -28046,10 +28072,43 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				self['model']['edit_row'](row, new_data);
 				grid['change_row'](row, new_data);
 			}
+			if ($p['bool']($p['op_eq'](msg, $m['COMMIT_PRJ_MSG']))) {
+				data = $p['__op_add']($add1=$p['getattr']($p['getattr'](self, 'model'), 'data'),$add2=$p['getattr']($p['getattr'](self, 'model'), 'data_deleted'));
+				self['remote']['sendRequest']('send_projects', $p['dict']([['message', $m['json']['dumps'](data)]]), self);
+			}
 			return null;
 		}
 	, 1, ['args',null,['self'],['msg']]);
 		$cls_definition['process_msg'] = $method;
+		$method = $pyjs__bind_method2('onRemoteError', function(code, errorobj, request_info) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				code = arguments[1];
+				errorobj = arguments[2];
+				request_info = arguments[3];
+			}
+
+			$m['Window']['alert']('Error updating project data.');
+			return null;
+		}
+	, 1, [null,null,['self'],['code'],['errorobj'],['request_info']]);
+		$cls_definition['onRemoteError'] = $method;
+		$method = $pyjs__bind_method2('onRemoteResponse', function(response, request_info) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				response = arguments[1];
+				request_info = arguments[2];
+			}
+
+			$m['Window']['alert'](response);
+			return null;
+		}
+	, 1, [null,null,['self'],['response'],['request_info']]);
+		$cls_definition['onRemoteResponse'] = $method;
 		var $bases = new Array($p['object']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
@@ -28078,7 +28137,6 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				var self = arguments[0];
 			}
 			var spacer3,spacer2,hpanel,spacer1;
-			self['remote'] = null;
 			self['panel'] = $m['VerticalPanel']();
 			self['panel']['setSpacing'](10);
 			spacer1 = $m['Label']();
@@ -28090,7 +28148,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			self['grid']['create_grid'](1, 2, $p['list'](['Project Name', 'Project State']));
 			self['tbl_panel']['add']($p['getattr'](self, 'grid'));
 			self['editor'] = $m['Projects_Editor']();
-			self['submit_btn'] = $m['Button']('Submit');
+			self['submit_btn'] = $m['Button']('Submit', $p['getattr'](self, 'send_data'));
 			self['submit_btn']['setStyleName']('btn btn-primary btn-lg');
 			hpanel = $m['HorizontalPanel']();
 			hpanel['setHorizontalAlignment']($p['getattr']($m['HasAlignment'], 'ALIGN_RIGHT'));
@@ -28188,6 +28246,18 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self'],['event']]);
 		$cls_definition['on_del_btn_click'] = $method;
+		$method = $pyjs__bind_method2('send_data', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			self['controller']['process_msg']($m['COMMIT_PRJ_MSG']);
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['send_data'] = $method;
 		$method = $pyjs__bind_method2('onKeyDown', function(sender, keycode, modifiers) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -28273,7 +28343,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.ScrollPanel.ScrollPanel', 'pyjamas.ui.ScrollPanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLTable.HTMLTable', 'pyjamas.ui.HTMLTable', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.ui.Grid.Grid', 'pyjamas.ui.Grid', 'pyjamas.ui.KeyboardListener', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Reports_Grid']
+PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.ScrollPanel.ScrollPanel', 'pyjamas.ui.ScrollPanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLTable.HTMLTable', 'pyjamas.ui.HTMLTable', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.ui.Grid.Grid', 'pyjamas.ui.Grid', 'pyjamas.ui.KeyboardListener', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Reports_Grid', 'common.Data_Service']
 */
 
 --></script>

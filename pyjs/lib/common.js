@@ -42,6 +42,27 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 	$m['SEL_ROW_MSG'] = 'sel-row-msg';
 	$m['DESEL_ROW_MSG'] = 'desel-row-msg';
 	$m['CAL_DATE_MSG'] = 'cal-date-msg';
+	$m['Data_Service'] = (function(){
+		var $cls_definition = new Object();
+		var $method;
+		$cls_definition['__module__'] = 'common';
+		$method = $pyjs__bind_method2('__init__', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			$m['JSONProxy']['__init__'](self, 'process/');
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['__init__'] = $method;
+		var $bases = new Array($m['JSONProxy']);
+		var $data = $p['dict']();
+		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
+		return $p['_create_class']('Data_Service', $p['tuple']($bases), $data);
+	})();
 	$m['Abstract_View'] = (function(){
 		var $cls_definition = new Object();
 		var $method;

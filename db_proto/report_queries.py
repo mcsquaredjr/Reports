@@ -13,41 +13,11 @@ from sqlalchemy.exc import IntegrityError
 import datetime
 import timeutils
 
+from app import db
+
+
 session = db.session
 
-def _print():
-    '''Output some information about database tables.
-    '''
-    print '='*70
-    print '\n*** REPORTS'
-    projects = session.query(Project).all()
-    for project in projects:
-        print 'id: {0} name: {1}'.format(project.id, project.name)
-
-    print '='*70
-    print '\n*** MILESTONES'
-    milestones = session.query(Milestone).all()
-    for milestone in milestones:
-        print 'id: {0} name: {1} start: {2} end: {3} state: {4}'.format(milestone.id,
-                                                                        milestone.name,
-                                                                        milestone.start,
-                                                                        milestone.end,
-                                                                        milestone.state.name)
-    print '='*70
-    print '\n*** IMPEDIMENTS'
-    impediments = session.query(Impediment).all()
-    for impediment in impediments:
-        print 'id: {0} name: {1} start: {2} state: {3}'.format(impediment.id,
-                                                               impediment.name,
-                                                               impediment.start,
-                                                               impediment.state.name)
-    print '='*70
-    print '\n*** REPORTS'
-    reports = session.query(Report).all()
-    for report in reports:
-        print 'id: {0} author: {1} project: {2}'.format(report.id,
-                                                        report.author,
-                                                        report.project.name)
 
 def get_report(project):
     '''Generate data structure suitable for presenting a report for a given project
@@ -81,11 +51,11 @@ def get_projects():
     return p
 
 
-def commit_projects(data, data_deleted):
+def commit_projects(data):
     '''Commit projects in the database, updating or adding rows if necessary.
     '''
     old_data = get_projects()
-    new_data = data + data_deleted
+    new_data = data
     new_projects = []
     for row in new_data:
         project_id = row[0]

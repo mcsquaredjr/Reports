@@ -40,6 +40,15 @@ SEL_ROW_MSG = 'sel-row-msg'
 DESEL_ROW_MSG = 'desel-row-msg'
 CAL_DATE_MSG = 'cal-date-msg'
 
+
+
+######################################################################
+#                         CLASS DATA SERVICE                         #
+######################################################################
+class Data_Service(JSONProxy):
+    def __init__(self):
+        JSONProxy.__init__(self, 'process/')
+
 ######################################################################
 #                     ABSTRACT VIEW CLASS                            #
 ######################################################################

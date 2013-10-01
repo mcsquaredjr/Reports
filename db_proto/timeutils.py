@@ -51,3 +51,4 @@ if __name__ == '__main__':
     print 'Now formatted to date: {0}'.format(to_date(now()))
     print 'Converted to Python: {0}'.format(to_date_time_obj('01/12/2010'))
     print "And back: '{0}'".format(to_date(to_date_time_obj('01/12/2010')))
+    datetime.tzinfo

@@ -1,16 +1,39 @@
 
-from flask import Flask
-from flask.ext.sqlalchemy import SQLAlchemy
+from app import app
+from app import db
 
 
-app = Flask(__name__)
+######################################################################
+#                               CLASS USER                           #
+######################################################################
+# TODO: start using one login or encrypt password
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    email = db.Column(db.String(64), unique=True)
+    password = db.Column(db.String(64))
+    usertype = db.Column(db.Integer)
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///db.sqlite'
-app.config['SQLALCHEMY_ECHO'] = False
-db = SQLAlchemy(app)
+    # Flask-Login integration
+    def is_authenticated(self):
+        return True
 
+    def is_active(self):
+        return True
 
+    def is_anonymous(self):
+        return False
 
+    def get_id(self):
+        return self.id
+
+    def is_admin(self):
+        return self.usertype == 1
+
+    # Required for administrative interface
+    def __unicode__(self):
+        return self.username
+
+    
 ######################################################################
 #                        CLASS PROJECT_STATE                         #
 ######################################################################
