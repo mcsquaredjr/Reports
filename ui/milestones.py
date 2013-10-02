@@ -34,6 +34,7 @@ from pyjamas.HTTPRequest import HTTPRequest
 import json
 
 from common import Abstract_View
+from common import Data_Service
 from common import Reports_Grid
 from common import Report_Date_Field
 
@@ -45,10 +46,7 @@ SEL_ROW_MSG = 'sel-row-msg'
 CNG_ROW_MSG = 'cng-row-msg'
 DESEL_ROW_MSG = 'desel-row-msg'
 CAL_DATE_MSG = 'cal-date-msg'
-
-# Already existance in db
-EXIST_IN_DB_STATUS = 1
-NOT_EXIST_IN_DB_STATUS = 0
+COMMIT_MLS_MSG = 'commit-mls-msg'
 
 DATE_MATCHER = \
 r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
@@ -161,19 +159,12 @@ class Milestones_Model(object):
         self.load()
 
     def load(self):
-        self.data.append([0, 'Milestone1', 'Active', '20/09/2013', '30/09/2013'])
-        self.data.append([1, 'Milestone2', 'Inactive', '20/09/2013', '30/09/2013'])
-        self.data.append([2, 'Milestone3', 'Inactive', '20/09/2013', '30/09/2013'])
-        self.data_deleted.append([3, 'Milestone4', 'Deleted', '20/09/2013', '30/09/2013'])
-        self.data_deleted.append([4, 'Milestone5', 'Deleted', '20/09/2013', '30/09/2013'])
-        self.data_deleted.append([5, 'Milestone6', 'Deleted', '20/09/2013', '30/09/2013'])
-
-        # status 1 - already exist in db, 0 - not exist
-        for el in self.data:
-            el.append(EXIST_IN_DB_STATUS)
-
-        for el in self.data_deleted:
-            el.append(EXIST_IN_DB_STATUS)
+        self.data.append([None, 'Milestone1', 'Active', '20/09/2013', '30/09/2013'])
+        self.data.append([None, 'Milestone2', 'Inactive', '20/09/2013', '30/09/2013'])
+        self.data.append([None, 'Milestone3', 'Inactive', '20/09/2013', '30/09/2013'])
+        self.data_deleted.append([None, 'Milestone4', 'Deleted', '20/09/2013', '30/09/2013'])
+        self.data_deleted.append([None, 'Milestone5', 'Deleted', '20/09/2013', '30/09/2013'])
+        self.data_deleted.append([None, 'Milestone6', 'Deleted', '20/09/2013', '30/09/2013'])
 
     def save():
         # TODO:
@@ -197,7 +188,7 @@ class Milestones_Model(object):
                     break
 
         if not exist:
-            self.data.append([None, milestone_name, new_data[1], new_data[2], new_data[3], NOT_EXIST_IN_DB_STATUS])
+            self.data.append([None, milestone_name, new_data[1], new_data[2], new_data[3]])
 
         return not exist
 
@@ -205,7 +196,7 @@ class Milestones_Model(object):
         # we need to take into account header, thus index is minus 1
         row_data = self.data[row-1]
         self.data.remove(row_data)
-        if row_data[5] == EXIST_IN_DB_STATUS:
+        if row_data[0] is not None:
             # change status to 'Deleted'
             row_data[2] = 'Deleted'
             self.data_deleted.append(row_data)
@@ -230,6 +221,7 @@ class Milestones_Controller(object):
     def __init__(self):
         self.model = None
         self.view = None
+        self.remote = Data_Service()
 
     def register(self, model, view):
         '''Register model and view.
@@ -240,7 +232,6 @@ class Milestones_Controller(object):
         data = self.model.data
         for row in data:
             self.view.grid.add_row([ row[1], row[2], row[3], row[4] ])
-        #self.view.grid.load_data(data)
                 
     def process_msg(self, msg, *args):
         '''Process message and update model and view. Views and model sent messages
@@ -314,6 +305,12 @@ class Milestones_Controller(object):
                 if self.view.editor.add_btn.isEnabled():
                     self.view.editor.add_btn.setFocus(True)
 
+        if msg == COMMIT_MLS_MSG:
+            # communicate to remote via json rpc and send data there
+            data = self.model.data + self.model.data_deleted
+            self.remote.sendRequest('send_milestones',
+                                    {'message': json.dumps(data)}, self)
+
 
     def _validate_editor(self):
         (valid, data) = self.view.editor.get_milestone_data()
@@ -334,8 +331,6 @@ class Milestones_View(Abstract_View):
     def onModuleLoad(self):
         '''Create initial view of the panel.
         '''
-        # Register data service here
-        self.remote = None
         # Container that keeps everything
         self.panel = VerticalPanel()
         self.panel.setSpacing(10)
@@ -352,7 +347,7 @@ class Milestones_View(Abstract_View):
         self.tbl_panel.add(self.grid)
 
         self.editor = Milestones_Editor()
-        self.submit_btn = Button('Submit')
+        self.submit_btn = Button('Submit', getattr(self, 'send_data'))
         self.submit_btn.setStyleName('btn btn-primary btn-lg')
 
         hpanel = HorizontalPanel()
@@ -413,6 +408,10 @@ class Milestones_View(Abstract_View):
         if self.grid.selected_row > 0:
             self.controller.process_msg(DEL_ROW_MSG, self.grid.selected_row)
 
+    def send_data(self):
+        '''Notify controller that we need to send data to db and let it
+        do the work'''
+        self.controller.process_msg(COMMIT_MLS_MSG)
 
     def onKeyDown(self, sender, keycode, modifiers):
         pass

@@ -43,11 +43,6 @@ DESEL_ROW_MSG = 'desel-row-msg'
 
 COMMIT_PRJ_MSG = 'commit-prj-msg'
 
-# Already existance in db
-EXIST_IN_DB_STATUS = 1
-NOT_EXIST_IN_DB_STATUS = 0
-
-
 ######################################################################
 #                     PROJECTS EDITOR CLASS                          #
 ######################################################################
@@ -118,13 +113,6 @@ class Projects_Model(object):
         self.data_deleted.append([None, 'Project5', 'Deleted'])
         self.data_deleted.append([None, 'Project6', 'Deleted'])
 
-        # status 1 - already exist in db, 0 - not exist
-        for el in self.data:
-            el.append(EXIST_IN_DB_STATUS)
-
-        for el in self.data_deleted:
-            el.append(EXIST_IN_DB_STATUS)
-
     def save(self):
         # TODO:
         return True
@@ -147,7 +135,7 @@ class Projects_Model(object):
                     break
 
         if not exist:
-            self.data.append([None, project_name, new_data[1], NOT_EXIST_IN_DB_STATUS])
+            self.data.append([None, project_name, new_data[1]])
 
         return not exist
 
@@ -157,7 +145,7 @@ class Projects_Model(object):
         self.data.remove(row_data)
 
         # add only projects that exist in database
-        if row_data[3] == EXIST_IN_DB_STATUS:
+        if row_data[0] is not None:
             # change status to 'Deleted'
             row_data[2] = 'Deleted'
             self.data_deleted.append(row_data)
@@ -192,8 +180,6 @@ class Projects_Controller(object):
         data = self.model.data
         for row in data:
             self.view.grid.add_row([row[1], row[2]])
-        #self.view.grid.load_data(data)
-
                 
     def process_msg(self, msg, *args):
         '''Process message and update model and view. Views and model sent messages

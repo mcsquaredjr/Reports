@@ -29,8 +29,11 @@ from db_proto.report_models import db
 from db_proto.report_models import User
 from db_proto.report_models import Project_State
 from db_proto.report_models import Project
+from db_proto.report_models import Milestone_State
+from db_proto.report_models import Milestone
 
 from db_proto.report_queries import commit_projects
+from db_proto.report_queries import commit_milestones
 from db_proto.report_queries import get_projects
 
 
@@ -218,8 +221,12 @@ def process():
             commit_projects(json.loads(projects))
             # Get projects from db, and ignore deleted
             answer = projects
-            
-            
+        elif data['method'] == 'send_milestones':
+            # We want to commit milestones data in the db
+            milestones = data['params']['message']
+            commit_milestones(json.loads(milestones))
+            # Get projects from db, and ignore deleted
+            answer = milestones
         else:
             # We don't know what we are doing
             # TODO: do proper processing here
@@ -263,7 +270,17 @@ if __name__ == '__main__':
     db.session.add(p_state_inactive)
     db.session.add(p_state_deleted)
 
+    # Create milestone states
+    m_state_active = Milestone_State('Active')
+    m_state_inactive = Milestone_State('Inactive')
+    m_state_deleted = Milestone_State('Deleted')
+    
+    db.session.add(m_state_active)
+    db.session.add(m_state_inactive)
+    db.session.add(m_state_deleted)
+
     db.session.commit()
+    
     # Initialize flask-login
     init_login()
     

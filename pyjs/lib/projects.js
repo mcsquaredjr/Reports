@@ -41,8 +41,6 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 	$m['CNG_ROW_MSG'] = 'cng-row-msg';
 	$m['DESEL_ROW_MSG'] = 'desel-row-msg';
 	$m['COMMIT_PRJ_MSG'] = 'commit-prj-msg';
-	$m['EXIST_IN_DB_STATUS'] = 1;
-	$m['NOT_EXIST_IN_DB_STATUS'] = 0;
 	$m['Projects_Editor'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -130,25 +128,13 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			} else {
 				var self = arguments[0];
 			}
-			var el,$iter2_nextval,$iter1_nextval,$iter1_type,$iter2_iter,$iter1_iter,$iter2_idx,$iter1_array,$iter2_type,$iter2_array,$iter1_idx;
+
 			self['data']['append']($p['list']([null, 'Project1', 'Active']));
 			self['data']['append']($p['list']([null, 'Project2', 'Inactive']));
 			self['data']['append']($p['list']([null, 'Project3', 'Inactive']));
 			self['data_deleted']['append']($p['list']([null, 'Project4', 'Deleted']));
 			self['data_deleted']['append']($p['list']([null, 'Project5', 'Deleted']));
 			self['data_deleted']['append']($p['list']([null, 'Project6', 'Deleted']));
-			$iter1_iter = $p['getattr'](self, 'data');
-			$iter1_nextval=$p['__iter_prepare']($iter1_iter,false);
-			while (typeof($p['__wrapped_next']($iter1_nextval)['$nextval']) != 'undefined') {
-				el = $iter1_nextval['$nextval'];
-				el['append']($m['EXIST_IN_DB_STATUS']);
-			}
-			$iter2_iter = $p['getattr'](self, 'data_deleted');
-			$iter2_nextval=$p['__iter_prepare']($iter2_iter,false);
-			while (typeof($p['__wrapped_next']($iter2_nextval)['$nextval']) != 'undefined') {
-				el = $iter2_nextval['$nextval'];
-				el['append']($m['EXIST_IN_DB_STATUS']);
-			}
 			return null;
 		}
 	, 1, [null,null,['self']]);
@@ -171,23 +157,23 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				var self = arguments[0];
 				new_data = arguments[1];
 			}
-			var project_name,el,$iter4_nextval,$iter3_array,$iter4_idx,$iter3_idx,exist,$iter3_iter,$iter4_type,$iter3_type,$iter4_array,$iter4_iter,$iter3_nextval;
+			var project_name,$iter1_nextval,$iter1_type,$iter2_iter,el,$iter1_iter,$iter2_idx,$iter2_nextval,exist,$iter1_array,$iter2_type,$iter2_array,$iter1_idx;
 			project_name = new_data['__getitem__'](0);
 			exist = false;
-			$iter3_iter = $p['getattr'](self, 'data');
-			$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
-			while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
-				el = $iter3_nextval['$nextval'];
+			$iter1_iter = $p['getattr'](self, 'data');
+			$iter1_nextval=$p['__iter_prepare']($iter1_iter,false);
+			while (typeof($p['__wrapped_next']($iter1_nextval)['$nextval']) != 'undefined') {
+				el = $iter1_nextval['$nextval'];
 				if ($p['bool']($p['op_eq'](el['__getitem__'](1), project_name))) {
 					exist = true;
 					break;
 				}
 			}
 			if ($p['bool'](!$p['bool'](exist))) {
-				$iter4_iter = $p['getattr'](self, 'data_deleted');
-				$iter4_nextval=$p['__iter_prepare']($iter4_iter,false);
-				while (typeof($p['__wrapped_next']($iter4_nextval)['$nextval']) != 'undefined') {
-					el = $iter4_nextval['$nextval'];
+				$iter2_iter = $p['getattr'](self, 'data_deleted');
+				$iter2_nextval=$p['__iter_prepare']($iter2_iter,false);
+				while (typeof($p['__wrapped_next']($iter2_nextval)['$nextval']) != 'undefined') {
+					el = $iter2_nextval['$nextval'];
 					if ($p['bool']($p['op_eq'](el['__getitem__'](1), project_name))) {
 						exist = true;
 						break;
@@ -195,7 +181,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				}
 			}
 			if ($p['bool'](!$p['bool'](exist))) {
-				self['data']['append']($p['list']([null, project_name, new_data['__getitem__'](1), $m['NOT_EXIST_IN_DB_STATUS']]));
+				self['data']['append']($p['list']([null, project_name, new_data['__getitem__'](1)]));
 			}
 			return !$p['bool'](exist);
 		}
@@ -211,7 +197,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			var $sub2,row_data,$sub1;
 			row_data = $p['getattr'](self, 'data')['__getitem__']($p['__op_sub']($sub1=row,$sub2=1));
 			self['data']['remove'](row_data);
-			if ($p['bool']($p['op_eq'](row_data['__getitem__'](3), $m['EXIST_IN_DB_STATUS']))) {
+			if ($p['bool']((row_data['__getitem__'](0) !== null))) {
 				row_data['__setitem__'](2, 'Deleted');
 				self['data_deleted']['append'](row_data);
 			}
@@ -278,14 +264,14 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				model = arguments[1];
 				view = arguments[2];
 			}
-			var $iter5_nextval,$iter5_array,$iter5_iter,$iter5_idx,$iter5_type,row,data;
+			var $iter3_idx,$iter3_array,$iter3_iter,$iter3_type,row,data,$iter3_nextval;
 			self['model'] = model;
 			self['view'] = view;
 			data = $p['getattr']($p['getattr'](self, 'model'), 'data');
-			$iter5_iter = data;
-			$iter5_nextval=$p['__iter_prepare']($iter5_iter,false);
-			while (typeof($p['__wrapped_next']($iter5_nextval)['$nextval']) != 'undefined') {
-				row = $iter5_nextval['$nextval'];
+			$iter3_iter = data;
+			$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
+			while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
+				row = $iter3_nextval['$nextval'];
 				self['view']['grid']['add_row']($p['list']([row['__getitem__'](1), row['__getitem__'](2)]));
 			}
 			return null;

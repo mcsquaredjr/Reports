@@ -67,7 +67,6 @@ def commit_projects(data):
         else:
             new_projects.append(Project(row[1]))
             state = session.query(Project_State).filter(Project_State.name == row[2]).first()
-            print state.projects 
             state.projects.extend(new_projects)
     for project in new_projects:
         session.add(project)
@@ -99,28 +98,28 @@ def get_milestones():
     return m    
 
     
-def commit_milestones(data, data_deleted):
+def commit_milestones(data):
     '''Commit milestones in the database, updading or adding rows in necessary.'''
     old_data = get_milestones()
-    new_data = data + data_deleted
+    new_data = data
     new_milestones = []
     for row in new_data:
         milestone_id = row[0]
         if milestone_id is not None:
             milestone = session.query(Milestone).filter(Milestone.id == milestone_id).first()
             milestone.name = row[1] 
-            state = session.query(Milestone_State).filter(Milestone_State.name == row[4]).first()
+            state = session.query(Milestone_State).filter(Milestone_State.name == row[2]).first()
             milestone.state = state
-            milestone.start = timeutils.to_date_time_obj(row[2])
-            milestone.end = timeutils.to_date_time_obj(row[3])
+            milestone.start = timeutils.to_date_time_obj(row[3])
+            milestone.end = timeutils.to_date_time_obj(row[4])
             milestone.desc = 'Lorem ipsum dolor sit amet.'
             
         else:
             new_milestones.append(Milestone(row[1],
                                             'lorem ipsum dolor sit amet',
-                                            timeutils.to_date_time_obj(row[2]),
-                                            timeutils.to_date_time_obj(row[3])))
-            state = session.query(Milestone_State).filter(Milestone_State.name == row[4]).first()
+                                            timeutils.to_date_time_obj(row[3]),
+                                            timeutils.to_date_time_obj(row[4])))
+            state = session.query(Milestone_State).filter(Milestone_State.name == row[2]).first()
             state.milestones.extend(new_milestones)
 
             for m in new_milestones:
