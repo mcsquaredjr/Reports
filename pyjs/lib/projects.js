@@ -40,12 +40,9 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 	$m['SEL_ROW_MSG'] = 'sel-row-msg';
 	$m['CNG_ROW_MSG'] = 'cng-row-msg';
 	$m['DESEL_ROW_MSG'] = 'desel-row-msg';
-<<<<<<< HEAD
 	$m['COMMIT_PRJ_MSG'] = 'commit-prj-msg';
-=======
 	$m['EXIST_IN_DB_STATUS'] = 1;
 	$m['NOT_EXIST_IN_DB_STATUS'] = 0;
->>>>>>> 2b6937897602fe1a6b647526b12b8b4247402dac
 	$m['Projects_Editor'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -134,12 +131,12 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				var self = arguments[0];
 			}
 			var el,$iter2_nextval,$iter1_nextval,$iter1_type,$iter2_iter,$iter1_iter,$iter2_idx,$iter1_array,$iter2_type,$iter2_array,$iter1_idx;
-			self['data']['append']($p['list']([0, 'Project1', 'Active']));
-			self['data']['append']($p['list']([1, 'Project2', 'Inactive']));
-			self['data']['append']($p['list']([2, 'Project3', 'Inactive']));
-			self['data_deleted']['append']($p['list']([3, 'Project4', 'Deleted']));
-			self['data_deleted']['append']($p['list']([4, 'Project5', 'Deleted']));
-			self['data_deleted']['append']($p['list']([5, 'Project6', 'Deleted']));
+			self['data']['append']($p['list']([null, 'Project1', 'Active']));
+			self['data']['append']($p['list']([null, 'Project2', 'Inactive']));
+			self['data']['append']($p['list']([null, 'Project3', 'Inactive']));
+			self['data_deleted']['append']($p['list']([null, 'Project4', 'Deleted']));
+			self['data_deleted']['append']($p['list']([null, 'Project5', 'Deleted']));
+			self['data_deleted']['append']($p['list']([null, 'Project6', 'Deleted']));
 			$iter1_iter = $p['getattr'](self, 'data');
 			$iter1_nextval=$p['__iter_prepare']($iter1_iter,false);
 			while (typeof($p['__wrapped_next']($iter1_nextval)['$nextval']) != 'undefined') {
@@ -383,7 +380,9 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				request_info = arguments[2];
 			}
 
-			$m['Window']['alert'](response);
+			$m['Window']['alert']($m['json']['loads'](response));
+			$p['getattr'](self, 'model')['data'] = $m['json']['loads']((typeof reponse == "undefined"?$m['reponse']:reponse));
+			$p['getattr'](self, 'model')['data_deleted'] = $p['list']([]);
 			return null;
 		}
 	, 1, [null,null,['self'],['response'],['request_info']]);

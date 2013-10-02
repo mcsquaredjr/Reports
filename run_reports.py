@@ -31,6 +31,7 @@ from db_proto.report_models import Project_State
 from db_proto.report_models import Project
 
 from db_proto.report_queries import commit_projects
+from db_proto.report_queries import get_projects
 
 
 
@@ -213,8 +214,12 @@ def process():
             report_maker.add_data(json.loads(answer))
         elif data['method'] == 'send_projects':
             # We want to commit projects data in the db
-            answer = data['params']['message']
-            commit_projects(json.loads(answer))
+            projects = data['params']['message']
+            commit_projects(json.loads(projects))
+            # Get projects from db, and ignore deleted
+            answer = projects
+            
+            
         else:
             # We don't know what we are doing
             # TODO: do proper processing here
@@ -246,8 +251,19 @@ def serve(requestedfile):
         return f.read()
     
 if __name__ == '__main__':
-
+    db.drop_all()
     db.create_all()
+
+    # Create project states
+    p_state_active = Project_State('Active')
+    p_state_inactive = Project_State('Inactive')
+    p_state_deleted = Project_State('Deleted')
+    
+    db.session.add(p_state_active)
+    db.session.add(p_state_inactive)
+    db.session.add(p_state_deleted)
+
+    db.session.commit()
     # Initialize flask-login
     init_login()
     

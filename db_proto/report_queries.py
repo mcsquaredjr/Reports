@@ -75,7 +75,7 @@ def commit_projects(data):
         session.commit()
     except IntegrityError:
         session.rollback()
-        print '\n*** ERROR: Project names must be unique. Will roll back.'
+        print '\n*** INTEGRITY ERROR: Cannot commit projects. Rolled back.'
 
 
 def get_milestones():
@@ -155,7 +155,7 @@ if __name__ == '__main__':
               [2, 'project 2', 'Deleted'],
               [None, 'project 4', 'Inactive']]
 
-    commit_projects(p_data, [])
+    commit_projects(p_data)
     print '\n=== List of reports after update:'
     projects = get_projects()
     for p in projects:

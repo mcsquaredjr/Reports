@@ -40,15 +40,13 @@ EDT_ROW_MSG = 'edt-row-msg'
 SEL_ROW_MSG = 'sel-row-msg'
 CNG_ROW_MSG = 'cng-row-msg'
 DESEL_ROW_MSG = 'desel-row-msg'
-<<<<<<< HEAD
-COMMIT_PRJ_MSG = 'commit-prj-msg'
 
-=======
+COMMIT_PRJ_MSG = 'commit-prj-msg'
 
 # Already existance in db
 EXIST_IN_DB_STATUS = 1
 NOT_EXIST_IN_DB_STATUS = 0
->>>>>>> 2b6937897602fe1a6b647526b12b8b4247402dac
+
 
 ######################################################################
 #                     PROJECTS EDITOR CLASS                          #
@@ -112,13 +110,13 @@ class Projects_Model(object):
 
     def load(self):
         # array of active/inactive projects
-        self.data.append([0, 'Project1', 'Active'])
-        self.data.append([1, 'Project2', 'Inactive'])
-        self.data.append([2, 'Project3', 'Inactive'])
+        self.data.append([None, 'Project1', 'Active'])
+        self.data.append([None, 'Project2', 'Inactive'])
+        self.data.append([None, 'Project3', 'Inactive'])
         # array of deleted projects
-        self.data_deleted.append([3, 'Project4', 'Deleted'])
-        self.data_deleted.append([4, 'Project5', 'Deleted'])
-        self.data_deleted.append([5, 'Project6', 'Deleted'])
+        self.data_deleted.append([None, 'Project4', 'Deleted'])
+        self.data_deleted.append([None, 'Project5', 'Deleted'])
+        self.data_deleted.append([None, 'Project6', 'Deleted'])
 
         # status 1 - already exist in db, 0 - not exist
         for el in self.data:
@@ -163,7 +161,7 @@ class Projects_Model(object):
             # change status to 'Deleted'
             row_data[2] = 'Deleted'
             self.data_deleted.append(row_data)
-
+       
     def edit_row(self, row, new_data):
         self.data[row-1][1] = new_data[0]
         self.data[row-1][2] = new_data[1]
@@ -263,7 +261,9 @@ class Projects_Controller(object):
     def onRemoteResponse(self, response, request_info):
         '''Executed if remote processesing was OK.
         '''
-        Window.alert(response)
+        Window.alert(json.loads(response))
+        self.model.data = json.loads(reponse)
+        self.model.data_deleted = []
 
 ######################################################################
 #                     PROJECTS VIEW CLASS                            #
