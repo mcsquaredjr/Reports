@@ -248,7 +248,7 @@ class Projects_Controller(object):
         '''Executed if remote processesing was OK.
         '''
         Window.alert(json.loads(response))
-        self.model.data = json.loads(reponse)
+        self.model.data = json.loads(response)
         self.model.data_deleted = []
 
 ######################################################################
