@@ -234,7 +234,7 @@ def process():
             projects_in_db = get_projects()
             answer = dict()
             answer['data'] = json.dumps(projects_in_db)
-            answer['msg'] = 'hello'
+            answer['msg'] = 'get_projects'
             
         else:
             # We don't know what we are doing

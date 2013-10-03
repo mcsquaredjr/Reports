@@ -250,18 +250,10 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				model = arguments[1];
 				view = arguments[2];
 			}
-			var $iter3_idx,$iter3_array,$iter3_iter,$iter3_type,row,data,$iter3_nextval;
+
 			self['model'] = model;
 			self['view'] = view;
 			self['process_msg']($m['GET_PRJ_MSG']);
-			data = $p['getattr']($p['getattr'](self, 'model'), 'data');
-			$m['Window']['alert']('Get me some data:', $p['getattr']($p['getattr'](self, 'model'), 'data'));
-			$iter3_iter = data;
-			$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
-			while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
-				row = $iter3_nextval['$nextval'];
-				self['view']['grid']['add_row']($p['list']([row['__getitem__'](1), row['__getitem__'](2)]));
-			}
 			return null;
 		}
 	, 1, [null,null,['self'],['model'],['view']]);
@@ -356,9 +348,18 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				response = arguments[1];
 				request_info = arguments[2];
 			}
-
+			var $iter3_idx,$iter3_array,$iter3_iter,$iter3_type,$iter3_nextval,data,row;
 			$p['getattr'](self, 'model')['data'] = $m['json']['loads'](response['__getitem__']('data'));
 			$p['getattr'](self, 'model')['data_deleted'] = $p['list']([]);
+			if ($p['bool']($p['op_eq'](response['__getitem__']('msg'), 'get_projects'))) {
+				data = $p['getattr']($p['getattr'](self, 'model'), 'data');
+				$iter3_iter = data;
+				$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
+				while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
+					row = $iter3_nextval['$nextval'];
+					self['view']['grid']['add_row']($p['list']([row['__getitem__'](1), row['__getitem__'](2)]));
+				}
+			}
 			return null;
 		}
 	, 1, [null,null,['self'],['response'],['request_info']]);

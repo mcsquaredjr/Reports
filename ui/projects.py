@@ -174,12 +174,11 @@ class Projects_Controller(object):
         '''
         self.model = model
         self.view = view
-        # We load data when we register model
+        # Ask database for project data
         self.process_msg(GET_PRJ_MSG)
-        data = self.model.data
-        Window.alert('Get me some data:', self.model.data)
-        for row in data:
-            self.view.grid.add_row([row[1], row[2]])
+        #data = self.model.data
+        #for row in data:
+        #    self.view.grid.add_row([row[1], row[2]])
                 
     def process_msg(self, msg, *args):
         '''Process message and update model and view. Views and model sent messages
@@ -252,10 +251,13 @@ class Projects_Controller(object):
     def onRemoteResponse(self, response, request_info):
         '''Executed if remote processesing was OK.
         '''
-        #Window.alert(response['msg'])
         self.model.data = json.loads(response['data'])
         self.model.data_deleted = []
-        
+        if response['msg'] == 'get_projects':
+            data = self.model.data
+            for row in data:
+                self.view.grid.add_row([row[1], row[2]])
+            
         
 
 ######################################################################
