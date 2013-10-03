@@ -102,18 +102,7 @@ class Projects_Model(object):
     def __init__(self):
         self.data = []
         self.data_deleted = []
-        #self.load()
-
-    def load(self):
-        # array of active/inactive projects
-        self.data.append([None, 'Project1', 'Active'])
-        self.data.append([None, 'Project2', 'Inactive'])
-        self.data.append([None, 'Project3', 'Inactive'])
-        # array of deleted projects
-        # self.data_deleted.append([None, 'Project4', 'Deleted'])
-        # self.data_deleted.append([None, 'Project5', 'Deleted'])
-        # self.data_deleted.append([None, 'Project6', 'Deleted'])
-
+   
     
     def add_row(self, new_data):
         project_name = new_data[0]
