@@ -115,7 +115,7 @@ class Milestone(db.Model):
     __tablename__ = 'milestones'
     id = db.Column(db.Integer, primary_key = True)
     name = db.Column(db.String(64), unique = True)
-    desc = db.Column(db.Text)
+    #desc = db.Column(db.Text)
     start = db.Column(db.DateTime)
     end = db.Column(db.DateTime)
     # We have many to one associations with statuses and reports
@@ -129,9 +129,9 @@ class Milestone(db.Model):
     report = db.relationship('Report',
                              backref=db.backref('milestones', order_by=id))
 
-    def __init__(self, name, desc, start, end):
+    def __init__(self, name, start, end):
     	self.name = name
-        self.desc = desc
+        #self.desc = desc
         self.start = start
         self.end = end
 

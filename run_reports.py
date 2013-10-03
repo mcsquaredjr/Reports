@@ -37,6 +37,7 @@ from db_proto.report_models import Milestone
 from db_proto.report_queries import commit_projects
 from db_proto.report_queries import commit_milestones
 from db_proto.report_queries import get_projects
+from db_proto.report_queries import get_milestones
 
 
 
@@ -208,6 +209,7 @@ def process():
             # We send report data here   
             answer = data['params']['message']
             report_maker.add_data(json.loads(answer))
+            
         elif data['method'] == 'send_projects':
             # We want to commit projects data in the db
             projects = data['params']['message']
@@ -217,17 +219,28 @@ def process():
             answer = dict()
             answer['data'] = json.dumps(projects_in_db)
             answer['msg'] = 'hello'
+            
         elif data['method'] == 'send_milestones':
             # We want to commit milestones data in the db
             milestones = data['params']['message']
             commit_milestones(json.loads(milestones))
-            # Get projects from db, and ignore deleted
-            answer = milestones
+            # Get milestones from db, and ignore deleted
+            milestones_in_db = get_milestones()
+            answer = dict()
+            answer['data'] = json.dumps(milestones_in_db)
+            answer['msg'] = 'hello'
+
         elif data['method'] == 'get_projects':
             projects_in_db = get_projects()
             answer = dict()
             answer['data'] = json.dumps(projects_in_db)
             answer['msg'] = 'get_projects'
+            
+        elif data['method'] == 'get_milestones':
+            milestones_in_db = get_milestones()
+            answer = dict()
+            answer['data'] = json.dumps(milestones_in_db)
+            answer['msg'] = 'get_milestones'
             
         else:
             # We don't know what we are doing
@@ -260,31 +273,31 @@ def serve(requestedfile):
         return f.read()
     
 if __name__ == '__main__':
-    #db.drop_all()
-    ## db.create_all()
+    db.drop_all()
+    db.create_all()
 
-    ## # Create project states
-    ## p_state_active = Project_State('Active')
-    ## p_state_inactive = Project_State('Inactive')
-    ## p_state_deleted = Project_State('Deleted')
+    # Create project states
+    p_state_active = Project_State('Active')
+    p_state_inactive = Project_State('Inactive')
+    p_state_deleted = Project_State('Deleted')
 
-    ## adm_usr = User(email='admin', password='admin', usertype=1)
-    
-    ## db.session.add(p_state_active)
-    ## db.session.add(p_state_inactive)
-    ## db.session.add(p_state_deleted)
-    ## db.session.add(adm_usr)
+    adm_usr = User(email='admin', password='admin', usertype=1)
 
-    ## # Create milestone states
-    ## m_state_active = Milestone_State('Active')
-    ## m_state_inactive = Milestone_State('Inactive')
-    ## m_state_deleted = Milestone_State('Deleted')
-    
-    ## db.session.add(m_state_active)
-    ## db.session.add(m_state_inactive)
-    ## db.session.add(m_state_deleted)
+    db.session.add(p_state_active)
+    db.session.add(p_state_inactive)
+    db.session.add(p_state_deleted)
+    db.session.add(adm_usr)
 
-    ## db.session.commit()
+    # Create milestone states
+    m_state_active = Milestone_State('Active')
+    m_state_inactive = Milestone_State('Inactive')
+    m_state_deleted = Milestone_State('Deleted')
+
+    db.session.add(m_state_active)
+    db.session.add(m_state_inactive)
+    db.session.add(m_state_deleted)
+
+    db.session.commit()
     
     # Initialize flask-login
     init_login()

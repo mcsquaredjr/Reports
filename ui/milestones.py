@@ -48,6 +48,10 @@ DESEL_ROW_MSG = 'desel-row-msg'
 CAL_DATE_MSG = 'cal-date-msg'
 COMMIT_MLS_MSG = 'commit-mls-msg'
 
+COMMIT_MLS_MSG = 'commit-mls-msg'
+GET_MLS_MSG = 'get-mls-msg'
+
+
 DATE_MATCHER = \
 r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
 
@@ -156,19 +160,6 @@ class Milestones_Model(object):
     def __init__(self):
         self.data = []
         self.data_deleted = []
-        self.load()
-
-    def load(self):
-        self.data.append([None, 'Milestone1', 'Active', '20/09/2013', '30/09/2013'])
-        self.data.append([None, 'Milestone2', 'Inactive', '20/09/2013', '30/09/2013'])
-        self.data.append([None, 'Milestone3', 'Inactive', '20/09/2013', '30/09/2013'])
-        self.data_deleted.append([None, 'Milestone4', 'Deleted', '20/09/2013', '30/09/2013'])
-        self.data_deleted.append([None, 'Milestone5', 'Deleted', '20/09/2013', '30/09/2013'])
-        self.data_deleted.append([None, 'Milestone6', 'Deleted', '20/09/2013', '30/09/2013'])
-
-    def save():
-        # TODO:
-        return True
 
     def add_row(self, new_data):
         milestone_name = new_data[0]
@@ -229,9 +220,11 @@ class Milestones_Controller(object):
         self.model = model
         self.view = view
 
-        data = self.model.data
-        for row in data:
-            self.view.grid.add_row([ row[1], row[2], row[3], row[4] ])
+        #data = self.model.data
+        #for row in data:
+        #    self.view.grid.add_row([ row[1], row[2], row[3], row[4] ])
+        # Ask database for milestones data
+        self.process_msg(GET_MLS_MSG)
                 
     def process_msg(self, msg, *args):
         '''Process message and update model and view. Views and model sent messages
@@ -311,6 +304,27 @@ class Milestones_Controller(object):
             self.remote.sendRequest('send_milestones',
                                     {'message': json.dumps(data)}, self)
 
+        if msg == GET_MLS_MSG:
+            # Receive data from remote
+            self.remote.sendRequest('get_milestones',
+                                    {'message': json.dumps(None)}, self)
+            
+
+    def onRemoteError(self, code, errorobj, request_info):
+        Window.alert('Error updating milestones data.')
+        
+
+    def onRemoteResponse(self, response, request_info):
+        '''Executed if remote processesing was OK.
+        '''
+        self.model.data = json.loads(response['data'])
+        self.model.data_deleted = []
+        if response['msg'] == 'get_milestones':
+            data = self.model.data
+            for row in data:
+                self.view.grid.add_row([row[1], row[2], row[3], row[4]])
+
+            
 
     def _validate_editor(self):
         (valid, data) = self.view.editor.get_milestone_data()

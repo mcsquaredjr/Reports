@@ -165,9 +165,7 @@ class Projects_Controller(object):
         self.view = view
         # Ask database for project data
         self.process_msg(GET_PRJ_MSG)
-        #data = self.model.data
-        #for row in data:
-        #    self.view.grid.add_row([row[1], row[2]])
+        
                 
     def process_msg(self, msg, *args):
         '''Process message and update model and view. Views and model sent messages
@@ -245,7 +243,7 @@ class Projects_Controller(object):
         if response['msg'] == 'get_projects':
             data = self.model.data
             for row in data:
-                self.view.grid.add_row([row[1], row[2]])
+                self.view.grid.add_row([row[1], row[2])
             
         
 

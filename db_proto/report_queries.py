@@ -78,7 +78,7 @@ def commit_projects(new_data):
         session.commit()
     except IntegrityError:
         session.rollback()
-        print '\n*** INTEGRITY ERROR: Cannot commit projects. Rolled back.'
+        print '\n*** DB INTEGRITY ERROR: Cannot commit projects. Rolled back.'
 
 
 def get_milestones():
@@ -87,14 +87,14 @@ def get_milestones():
     '''
     q = session.query(Milestone.id,
                       Milestone.name,
-                      Milestone.desc,
+                      Milestone_State.name,
                       Milestone.start,
-                      Milestone.end,
-                      Milestone_State.name)
+                      Milestone.end)
     q = q.filter(Milestone.state_id == Milestone_State.id)
     m = q.filter(Milestone_State.name != 'Deleted').all()
-    # Conver to list of lists
+    # Convert to list of lists
     m = [list(el) for el in m]
+   
     for row in m:
         # Convert dates to strings
         row[3] = timeutils.to_date(row[3])
@@ -102,11 +102,11 @@ def get_milestones():
     return m    
 
     
-def commit_milestones(data):
+def commit_milestones(new_data):
     '''Commit milestones in the database, updading or adding rows in necessary.'''
     old_data = get_milestones()
-    new_data = data
     new_milestones = []
+ 
     for row in new_data:
         milestone_id = row[0]
         if milestone_id is not None:
@@ -119,23 +119,21 @@ def commit_milestones(data):
             milestone.desc = 'Lorem ipsum dolor sit amet.'
             
         else:
-            new_milestones.append(Milestone(row[1],
-                                            'lorem ipsum dolor sit amet',
-                                            timeutils.to_date_time_obj(row[3]),
-                                            timeutils.to_date_time_obj(row[4])))
-            state = session.query(Milestone_State).filter(Milestone_State.name == row[2]).first()
-            state.milestones.extend(new_milestones)
-
-            for m in new_milestones:
-                print m
+            milestone = Milestone(row[1],
+                                  timeutils.to_date_time_obj(row[3]),
+                                  timeutils.to_date_time_obj(row[4]))
             
+            state = session.query(Milestone_State).filter(Milestone_State.name == row[2]).first()
+            milestone.state = state
+            new_milestones.append(milestone)
+
     for milestone in new_milestones:
         session.add(milestone)
     try:
         session.commit()
     except IntegrityError:
         session.rollback()
-        print '\n*** ERROR: Milestone names must be unique. Will roll back.'
+        print '\n*** DB INTEGRIY ERROR: Cannot commit milestones. Rolled back.'
 
         
     
@@ -175,7 +173,7 @@ if __name__ == '__main__':
     for m in milestones:
         print m
 
-    commit_milestones(m_data, [])
+    commit_milestones(m_data)
 
     milestones = get_milestones()
     print "\n=== List of milestones after  update:"

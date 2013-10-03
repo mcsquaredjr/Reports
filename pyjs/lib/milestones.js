@@ -48,6 +48,8 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 	$m['DESEL_ROW_MSG'] = 'desel-row-msg';
 	$m['CAL_DATE_MSG'] = 'cal-date-msg';
 	$m['COMMIT_MLS_MSG'] = 'commit-mls-msg';
+	$m['COMMIT_MLS_MSG'] = 'commit-mls-msg';
+	$m['GET_MLS_MSG'] = 'get-mls-msg';
 	$m['DATE_MATCHER'] = '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$';
 	$m['Milestones_Editor'] = (function(){
 		var $cls_definition = new Object();
@@ -212,15 +214,6 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self']]);
 		$cls_definition['load'] = $method;
-		$method = $pyjs__bind_method2('save', function() {
-			if (this['__is_instance__'] === true) {
-			} else {
-			}
-
-			return true;
-		}
-	, 1, [null,null]);
-		$cls_definition['save'] = $method;
 		$method = $pyjs__bind_method2('add_row', function(new_data) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -337,16 +330,10 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				model = arguments[1];
 				view = arguments[2];
 			}
-			var $iter3_idx,$iter3_array,$iter3_iter,$iter3_type,row,data,$iter3_nextval;
+
 			self['model'] = model;
 			self['view'] = view;
-			data = $p['getattr']($p['getattr'](self, 'model'), 'data');
-			$iter3_iter = data;
-			$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
-			while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
-				row = $iter3_nextval['$nextval'];
-				self['view']['grid']['add_row']($p['list']([row['__getitem__'](1), row['__getitem__'](2), row['__getitem__'](3), row['__getitem__'](4)]));
-			}
+			self['process_msg']($m['GET_MLS_MSG']);
 			return null;
 		}
 	, 1, [null,null,['self'],['model'],['view']]);
@@ -433,10 +420,52 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				data = $p['__op_add']($add1=$p['getattr']($p['getattr'](self, 'model'), 'data'),$add2=$p['getattr']($p['getattr'](self, 'model'), 'data_deleted'));
 				self['remote']['sendRequest']('send_milestones', $p['dict']([['message', $m['json']['dumps'](data)]]), self);
 			}
+			if ($p['bool']($p['op_eq'](msg, $m['GET_MLS_MSG']))) {
+				self['remote']['sendRequest']('get_milestones', $p['dict']([['message', $m['json']['dumps'](null)]]), self);
+			}
 			return null;
 		}
 	, 1, ['args',null,['self'],['msg']]);
 		$cls_definition['process_msg'] = $method;
+		$method = $pyjs__bind_method2('onRemoteError', function(code, errorobj, request_info) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				code = arguments[1];
+				errorobj = arguments[2];
+				request_info = arguments[3];
+			}
+
+			$m['Window']['alert']('Error updating milestones data.');
+			return null;
+		}
+	, 1, [null,null,['self'],['code'],['errorobj'],['request_info']]);
+		$cls_definition['onRemoteError'] = $method;
+		$method = $pyjs__bind_method2('onRemoteResponse', function(response, request_info) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				response = arguments[1];
+				request_info = arguments[2];
+			}
+			var $iter3_idx,$iter3_array,$iter3_iter,$iter3_type,$iter3_nextval,data,row;
+			$p['getattr'](self, 'model')['data'] = $m['json']['loads'](response['__getitem__']('data'));
+			$p['getattr'](self, 'model')['data_deleted'] = $p['list']([]);
+			if ($p['bool']($p['op_eq'](response['__getitem__']('msg'), 'get_milestones'))) {
+				data = $p['getattr']($p['getattr'](self, 'model'), 'data');
+				$iter3_iter = data;
+				$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
+				while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
+					row = $iter3_nextval['$nextval'];
+					self['view']['grid']['add_row']($p['list']([row['__getitem__'](1), row['__getitem__'](2), row['__getitem__'](3), row['__getitem__'](4)]));
+				}
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['response'],['request_info']]);
+		$cls_definition['onRemoteResponse'] = $method;
 		$method = $pyjs__bind_method2('_validate_editor', function() {
 			if (this['__is_instance__'] === true) {
 				var self = this;
