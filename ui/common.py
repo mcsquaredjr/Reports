@@ -107,6 +107,7 @@ class Reports_Grid(Grid, Abstract_View):
 
     def remove_row(self, row):
         self.removeRow(row)
+        
     
     
     def onCellClicked(self, sender, row, col):
@@ -117,6 +118,7 @@ class Reports_Grid(Grid, Abstract_View):
         self.style_row(self.selected_row, False)
         self.style_row(row, True)
         self.selected_row = row
+       
         if self.controller is not None:
             if row > 0:
                 self.controller.process_msg(SEL_ROW_MSG, row)
@@ -124,7 +126,8 @@ class Reports_Grid(Grid, Abstract_View):
                 self.controller.process_msg(DESEL_ROW_MSG)    
 
     def style_row(self, row, selected):
-        if row > 0: #and row < self.getRowCount():
+        # Without the second condition deleting the last row won't work
+        if row > 0 and row < self.getRowCount():
             if selected:
                 self.getRowFormatter().addStyleName(row, "user-SelectedRow")
             else:

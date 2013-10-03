@@ -220,13 +220,22 @@ def process():
             projects = data['params']['message']
             commit_projects(json.loads(projects))
             # Get projects from db, and ignore deleted
-            answer = projects
+            projects_in_db = get_projects()
+            answer = dict()
+            answer['data'] = json.dumps(projects_in_db)
+            answer['msg'] = 'hello'
         elif data['method'] == 'send_milestones':
             # We want to commit milestones data in the db
             milestones = data['params']['message']
             commit_milestones(json.loads(milestones))
             # Get projects from db, and ignore deleted
             answer = milestones
+        elif data['method'] == 'get_projects':
+            projects_in_db = get_projects()
+            answer = dict()
+            answer['data'] = json.dumps(projects_in_db)
+            answer['msg'] = 'hello'
+            
         else:
             # We don't know what we are doing
             # TODO: do proper processing here
@@ -258,28 +267,31 @@ def serve(requestedfile):
         return f.read()
     
 if __name__ == '__main__':
-    db.drop_all()
-    db.create_all()
+    #db.drop_all()
+    ## db.create_all()
 
-    # Create project states
-    p_state_active = Project_State('Active')
-    p_state_inactive = Project_State('Inactive')
-    p_state_deleted = Project_State('Deleted')
+    ## # Create project states
+    ## p_state_active = Project_State('Active')
+    ## p_state_inactive = Project_State('Inactive')
+    ## p_state_deleted = Project_State('Deleted')
+
+    ## adm_usr = User(email='admin', password='admin', usertype=1)
     
-    db.session.add(p_state_active)
-    db.session.add(p_state_inactive)
-    db.session.add(p_state_deleted)
+    ## db.session.add(p_state_active)
+    ## db.session.add(p_state_inactive)
+    ## db.session.add(p_state_deleted)
+    ## db.session.add(adm_usr)
 
-    # Create milestone states
-    m_state_active = Milestone_State('Active')
-    m_state_inactive = Milestone_State('Inactive')
-    m_state_deleted = Milestone_State('Deleted')
+    ## # Create milestone states
+    ## m_state_active = Milestone_State('Active')
+    ## m_state_inactive = Milestone_State('Inactive')
+    ## m_state_deleted = Milestone_State('Deleted')
     
-    db.session.add(m_state_active)
-    db.session.add(m_state_inactive)
-    db.session.add(m_state_deleted)
+    ## db.session.add(m_state_active)
+    ## db.session.add(m_state_inactive)
+    ## db.session.add(m_state_deleted)
 
-    db.session.commit()
+    ## db.session.commit()
     
     # Initialize flask-login
     init_login()

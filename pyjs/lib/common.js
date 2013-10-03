@@ -260,8 +260,8 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 				row = arguments[1];
 				selected = arguments[2];
 			}
-
-			if ($p['bool'](($p['cmp'](row, 0) == 1))) {
+			var $and1,$and2;
+			if ($p['bool'](($p['bool']($and1=($p['cmp'](row, 0) == 1))?($p['cmp'](row, self['getRowCount']()) == -1):$and1))) {
 				if ($p['bool'](selected)) {
 					self['getRowFormatter']()['addStyleName'](row, 'user-SelectedRow');
 				}

@@ -12,6 +12,7 @@ from sqlalchemy.exc import IntegrityError
 
 import datetime
 import timeutils
+import sys
 
 from app import db
 
@@ -51,12 +52,13 @@ def get_projects():
     return p
 
 
-def commit_projects(data):
+def commit_projects(new_data):
     '''Commit projects in the database, updating or adding rows if necessary.
     '''
     old_data = get_projects()
-    new_data = data
     new_projects = []
+
+    
     for row in new_data:
         project_id = row[0]
         if project_id is not None:
@@ -65,9 +67,11 @@ def commit_projects(data):
             state = session.query(Project_State).filter(Project_State.name == row[2]).first()
             project.state = state
         else:
-            new_projects.append(Project(row[1]))
+            project = Project(row[1])
             state = session.query(Project_State).filter(Project_State.name == row[2]).first()
-            state.projects.extend(new_projects)
+            project.state = state
+            new_projects.append(project)
+
     for project in new_projects:
         session.add(project)
     try:

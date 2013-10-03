@@ -42,6 +42,7 @@ CNG_ROW_MSG = 'cng-row-msg'
 DESEL_ROW_MSG = 'desel-row-msg'
 
 COMMIT_PRJ_MSG = 'commit-prj-msg'
+GET_PRJ_MSG = 'get-prj-msg'
 
 ######################################################################
 #                     PROJECTS EDITOR CLASS                          #
@@ -97,11 +98,11 @@ class Projects_Editor(SimplePanel):
 class Projects_Model(object):
     '''Holds data presented in table.
     '''
-    # TODO: expand to include methods to load and save to DB
+    
     def __init__(self):
         self.data = []
         self.data_deleted = []
-        self.load()
+        #self.load()
 
     def load(self):
         # array of active/inactive projects
@@ -109,14 +110,11 @@ class Projects_Model(object):
         self.data.append([None, 'Project2', 'Inactive'])
         self.data.append([None, 'Project3', 'Inactive'])
         # array of deleted projects
-        self.data_deleted.append([None, 'Project4', 'Deleted'])
-        self.data_deleted.append([None, 'Project5', 'Deleted'])
-        self.data_deleted.append([None, 'Project6', 'Deleted'])
+        # self.data_deleted.append([None, 'Project4', 'Deleted'])
+        # self.data_deleted.append([None, 'Project5', 'Deleted'])
+        # self.data_deleted.append([None, 'Project6', 'Deleted'])
 
-    def save(self):
-        # TODO:
-        return True
-
+    
     def add_row(self, new_data):
         project_name = new_data[0]
         exist = False
@@ -142,8 +140,8 @@ class Projects_Model(object):
     def remove_row(self, row):
         # we need to take into account header, thus index is minus 1
         row_data = self.data[row-1]
+        
         self.data.remove(row_data)
-
         # add only projects that exist in database
         if row_data[0] is not None:
             # change status to 'Deleted'
@@ -177,7 +175,9 @@ class Projects_Controller(object):
         self.model = model
         self.view = view
         # We load data when we register model
+        self.process_msg(GET_PRJ_MSG)
         data = self.model.data
+        Window.alert('Get me some data:', self.model.data)
         for row in data:
             self.view.grid.add_row([row[1], row[2]])
                 
@@ -239,6 +239,11 @@ class Projects_Controller(object):
             self.remote.sendRequest('send_projects',
                                     {'message': json.dumps(data)}, self)
 
+        if msg == GET_PRJ_MSG:
+            # Receive data from remote
+            self.remote.sendRequest('get_projects',
+                                    {'message': json.dumps(None)}, self)
+
 
     def onRemoteError(self, code, errorobj, request_info):
         Window.alert('Error updating project data.')
@@ -247,9 +252,11 @@ class Projects_Controller(object):
     def onRemoteResponse(self, response, request_info):
         '''Executed if remote processesing was OK.
         '''
-        Window.alert(json.loads(response))
-        self.model.data = json.loads(response)
+        #Window.alert(response['msg'])
+        self.model.data = json.loads(response['data'])
         self.model.data_deleted = []
+        
+        
 
 ######################################################################
 #                     PROJECTS VIEW CLASS                            #

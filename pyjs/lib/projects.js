@@ -41,6 +41,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 	$m['CNG_ROW_MSG'] = 'cng-row-msg';
 	$m['DESEL_ROW_MSG'] = 'desel-row-msg';
 	$m['COMMIT_PRJ_MSG'] = 'commit-prj-msg';
+	$m['GET_PRJ_MSG'] = 'get-prj-msg';
 	$m['Projects_Editor'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -117,7 +118,6 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 
 			self['data'] = $p['list']([]);
 			self['data_deleted'] = $p['list']([]);
-			self['load']();
 			return null;
 		}
 	, 1, [null,null,['self']]);
@@ -132,24 +132,10 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			self['data']['append']($p['list']([null, 'Project1', 'Active']));
 			self['data']['append']($p['list']([null, 'Project2', 'Inactive']));
 			self['data']['append']($p['list']([null, 'Project3', 'Inactive']));
-			self['data_deleted']['append']($p['list']([null, 'Project4', 'Deleted']));
-			self['data_deleted']['append']($p['list']([null, 'Project5', 'Deleted']));
-			self['data_deleted']['append']($p['list']([null, 'Project6', 'Deleted']));
 			return null;
 		}
 	, 1, [null,null,['self']]);
 		$cls_definition['load'] = $method;
-		$method = $pyjs__bind_method2('save', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-
-			return true;
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['save'] = $method;
 		$method = $pyjs__bind_method2('add_row', function(new_data) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -267,7 +253,9 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			var $iter3_idx,$iter3_array,$iter3_iter,$iter3_type,row,data,$iter3_nextval;
 			self['model'] = model;
 			self['view'] = view;
+			self['process_msg']($m['GET_PRJ_MSG']);
 			data = $p['getattr']($p['getattr'](self, 'model'), 'data');
+			$m['Window']['alert']('Get me some data:', $p['getattr']($p['getattr'](self, 'model'), 'data'));
 			$iter3_iter = data;
 			$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
 			while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
@@ -338,6 +326,9 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				data = $p['__op_add']($add1=$p['getattr']($p['getattr'](self, 'model'), 'data'),$add2=$p['getattr']($p['getattr'](self, 'model'), 'data_deleted'));
 				self['remote']['sendRequest']('send_projects', $p['dict']([['message', $m['json']['dumps'](data)]]), self);
 			}
+			if ($p['bool']($p['op_eq'](msg, $m['GET_PRJ_MSG']))) {
+				self['remote']['sendRequest']('get_projects', $p['dict']([['message', $m['json']['dumps'](null)]]), self);
+			}
 			return null;
 		}
 	, 1, ['args',null,['self'],['msg']]);
@@ -366,8 +357,7 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 				request_info = arguments[2];
 			}
 
-			$m['Window']['alert']($m['json']['loads'](response));
-			$p['getattr'](self, 'model')['data'] = $m['json']['loads']((typeof reponse == "undefined"?$m['reponse']:reponse));
+			$p['getattr'](self, 'model')['data'] = $m['json']['loads'](response['__getitem__']('data'));
 			$p['getattr'](self, 'model')['data_deleted'] = $p['list']([]);
 			return null;
 		}
