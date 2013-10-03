@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import os
+import datetime
 import json
 import markdown2
 from jinja2 import Template
@@ -9,6 +10,7 @@ from flask import render_template
 from flask import jsonify
 from flask import request
 from flask import redirect
+from flask import flash
 from flask import Markup
 from flask import Blueprint
 from flask import url_for
@@ -134,21 +136,20 @@ def admin_required(f):
 @app.route('/', methods=('GET', 'POST'))
 def login_view():
     form = Login_Form(request.form)
+    error = None
     try:
         if helpers.validate_form_on_submit(form) and form.post_validate():
             user = form.get_user()
             login.login_user(user)
+            # Flash the message
+            #flash(user.email + ' was successfully logged in')
             return redirect(url_for('report_form'))
-    except validators.ValidationError as e:
-        form.email.data = ''
-        form.password.data = ''
-        print e
     except:
         form.email.data = ''
         form.password.data = ''
-        print 'Unknown error!'
+        error = 'Invalid credentials'
 
-    return render_template('login.html', form=form, user=login.current_user)
+    return render_template('login.html', form=form, user=login.current_user, error=error)
 
 @app.route('/register', methods=('GET', 'POST'))
 def register_view():
@@ -170,11 +171,6 @@ def register_view():
 
     return render_template('register.html', form=form)
 
-@app.route('/my_account', methods=['POST', 'GET'])
-@login_required
-def my_account_view():
-    return render_template('my_account.html')
-
 @app.route('/form')
 @login_required
 def report_form():
@@ -194,9 +190,6 @@ def projects():
     projects_tmpl = Template(serve('projects.html'))
 
     return projects_tmpl.render(title='Projects', user=login.current_user)
-
-
-
 
 @app.route('/milestones')
 @login_required
