@@ -80,7 +80,7 @@ class Milestones_Editor(SimplePanel):
     def __init__(self):
         # We need to use old form of inheritance because of pyjamas
         SimplePanel.__init__(self)
-        self.hpanel = HorizontalPanel(Width='735px')
+        self.hpanel = HorizontalPanel(Width='755px')
         self.hpanel.setVerticalAlignment(HasAlignment.ALIGN_TOP)
         
         self.name = TextBox()
@@ -373,7 +373,7 @@ class Milestones_View(Abstract_View):
         spacer2 = Label()
         spacer2.setHeight('10px')
         
-        self.tbl_panel = VerticalPanel(Width='735px')
+        self.tbl_panel = VerticalPanel(Width='755px')
         # First is a row count
         self.grid = Reports_Grid()
         self.grid.create_grid(1, 4, ['Milestone Name', 'Milestone State', 'Start Date', 'End Date'])
@@ -387,7 +387,7 @@ class Milestones_View(Abstract_View):
         hpanel.setHorizontalAlignment(HasAlignment.ALIGN_RIGHT)
         hpanel.add(self.submit_btn)
 
-        self.msg_lbl = HTMLPanel('', Width='735px')
+        self.msg_lbl = HTMLPanel('', Width='755px')
 
         self.root = RootPanel('projects_')
         self.root.add(spacer1)
