@@ -273,31 +273,31 @@ def serve(requestedfile):
         return f.read()
     
 if __name__ == '__main__':
-    db.drop_all()
-    db.create_all()
+    ## db.drop_all()
+    ## db.create_all()
 
-    # Create project states
-    p_state_active = Project_State('Active')
-    p_state_inactive = Project_State('Inactive')
-    p_state_deleted = Project_State('Deleted')
+    ## # Create project states
+    ## p_state_active = Project_State('Active')
+    ## p_state_inactive = Project_State('Inactive')
+    ## p_state_deleted = Project_State('Deleted')
 
-    adm_usr = User(email='admin', password='admin', usertype=1)
+    ## adm_usr = User(email='admin', password='admin', usertype=1)
 
-    db.session.add(p_state_active)
-    db.session.add(p_state_inactive)
-    db.session.add(p_state_deleted)
-    db.session.add(adm_usr)
+    ## db.session.add(p_state_active)
+    ## db.session.add(p_state_inactive)
+    ## db.session.add(p_state_deleted)
+    ## db.session.add(adm_usr)
 
-    # Create milestone states
-    m_state_active = Milestone_State('Active')
-    m_state_inactive = Milestone_State('Inactive')
-    m_state_deleted = Milestone_State('Deleted')
+    ## # Create milestone states
+    ## m_state_active = Milestone_State('Active')
+    ## m_state_inactive = Milestone_State('Inactive')
+    ## m_state_deleted = Milestone_State('Deleted')
 
-    db.session.add(m_state_active)
-    db.session.add(m_state_inactive)
-    db.session.add(m_state_deleted)
+    ## db.session.add(m_state_active)
+    ## db.session.add(m_state_inactive)
+    ## db.session.add(m_state_deleted)
 
-    db.session.commit()
+    ## db.session.commit()
     
     # Initialize flask-login
     init_login()

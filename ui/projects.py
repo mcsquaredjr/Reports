@@ -7,13 +7,12 @@ import pyjd
 from pyjamas.ui.RootPanel import RootPanel
 from pyjamas.ui.SimplePanel import SimplePanel
 from pyjamas.ui.ScrollPanel import ScrollPanel
-
 from pyjamas.ui.TextArea import TextArea
 from pyjamas.ui.Label import Label
 from pyjamas.ui.Button import Button
 from pyjamas.ui.HTML import HTML
+from pyjamas.ui.HTMLPanel import HTMLPanel
 from pyjamas.ui.HTMLTable import HTMLTable
-
 from pyjamas.ui.VerticalPanel import VerticalPanel
 from pyjamas.ui.HorizontalPanel import HorizontalPanel
 from pyjamas.ui.ListBox import ListBox
@@ -21,7 +20,6 @@ from pyjamas.ui.FormPanel import FormPanel
 from pyjamas.ui.TextBox import TextBox
 from pyjamas.ui.Grid import Grid
 from pyjamas.ui import KeyboardListener
-
 from pyjamas import Window
 from pyjamas.ui import HasAlignment
 from pyjamas.JSONService import JSONProxy
@@ -32,6 +30,7 @@ from common import Abstract_View
 from common import Reports_Grid
 from common import Data_Service
 
+import time
 
 # Define some global constants here
 ADD_ROW_MSG = 'add-row-msg'
@@ -43,6 +42,24 @@ DESEL_ROW_MSG = 'desel-row-msg'
 
 COMMIT_PRJ_MSG = 'commit-prj-msg'
 GET_PRJ_MSG = 'get-prj-msg'
+
+
+SUCC_MSG = \
+'''
+<div class="alert alert-success fade in">
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+     <strong>Success!</strong> Data submitted.
+</div>
+'''
+ERR_MSG = \
+'''
+<div class="alert alert-danger fade in">
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+     <strong>Oh, snap!</strong> Cannot do that. Try to use different project name.
+</div>
+'''
+
+
 
 ######################################################################
 #                     PROJECTS EDITOR CLASS                          #
@@ -224,15 +241,21 @@ class Projects_Controller(object):
             data = self.model.data + self.model.data_deleted
             self.remote.sendRequest('send_projects',
                                     {'message': json.dumps(data)}, self)
+            self.view.submit_btn.setEnabled(False)
+            
+            
 
         if msg == GET_PRJ_MSG:
             # Receive data from remote
             self.remote.sendRequest('get_projects',
                                     {'message': json.dumps(None)}, self)
+            
 
 
     def onRemoteError(self, code, errorobj, request_info):
-        Window.alert('Error updating project data.')
+        #Window.alert('Error updating project data.')
+        self.view.msg_lbl.setHTML(ERR_MSG)
+        
         
 
     def onRemoteResponse(self, response, request_info):
@@ -243,9 +266,14 @@ class Projects_Controller(object):
         if response['msg'] == 'get_projects':
             data = self.model.data
             for row in data:
-                self.view.grid.add_row([row[1], row[2])
-            
+                self.view.grid.add_row([row[1], row[2]])
+        else:
+            self.view.msg_lbl.setHTML(SUCC_MSG)    
+
+        self.view.submit_btn.setEnabled(True)
+       
         
+
 
 ######################################################################
 #                     PROJECTS VIEW CLASS                            #
@@ -281,6 +309,9 @@ class Projects_View(Abstract_View):
         hpanel = HorizontalPanel()
         hpanel.setHorizontalAlignment(HasAlignment.ALIGN_RIGHT)
         hpanel.add(self.submit_btn)
+        self.msg_lbl = HTMLPanel('', Width='475px')
+
+        
         
         self.root = RootPanel('projects_')
         self.root.add(spacer1)
@@ -293,6 +324,8 @@ class Projects_View(Abstract_View):
 
         self.root.add(spacer3)
         self.root.add(hpanel)
+        self.root.add(Label(Height='20px'))
+        self.root.add(self.msg_lbl)
         # Add listeners and initialize components
         self._add_listeners()
         self._iniate_states()

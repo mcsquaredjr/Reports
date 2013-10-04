@@ -19,6 +19,7 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 	$m['Button'] = $p['___import___']('pyjamas.ui.Button.Button', null, null, false);
 	$m['HTML'] = $p['___import___']('pyjamas.ui.HTML.HTML', null, null, false);
 	$m['HTMLTable'] = $p['___import___']('pyjamas.ui.HTMLTable.HTMLTable', null, null, false);
+	$m['HTMLPanel'] = $p['___import___']('pyjamas.ui.HTMLPanel.HTMLPanel', null, null, false);
 	$m['DateField'] = $p['___import___']('pyjamas.ui.Calendar.DateField', null, null, false);
 	$m['Calendar'] = $p['___import___']('pyjamas.ui.Calendar.Calendar', null, null, false);
 	$m['CalendarPopup'] = $p['___import___']('pyjamas.ui.Calendar.CalendarPopup', null, null, false);
@@ -50,6 +51,8 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 	$m['COMMIT_MLS_MSG'] = 'commit-mls-msg';
 	$m['COMMIT_MLS_MSG'] = 'commit-mls-msg';
 	$m['GET_MLS_MSG'] = 'get-mls-msg';
+	$m['SUCC_MSG'] = '\n<div class="alert alert-success fade in">\n     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>\n     <strong>Success!</strong> Data submitted.\n</div>\n';
+	$m['ERR_MSG'] = '\n<div class="alert alert-danger fade in">\n     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>\n     <strong>Oh, snap!</strong> Cannot do that. Try to use different project name.\n</div>\n';
 	$m['DATE_MATCHER'] = '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$';
 	$m['Milestones_Editor'] = (function(){
 		var $cls_definition = new Object();
@@ -99,6 +102,7 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 			self['hpanel']['add']($p['getattr'](self, 'start'));
 			self['hpanel']['add']($p['getattr'](self, 'end'));
 			self['hpanel']['add']($p['getattr'](self, 'add_btn'));
+			self['hpanel']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'10px'}]));
 			self['hpanel']['add']($p['getattr'](self, 'del_btn'));
 			return null;
 		}
@@ -192,28 +196,10 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 
 			self['data'] = $p['list']([]);
 			self['data_deleted'] = $p['list']([]);
-			self['load']();
 			return null;
 		}
 	, 1, [null,null,['self']]);
 		$cls_definition['__init__'] = $method;
-		$method = $pyjs__bind_method2('load', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-
-			self['data']['append']($p['list']([null, 'Milestone1', 'Active', '20/09/2013', '30/09/2013']));
-			self['data']['append']($p['list']([null, 'Milestone2', 'Inactive', '20/09/2013', '30/09/2013']));
-			self['data']['append']($p['list']([null, 'Milestone3', 'Inactive', '20/09/2013', '30/09/2013']));
-			self['data_deleted']['append']($p['list']([null, 'Milestone4', 'Deleted', '20/09/2013', '30/09/2013']));
-			self['data_deleted']['append']($p['list']([null, 'Milestone5', 'Deleted', '20/09/2013', '30/09/2013']));
-			self['data_deleted']['append']($p['list']([null, 'Milestone6', 'Deleted', '20/09/2013', '30/09/2013']));
-			return null;
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['load'] = $method;
 		$method = $pyjs__bind_method2('add_row', function(new_data) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -419,6 +405,7 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 			if ($p['bool']($p['op_eq'](msg, $m['COMMIT_MLS_MSG']))) {
 				data = $p['__op_add']($add1=$p['getattr']($p['getattr'](self, 'model'), 'data'),$add2=$p['getattr']($p['getattr'](self, 'model'), 'data_deleted'));
 				self['remote']['sendRequest']('send_milestones', $p['dict']([['message', $m['json']['dumps'](data)]]), self);
+				self['view']['submit_btn']['setEnabled'](false);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['GET_MLS_MSG']))) {
 				self['remote']['sendRequest']('get_milestones', $p['dict']([['message', $m['json']['dumps'](null)]]), self);
@@ -437,7 +424,7 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 				request_info = arguments[3];
 			}
 
-			$m['Window']['alert']('Error updating milestones data.');
+			self['view']['msg_lbl']['setHTML']($m['ERR_MSG']);
 			return null;
 		}
 	, 1, [null,null,['self'],['code'],['errorobj'],['request_info']]);
@@ -462,6 +449,10 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 					self['view']['grid']['add_row']($p['list']([row['__getitem__'](1), row['__getitem__'](2), row['__getitem__'](3), row['__getitem__'](4)]));
 				}
 			}
+			else {
+				self['view']['msg_lbl']['setHTML']($m['SUCC_MSG']);
+			}
+			self['view']['submit_btn']['setEnabled'](true);
 			return null;
 		}
 	, 1, [null,null,['self'],['response'],['request_info']]);
@@ -530,6 +521,7 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 			hpanel = $m['HorizontalPanel']();
 			hpanel['setHorizontalAlignment']($p['getattr']($m['HasAlignment'], 'ALIGN_RIGHT'));
 			hpanel['add']($p['getattr'](self, 'submit_btn'));
+			self['msg_lbl'] = $pyjs_kwargs_call(null, $m['HTMLPanel'], null, null, [{'Width':'735px'}, '']);
 			self['root'] = $m['RootPanel']('projects_');
 			self['root']['add'](spacer1);
 			self['root']['add']($p['getattr']($p['getattr'](self, 'editor'), 'hpanel'));
@@ -539,6 +531,8 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 			spacer3['setHeight']('20px');
 			self['root']['add'](spacer3);
 			self['root']['add'](hpanel);
+			self['root']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Height':'20px'}]));
+			self['root']['add']($p['getattr'](self, 'msg_lbl'));
 			self['_add_listeners']();
 			self['_iniate_states']();
 			return null;
@@ -724,5 +718,5 @@ $pyjs['loaded_modules']['milestones'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.ScrollPanel.ScrollPanel', 'pyjamas.ui.ScrollPanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLTable.HTMLTable', 'pyjamas.ui.HTMLTable', 'pyjamas.ui.Calendar.DateField', 'pyjamas.ui.Calendar', 'pyjamas.ui.Calendar.Calendar', 'pyjamas.ui.Calendar.CalendarPopup', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.ui.Grid.Grid', 'pyjamas.ui.Grid', 'pyjamas.ui.KeyboardListener', 'pyjamas.ui.Image.Image', 'pyjamas.ui.Image', 'pyjamas.ui.HyperlinkImage.HyperlinkImage', 'pyjamas.ui.HyperlinkImage', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Data_Service', 'common.Reports_Grid', 'common.Report_Date_Field']
+PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.ScrollPanel.ScrollPanel', 'pyjamas.ui.ScrollPanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLTable.HTMLTable', 'pyjamas.ui.HTMLTable', 'pyjamas.ui.HTMLPanel.HTMLPanel', 'pyjamas.ui.HTMLPanel', 'pyjamas.ui.Calendar.DateField', 'pyjamas.ui.Calendar', 'pyjamas.ui.Calendar.Calendar', 'pyjamas.ui.Calendar.CalendarPopup', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.ui.Grid.Grid', 'pyjamas.ui.Grid', 'pyjamas.ui.KeyboardListener', 'pyjamas.ui.Image.Image', 'pyjamas.ui.Image', 'pyjamas.ui.HyperlinkImage.HyperlinkImage', 'pyjamas.ui.HyperlinkImage', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Data_Service', 'common.Reports_Grid', 'common.Report_Date_Field']
 */

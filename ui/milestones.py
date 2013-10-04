@@ -7,12 +7,12 @@ import pyjd
 from pyjamas.ui.RootPanel import RootPanel
 from pyjamas.ui.SimplePanel import SimplePanel
 from pyjamas.ui.ScrollPanel import ScrollPanel
-
 from pyjamas.ui.TextArea import TextArea
 from pyjamas.ui.Label import Label
 from pyjamas.ui.Button import Button
 from pyjamas.ui.HTML import HTML
 from pyjamas.ui.HTMLTable import HTMLTable
+from pyjamas.ui.HTMLPanel import HTMLPanel
 from pyjamas.ui.Calendar import DateField
 from pyjamas.ui.Calendar import Calendar 
 from pyjamas.ui.Calendar import CalendarPopup
@@ -23,10 +23,8 @@ from pyjamas.ui.FormPanel import FormPanel
 from pyjamas.ui.TextBox import TextBox
 from pyjamas.ui.Grid import Grid
 from pyjamas.ui import KeyboardListener
-
 from pyjamas.ui.Image import Image
 from pyjamas.ui.HyperlinkImage import HyperlinkImage  
-
 from pyjamas import Window
 from pyjamas.ui import HasAlignment
 from pyjamas.JSONService import JSONProxy
@@ -50,6 +48,22 @@ COMMIT_MLS_MSG = 'commit-mls-msg'
 
 COMMIT_MLS_MSG = 'commit-mls-msg'
 GET_MLS_MSG = 'get-mls-msg'
+
+SUCC_MSG = \
+'''
+<div class="alert alert-success fade in">
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+     <strong>Success!</strong> Data submitted.
+</div>
+'''
+ERR_MSG = \
+'''
+<div class="alert alert-danger fade in">
+     <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+     <strong>Oh, snap!</strong> Cannot do that. Try to use different project name.
+</div>
+'''
+
 
 
 DATE_MATCHER = \
@@ -111,6 +125,7 @@ class Milestones_Editor(SimplePanel):
         #self.hpanel.add(spacer3)
         self.hpanel.add(self.end)
         self.hpanel.add(self.add_btn)
+        self.hpanel.add(Label(Width='10px'))
         self.hpanel.add(self.del_btn)
 
  
@@ -303,6 +318,7 @@ class Milestones_Controller(object):
             data = self.model.data + self.model.data_deleted
             self.remote.sendRequest('send_milestones',
                                     {'message': json.dumps(data)}, self)
+            self.view.submit_btn.setEnabled(False)
 
         if msg == GET_MLS_MSG:
             # Receive data from remote
@@ -311,7 +327,8 @@ class Milestones_Controller(object):
             
 
     def onRemoteError(self, code, errorobj, request_info):
-        Window.alert('Error updating milestones data.')
+        #Window.alert('Error updating milestones data.')
+        self.view.msg_lbl.setHTML(ERR_MSG)
         
 
     def onRemoteResponse(self, response, request_info):
@@ -323,8 +340,10 @@ class Milestones_Controller(object):
             data = self.model.data
             for row in data:
                 self.view.grid.add_row([row[1], row[2], row[3], row[4]])
+        else:
+            self.view.msg_lbl.setHTML(SUCC_MSG)    
 
-            
+        self.view.submit_btn.setEnabled(True)
 
     def _validate_editor(self):
         (valid, data) = self.view.editor.get_milestone_data()
@@ -367,7 +386,9 @@ class Milestones_View(Abstract_View):
         hpanel = HorizontalPanel()
         hpanel.setHorizontalAlignment(HasAlignment.ALIGN_RIGHT)
         hpanel.add(self.submit_btn)
-        
+
+        self.msg_lbl = HTMLPanel('', Width='735px')
+
         self.root = RootPanel('projects_')
         self.root.add(spacer1)
         self.root.add(self.editor.hpanel)
@@ -379,6 +400,9 @@ class Milestones_View(Abstract_View):
 
         self.root.add(spacer3)
         self.root.add(hpanel)
+        self.root.add(Label(Height='20px'))
+        self.root.add(self.msg_lbl)
+
         # Add listeners and initialize components
         self._add_listeners()
         self._iniate_states()
