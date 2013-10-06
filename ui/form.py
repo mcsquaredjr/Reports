@@ -16,18 +16,18 @@ from pyjamas.JSONService import JSONProxy
 from pyjamas.HTTPRequest import HTTPRequest
 import json
 
+from common import Abstract_View
 from common import Report_Date_Field
+from common import Data_Service
+
+SEND_DATA_MSG = 'send-data-msg'
+GET_REPORT_MSG = 'get-report-msg'
+PROJ_CHANGED_MSG = 'proj-changed-msg'
+GET_PRJ_MSG = 'get-prj-msg'
 
 DATE_MATCHER = \
 r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
 
-
-######################################################################
-#                         CLASS DATA SERVICE                         #
-######################################################################
-class Data_Service(JSONProxy):
-    def __init__(self):
-        JSONProxy.__init__(self, 'process/')
 
 
 ######################################################################
@@ -175,12 +175,6 @@ class Impediments(SimplePanel):
         pass
 
 
-
-        
-
-
-
-            
 ######################################################################
 #                     CLASS TEXT AREA ROW                            #
 ######################################################################
@@ -194,98 +188,7 @@ class Text_Area_Row(Form_Row):
         widget.setVisibleLines(5)
         Form_Row.__init__(self, name, widget, help=help)
 
-
     
-######################################################################
-#                     CLASS OPERATIONS FIELD                         #
-######################################################################
-class Operations_Fields(VerticalPanel):
-    '''Fields for operations report:
-    Budgetf
-    HR-REORG
-    Planview
-    Site
-    Recruiting
-    Finance
-    QBR
-    '''
-    def __init__(self):
-        '''Initialize widget'''
-        VerticalPanel.__init__(self)
-        self.budget_area = Text_Area_Row('Budget', help='status of budget')
-        self.hr_area = Text_Area_Row('HR/Reorg', help='status of HR-REORG')
-        self.planview_area = Text_Area_Row('PlanView', help='status of PlanView')
-        self.site_area = Text_Area_Row('Site', help='status of the site updates')
-        self.recr_area = Text_Area_Row('Recruiting', help='status of recruiting')
-        self.finance_area = Text_Area_Row('Finance', help='status of finance')
-        self.qbr_area = Text_Area_Row('QBR', help='status of QBR')
-
-        # Add those to itself
-        self.add(self.budget_area.panel())
-        self.add(self.hr_area.panel())
-        self.add(self.planview_area.panel())
-        self.add(self.site_area.panel())
-        self.add(self.recr_area.panel())
-        self.add(self.finance_area.panel())
-        self.add(self.qbr_area.panel())
-
-    def prep_data(self):
-        data = dict()
-        data['project'] = 'Operations'
-        data['Budget'] = self.budget_area.widget().getText()
-        data['HR/Reorg'] = self.hr_area.widget().getText()
-        data['PlanView'] = self.planview_area.widget().getText()
-        data['Site'] = self.site_area.widget().getText()
-        data['Recruiting'] = self.recr_area.widget().getText()
-        data['Finance'] = self.finance_area.widget().getText()
-        data['QBR'] = self.qbr_area.widget().getText()
-
-        return data
-
-
-    
-######################################################################
-#              CLASS ENGINEERING SERVICES FIELD                      #
-######################################################################
-class Eng_Services_Fields(VerticalPanel):
-    '''Fields for engineering services:
-    Process Automation
-    Tools
-    Reporting/Dashboards
-    Infrastructure
-    Neo Release
-
-    '''
-    def __init__(self):
-        '''Initialize widget'''
-        VerticalPanel.__init__(self)
-        self.process_area = Text_Area_Row('Process Automation',
-                                     help='status of process automation')
-        self.tools_area = Text_Area_Row('Tools', help='status of tools')
-        self.reporting_area = Text_Area_Row('Reporting/Dashboards',
-                                       help='status of reporting/dashboards')
-        self.infr_area = Text_Area_Row('Infrastructure', help='status of infrastructure')
-        self.neo_area = Text_Area_Row('Neo release', help='status of Neo release')
-
-        #Add those to itself
-        self.add(self.process_area.panel())
-        self.add(self.tools_area.panel())
-        self.add(self.reporting_area.panel())
-        self.add(self.infr_area.panel())
-        self.add(self.neo_area.panel())
-        
-    def prep_data(self):
-        data = dict()
-        data['project'] = 'Engineering Services'
-        data['Automation'] = self.process_area.widget().getText()
-        data['Tools'] = self.tools_area.widget().getText()
-        data['Reporting/Dashboards'] = self.process_area.widget().getText()
-        data['Infrastructure'] = self.infr_area.widget().getText()
-        data['Neo'] = self.neo_area.widget().getText()
-        
-        return data
-
-
 ######################################################################
 #                       CLASS DEV FIELDS                             #
 ######################################################################
@@ -319,8 +222,6 @@ class Dev_Fields(VerticalPanel):
                                         getattr(self, 'remove_milestone'))
         self.remove_milestone_btn.setStyleName('btn btn-danger')
 
-
-        
         milestone_panel = VerticalPanel()
         self.milestone_row = Form_Row('Milestones', milestone_panel,
                                       help='add milestone and provide expected completion date')
@@ -330,14 +231,11 @@ class Dev_Fields(VerticalPanel):
         hp_mlst.add(self.add_milestone_btn)
         hp_mlst.add(Label(Width='10px'))
         hp_mlst.add(self.remove_milestone_btn)
-
-        
         
         self.main_mlst_panel.add(self.milestone_row.panel())
         self.main_mlst_panel.add(hp_mlst)
         
         self.risks_area = Text_Area_Row('Risks', help='short / long term risks')
-
 
         # Keeps impediments
         self.main_impd_panel = VerticalPanel()
@@ -351,21 +249,17 @@ class Dev_Fields(VerticalPanel):
         self.remove_impediment_btn = Button('Remove',
                                          getattr(self, 'remove_impediment'))
         self.remove_impediment_btn.setStyleName('btn btn-danger')
-
         
         impediment_panel = VerticalPanel()
         self.impediment_row = Form_Row('Impediments', impediment_panel,
                                        help='add impediments, one per section, please')
-        
         hp_impd.add(Label(Width='330px'))
-        
 
         hp_impd.add(self.add_impediment_btn)
         hp_impd.add(Label(Width='10px'))
         hp_impd.add(self.remove_impediment_btn)
         self.main_impd_panel.add(self.impediment_row.panel())
         self.main_impd_panel.add(hp_impd)
-        
         # Add those to itself
         self.add(self.status_area.panel())
         self.add(self.risks_area.panel())
@@ -390,6 +284,7 @@ class Dev_Fields(VerticalPanel):
     def remove_milestone(self, sender):
         '''Remove milestone.
         '''
+        pass
         
     def add_impediment(self, sender):
         '''Add impediment to the development project.
@@ -406,14 +301,20 @@ class Dev_Fields(VerticalPanel):
 ######################################################################
 #                       CLASS INPUT FORM                             #
 ######################################################################
-class Input_Form(object):
+class Input_Form(Abstract_View):
     '''Input form that modifies itself depending on the proejct.
     '''
+    def __init__(self):
+        Abstract_View.__init__(self)
 
+    def register(self, controller):
+        '''Register controller for view and its subviews'''
+        self.controller = controller
+        
     def onModuleLoad(self):
         '''Create initial view of the panel.
         '''
-        self.remote = Data_Service()
+        #self.remote = Data_Service()
         # Keep state of which projec fields are currently shown
         self.cur_project_panel = None
         # Container that keeps everything
@@ -424,9 +325,9 @@ class Input_Form(object):
         # to read data from a configuration file
         proj_list = ListBox(Height='34px')
        
-        proj_list.addItem('Operations')
-        proj_list.addItem('Engineering Services')
-        proj_list.addItem('Dev Project')
+        proj_list.addItem('')
+        #proj_list.addItem('Engineering Services')
+        #proj_list.addItem('Dev Project')
         
         proj_list.setVisibleItemCount(0)
         proj_list.addChangeListener(getattr(self, 'on_project_changed'))
@@ -440,66 +341,37 @@ class Input_Form(object):
         self.project_panel = VerticalPanel()
 
         # Submit report button
-        submit_btn = Button('Submit report', getattr(self, 'send_data'))
-        submit_btn.setStyleName('btn btn-primary btn-lg')
+        self.submit_btn = Button('Submit report', getattr(self, 'send_data'))
+        self.submit_btn.setStyleName('btn btn-primary btn-lg')
+        self.submit_btn.setEnabled(False)
 
         # Add controls here
         self.panel.add(self.proj_row.panel())
         self.panel.add(self.project_panel)
-        self.panel.add(submit_btn)
+        self.panel.add(Label(Height='20px'))
+        self.panel.add(self.submit_btn)
+        
         self.root = RootPanel('report')
         self.root.add(self.panel)
-        self._load_project('Operations')
+        #self._load_project('Operations')
 
 
     def _load_project(self, project):
         '''Load project specific fields in the panel
         '''
-        # Clean up the project panel if not empty
-        if project == 'Operations':
-            if self.cur_project_panel is not None:
-                self.project_panel.remove(self.cur_project_panel)
-            operations_fiedls = Operations_Fields()
-            self.project_panel.add(operations_fiedls)
-            self.cur_project_panel = operations_fiedls
-        elif project == 'Engineering Services':
-            if self.cur_project_panel is not None:
-                self.project_panel.remove(self.cur_project_panel)
-            eng_services_fields = Eng_Services_Fields()
-            self.project_panel.add(eng_services_fields)
-            self.cur_project_panel = eng_services_fields
-        else:
-            if self.cur_project_panel is not None:
-                self.project_panel.remove(self.cur_project_panel)
-            dev_fields = Dev_Fields()
-            self.project_panel.add(dev_fields)
-            self.cur_project_panel = dev_fields
-                
-            
-    def onRemoteResponse(self, response, request_info):
-        '''When we got data from JSON proxy fire up another method on
-        the service that returns something.
-        '''
-        HTTPRequest().asyncGet('/success/', self, content_type='text/html')
-        
-    def onCompletion(self, response):
-        '''This method is called when asyncGet returns. If we know parameters of the
-        repsponse we may process differently for various cases. For example we may setup
-        data in the form if we call it from Populate Form button.
-        '''
-        self.root.remove(self.panel)
-        html = HTML()
-        html.setHTML(response)
-        self.root.add(html)
+        if self.cur_project_panel is not None:
+            self.project_panel.remove(self.cur_project_panel)
+        dev_fields = Dev_Fields()
+        self.project_panel.add(dev_fields)
+        self.cur_project_panel = dev_fields
 
-    def onRemoteError(self, code, errobj, request_info):
-        Window.alert("got an error")
 
     def send_data(self):
         '''Retrieve data for the active project fields and send to flask.
         '''
         data = self.cur_project_panel.prep_data()
-        self.remote.sendRequest('send_data', {'message': json.dumps(data)}, self)
+        self.controller.process_msg(SEND_DATA_MSG, data)
+        
         
  
     def on_project_changed(self, event):
@@ -507,8 +379,143 @@ class Input_Form(object):
         '''
         proj_list = self.proj_row.widget()
         project = proj_list.getItemText(proj_list.getSelectedIndex())
-        self._load_project(project)
+        if project != '':
+            self.controller.process_msg(PROJ_CHANGED_MSG, project)
+        
+        
 
+
+######################################################################
+#                       FORM CONTROLLER CLASS                        #
+######################################################################        
+class Form_Controller(object):
+    '''Controller class, it has to be registered with managed views to be notified
+    about user inputs'''
+    def __init__(self):
+        self.model = None
+        self.view = None
+        self.remote = Data_Service()
+        
+
+    def register(self, model, view):
+        '''Register model and view.
+        '''
+        self.model = model
+        self.view = view
+        # Ask database for report data
+        # self.process_msg(GET_REPORT_MSG)
+        self.process_msg(GET_PRJ_MSG)
+        
+                
+    def process_msg(self, msg, *args):
+        '''Process message and update model and view. Views and model sent messages
+        about user actions or model updates and pass the data via messages to controller.
+        '''
+        if msg == SEND_DATA_MSG:
+            data = args[0]
+            self.remote.sendRequest('send_data', {'message': json.dumps(data)}, self)
+        if msg == GET_REPORT_MSG:
+            '''Get report data from the database.
+            '''
+            proj_list = self.view.proj_row.widget()
+            project = proj_list.getItemText(proj_list.getSelectedIndex())
+            self.remote.sendRequest('get_report_for_project',
+                                    {'message': json.dumps(project)}, self)
+        if msg == PROJ_CHANGED_MSG:
+            project = args[0]
+            self.view._load_project(project)
+            self.view.submit_btn.setEnabled(True)
+
+        if msg == GET_PRJ_MSG:
+            # Receive data from remote
+            self.remote.sendRequest('get_projects',
+                                    {'message': json.dumps(None)}, self)
+            
+
+            
+    def onRemoteError(self, code, errobj, request_info):
+        Window.alert("got an error")
+
+        
+    def onRemoteResponse(self, response, request_info):
+        '''When we got data from JSON proxy fire up another method on
+        the service that returns something.
+        '''
+        msg = response['msg']
+        if msg == 'send_data':
+            HTTPRequest().asyncGet('/success/', self, content_type='text/html')
+        if msg == 'get_projects':
+            data = json.loads(response['data'])
+            proj_list = self.view.proj_row.widget()
+            for row in data:
+                proj_list.addItem(row[1])
+                
+    
+    def onCompletion(self, response):
+        '''This method is called when asyncGet returns. If we know parameters of the
+        repsponse we may process differently for various cases. For example we may setup
+        data in the form if we call it from Populate Form button.
+        '''
+        self.view.root.remove(self.view.panel)
+        html = HTML()
+        html.setHTML(response)
+        self.view.root.add(html)        
+
+
+
+
+######################################################################
+#                          REPORT MODEL                              #
+######################################################################
+class Report_Model(object):
+    def __init__(self):
+        self.report_data = dict()
+        self.report_data['status'] = ''
+        self.report_data['milestones'] = ''
+        # Keep milestones and impediments in an array
+        self.report_data['milestones'] = []
+        self.report_data['impediments'] = []
+
+    def get_impediments_count(self):
+        '''Number of impemediments.
+        '''
+        return len(self.report_data['impediments'])
+
+    def get_milestones_count(self):
+        '''Number of impemediments.
+        '''
+        return len(self.report_data['milestones'])
+    
+    def add_milestone(self, name, end_date, expected_completion):
+        '''Add a milestone to the report.
+        '''
+        milestone_data = dict()
+        milestone_data['name'] = name
+        milestone_data['end_date'] = end_date
+        milestone_data['expected_completion'] = expected_completion
+        self.report_data['milestones'].append(milestone_data)
+
+    def add_impediment(self, description, comment, start_date, end_date, state):
+        '''Add an impediment to the report.
+        '''
+        impediment_data = dict()
+        impediment_data['description'] = description
+        impediment_data['comment'] = comment
+        impediment_data['start_date'] = start_date
+        impediment_data['end_date'] = end_date
+        impediment_data['state'] = state
+        
+        self.report_data['impediments'].append(impediment_data)
+        
+    def add_status(self, status):
+        '''Add status to the report data.
+        '''
+        self.report_data['status'] = status
+        
+    def add_risks(self, risks):
+        '''Add risks to the report data.
+        '''
+        self.report_data['risks'] = risks
 
 
 
@@ -518,7 +525,11 @@ class Input_Form(object):
 ######################################################################
 if __name__ == '__main__':
     pyjd.setup("form.html")
-    app = Input_Form()
-    app.onModuleLoad()
+    view = Input_Form()
+    view.onModuleLoad()
+    model = None
+    controller = Form_Controller()
+    controller.register(model, view)
+    view.register(controller)
     pyjd.run()
         

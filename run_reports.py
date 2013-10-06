@@ -206,8 +206,10 @@ def process():
         data = json.loads(request.data)
 
         if data['method'] == 'send_data':
-            # We send report data here   
-            answer = data['params']['message']
+            # We send report data here
+            answer = dict()
+            answer['data'] = data['params']['message']
+            answer['msg'] = 'send_data'
             report_maker.add_data(json.loads(answer))
             
         elif data['method'] == 'send_projects':
@@ -218,7 +220,7 @@ def process():
             projects_in_db = get_projects()
             answer = dict()
             answer['data'] = json.dumps(projects_in_db)
-            answer['msg'] = 'hello'
+            answer['msg'] = 'send_projects'
             
         elif data['method'] == 'send_milestones':
             # We want to commit milestones data in the db
@@ -228,7 +230,7 @@ def process():
             milestones_in_db = get_milestones()
             answer = dict()
             answer['data'] = json.dumps(milestones_in_db)
-            answer['msg'] = 'hello'
+            answer['msg'] = 'send_milestones'
 
         elif data['method'] == 'get_projects':
             projects_in_db = get_projects()

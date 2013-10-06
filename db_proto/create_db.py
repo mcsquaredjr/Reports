@@ -84,10 +84,6 @@ impediment_two = Impediment('So tired',
 
 im_state_open.impediments = [impediment_one, impediment_two]
 
-
-
-
-
 pr_gizmozoid.impediments = [impediment_one]
 
 pr_morpheus.impediments = [impediment_two]

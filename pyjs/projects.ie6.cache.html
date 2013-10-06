@@ -29159,10 +29159,9 @@ $pyjs['loaded_modules']['projects'] = function (__mod_name__) {
 			self['root']['add']($p['getattr'](self, 'tbl_panel'));
 			spacer3 = $m['Label']();
 			spacer3['setHeight']('20px');
+			self['root']['add']($p['getattr'](self, 'msg_lbl'));
 			self['root']['add'](spacer3);
 			self['root']['add'](hpanel);
-			self['root']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Height':'20px'}]));
-			self['root']['add']($p['getattr'](self, 'msg_lbl'));
 			self['_add_listeners']();
 			self['_iniate_states']();
 			return null;

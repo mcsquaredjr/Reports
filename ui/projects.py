@@ -242,8 +242,6 @@ class Projects_Controller(object):
             self.remote.sendRequest('send_projects',
                                     {'message': json.dumps(data)}, self)
             self.view.submit_btn.setEnabled(False)
-            
-            
 
         if msg == GET_PRJ_MSG:
             # Receive data from remote
@@ -310,8 +308,6 @@ class Projects_View(Abstract_View):
         hpanel.setHorizontalAlignment(HasAlignment.ALIGN_RIGHT)
         hpanel.add(self.submit_btn)
         self.msg_lbl = HTMLPanel('', Width='475px')
-
-        
         
         self.root = RootPanel('projects_')
         self.root.add(spacer1)
@@ -321,11 +317,11 @@ class Projects_View(Abstract_View):
 
         spacer3 = Label()
         spacer3.setHeight('20px')
-
+        self.root.add(self.msg_lbl)
         self.root.add(spacer3)
         self.root.add(hpanel)
-        self.root.add(Label(Height='20px'))
-        self.root.add(self.msg_lbl)
+        
+        
         # Add listeners and initialize components
         self._add_listeners()
         self._iniate_states()

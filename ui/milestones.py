@@ -234,10 +234,6 @@ class Milestones_Controller(object):
         '''
         self.model = model
         self.view = view
-
-        #data = self.model.data
-        #for row in data:
-        #    self.view.grid.add_row([ row[1], row[2], row[3], row[4] ])
         # Ask database for milestones data
         self.process_msg(GET_MLS_MSG)
                 
@@ -358,9 +354,10 @@ class Milestones_Controller(object):
 
 class Milestones_View(Abstract_View):
     def __init__(self):
+        '''Project editor view.
+        '''
         Abstract_View.__init__(self)
-    '''Project editor view.
-    '''
+    
     def onModuleLoad(self):
         '''Create initial view of the panel.
         '''
@@ -398,10 +395,11 @@ class Milestones_View(Abstract_View):
         spacer3 = Label()
         spacer3.setHeight('20px')
 
+        self.root.add(self.msg_lbl)
         self.root.add(spacer3)
         self.root.add(hpanel)
         self.root.add(Label(Height='20px'))
-        self.root.add(self.msg_lbl)
+        
 
         # Add listeners and initialize components
         self._add_listeners()

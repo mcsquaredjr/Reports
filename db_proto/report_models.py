@@ -106,7 +106,22 @@ class Project(db.Model):
         return '<Project %r>' % (self.name)
 
 
-
+######################################################################
+#                    CLASS EXPECTED COMPLETION                       #
+######################################################################
+class Expected_Completion(db.Model):
+    __tablename__ = 'expected_completions'
+    id = db.Column(db.Integer, primary_key=True)
+    completion = db.Column(db.DateTime)
+    milestone_id = db.Column(db.Integer, db.ForeignKey('milestones.id'))
+    # Each milestone may have multiple completion dates
+    milestone = db.relationship('Milestone',
+                                backref=db.backref('expected_completions', order_by=id))
+    report_id = db.Column(db.Integer, db.ForeignKey('reports.id'))
+    report = db.relationship('Report',
+                             backref=db.backref('expected_completions', order_by=id))
+    
+        
 
 ######################################################################
 #                         CLASS MILESTONE                            #
@@ -119,7 +134,7 @@ class Milestone(db.Model):
     start = db.Column(db.DateTime)
     end = db.Column(db.DateTime)
     # We have many to one associations with statuses and reports
-    # Right-hand side of the expression is "one", while "many" is provided
+    # left-hand side of the expression is "one", while "many" is provided
     # in the relationship part
     state_id = db.Column(db.Integer, db.ForeignKey('milestone_states.id'))
     state = db.relationship('Milestone_State',
@@ -134,11 +149,11 @@ class Milestone(db.Model):
         #self.desc = desc
         self.start = start
         self.end = end
-
      
     def __repr__(self):
         return '<Milestone %r>' % (self.name)
 
+    
 
 ######################################################################
 #                        CLASS IMPEDIMENT                            #

@@ -23478,29 +23478,14 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 	$m['JSONProxy'] = $p['___import___']('pyjamas.JSONService.JSONProxy', null, null, false);
 	$m['HTTPRequest'] = $p['___import___']('pyjamas.HTTPRequest.HTTPRequest', null, null, false);
 	$m['json'] = $p['___import___']('json', null);
+	$m['Abstract_View'] = $p['___import___']('common.Abstract_View', null, null, false);
 	$m['Report_Date_Field'] = $p['___import___']('common.Report_Date_Field', null, null, false);
+	$m['Data_Service'] = $p['___import___']('common.Data_Service', null, null, false);
+	$m['SEND_DATA_MSG'] = 'send-data-msg';
+	$m['GET_REPORT_MSG'] = 'get-report-msg';
+	$m['PROJ_CHANGED_MSG'] = 'proj-changed-msg';
+	$m['GET_PRJ_MSG'] = 'get-prj-msg';
 	$m['DATE_MATCHER'] = '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$';
-	$m['Data_Service'] = (function(){
-		var $cls_definition = new Object();
-		var $method;
-		$cls_definition['__module__'] = 'form';
-		$method = $pyjs__bind_method2('__init__', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-
-			$m['JSONProxy']['__init__'](self, 'process/');
-			return null;
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['__init__'] = $method;
-		var $bases = new Array($m['JSONProxy']);
-		var $data = $p['dict']();
-		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
-		return $p['_create_class']('Data_Service', $p['tuple']($bases), $data);
-	})();
 	$m['Form_Row'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -23749,110 +23734,6 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
 		return $p['_create_class']('Text_Area_Row', $p['tuple']($bases), $data);
 	})();
-	$m['Operations_Fields'] = (function(){
-		var $cls_definition = new Object();
-		var $method;
-		$cls_definition['__module__'] = 'form';
-		$method = $pyjs__bind_method2('__init__', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-
-			$m['VerticalPanel']['__init__'](self);
-			self['budget_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of budget'}, 'Budget']);
-			self['hr_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of HR-REORG'}, 'HR/Reorg']);
-			self['planview_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of PlanView'}, 'PlanView']);
-			self['site_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of the site updates'}, 'Site']);
-			self['recr_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of recruiting'}, 'Recruiting']);
-			self['finance_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of finance'}, 'Finance']);
-			self['qbr_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of QBR'}, 'QBR']);
-			self['add'](self['budget_area']['panel']());
-			self['add'](self['hr_area']['panel']());
-			self['add'](self['planview_area']['panel']());
-			self['add'](self['site_area']['panel']());
-			self['add'](self['recr_area']['panel']());
-			self['add'](self['finance_area']['panel']());
-			self['add'](self['qbr_area']['panel']());
-			return null;
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['__init__'] = $method;
-		$method = $pyjs__bind_method2('prep_data', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-			var data;
-			data = $p['dict']();
-			data['__setitem__']('project', 'Operations');
-			data['__setitem__']('Budget', self['budget_area']['widget']()['getText']());
-			data['__setitem__']('HR/Reorg', self['hr_area']['widget']()['getText']());
-			data['__setitem__']('PlanView', self['planview_area']['widget']()['getText']());
-			data['__setitem__']('Site', self['site_area']['widget']()['getText']());
-			data['__setitem__']('Recruiting', self['recr_area']['widget']()['getText']());
-			data['__setitem__']('Finance', self['finance_area']['widget']()['getText']());
-			data['__setitem__']('QBR', self['qbr_area']['widget']()['getText']());
-			return data;
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['prep_data'] = $method;
-		var $bases = new Array($m['VerticalPanel']);
-		var $data = $p['dict']();
-		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
-		return $p['_create_class']('Operations_Fields', $p['tuple']($bases), $data);
-	})();
-	$m['Eng_Services_Fields'] = (function(){
-		var $cls_definition = new Object();
-		var $method;
-		$cls_definition['__module__'] = 'form';
-		$method = $pyjs__bind_method2('__init__', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-
-			$m['VerticalPanel']['__init__'](self);
-			self['process_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of process automation'}, 'Process Automation']);
-			self['tools_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of tools'}, 'Tools']);
-			self['reporting_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of reporting/dashboards'}, 'Reporting/Dashboards']);
-			self['infr_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of infrastructure'}, 'Infrastructure']);
-			self['neo_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of Neo release'}, 'Neo release']);
-			self['add'](self['process_area']['panel']());
-			self['add'](self['tools_area']['panel']());
-			self['add'](self['reporting_area']['panel']());
-			self['add'](self['infr_area']['panel']());
-			self['add'](self['neo_area']['panel']());
-			return null;
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['__init__'] = $method;
-		$method = $pyjs__bind_method2('prep_data', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-			var data;
-			data = $p['dict']();
-			data['__setitem__']('project', 'Engineering Services');
-			data['__setitem__']('Automation', self['process_area']['widget']()['getText']());
-			data['__setitem__']('Tools', self['tools_area']['widget']()['getText']());
-			data['__setitem__']('Reporting/Dashboards', self['process_area']['widget']()['getText']());
-			data['__setitem__']('Infrastructure', self['infr_area']['widget']()['getText']());
-			data['__setitem__']('Neo', self['neo_area']['widget']()['getText']());
-			return data;
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['prep_data'] = $method;
-		var $bases = new Array($m['VerticalPanel']);
-		var $data = $p['dict']();
-		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
-		return $p['_create_class']('Eng_Services_Fields', $p['tuple']($bases), $data);
-	})();
 	$m['Dev_Fields'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -23979,34 +23860,57 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		var $cls_definition = new Object();
 		var $method;
 		$cls_definition['__module__'] = 'form';
+		$method = $pyjs__bind_method2('__init__', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			$m['Abstract_View']['__init__'](self);
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['__init__'] = $method;
+		$method = $pyjs__bind_method2('register', function(controller) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				controller = arguments[1];
+			}
+
+			self['controller'] = controller;
+			return null;
+		}
+	, 1, [null,null,['self'],['controller']]);
+		$cls_definition['register'] = $method;
 		$method = $pyjs__bind_method2('onModuleLoad', function() {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
 			}
-			var proj_list,submit_btn;
-			self['remote'] = $m['Data_Service']();
+			var proj_list;
 			self['cur_project_panel'] = null;
 			self['panel'] = $m['VerticalPanel']();
 			self['panel']['setSpacing'](10);
 			proj_list = $pyjs_kwargs_call(null, $m['ListBox'], null, null, [{'Height':'34px'}]);
-			proj_list['addItem']('Operations');
-			proj_list['addItem']('Engineering Services');
-			proj_list['addItem']('Dev Project');
+			proj_list['addItem']('');
 			proj_list['setVisibleItemCount'](0);
 			proj_list['addChangeListener']($p['getattr'](self, 'on_project_changed'));
 			proj_list['setStyleName']('form-control input-lg');
 			self['proj_row'] = $pyjs_kwargs_call(null, $m['Form_Row'], null, null, [{'help':'project, status of which you want to report'}, 'Select project', proj_list]);
 			self['project_panel'] = $m['VerticalPanel']();
-			submit_btn = $m['Button']('Submit report', $p['getattr'](self, 'send_data'));
-			submit_btn['setStyleName']('btn btn-primary btn-lg');
+			self['submit_btn'] = $m['Button']('Submit report', $p['getattr'](self, 'send_data'));
+			self['submit_btn']['setStyleName']('btn btn-primary btn-lg');
+			self['submit_btn']['setEnabled'](false);
 			self['panel']['add'](self['proj_row']['panel']());
 			self['panel']['add']($p['getattr'](self, 'project_panel'));
-			self['panel']['add'](submit_btn);
+			self['panel']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Height':'20px'}]));
+			self['panel']['add']($p['getattr'](self, 'submit_btn'));
 			self['root'] = $m['RootPanel']('report');
 			self['root']['add']($p['getattr'](self, 'panel'));
-			self['_load_project']('Operations');
 			return null;
 		}
 	, 1, [null,null,['self']]);
@@ -24018,65 +23922,119 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var self = arguments[0];
 				project = arguments[1];
 			}
-			var dev_fields,eng_services_fields,operations_fiedls;
-			if ($p['bool']($p['op_eq'](project, 'Operations'))) {
-				if ($p['bool'](($p['getattr'](self, 'cur_project_panel') !== null))) {
-					self['project_panel']['remove']($p['getattr'](self, 'cur_project_panel'));
-				}
-				operations_fiedls = $m['Operations_Fields']();
-				self['project_panel']['add'](operations_fiedls);
-				self['cur_project_panel'] = operations_fiedls;
+			var dev_fields;
+			if ($p['bool'](($p['getattr'](self, 'cur_project_panel') !== null))) {
+				self['project_panel']['remove']($p['getattr'](self, 'cur_project_panel'));
 			}
-			else if ($p['bool']($p['op_eq'](project, 'Engineering Services'))) {
-				if ($p['bool'](($p['getattr'](self, 'cur_project_panel') !== null))) {
-					self['project_panel']['remove']($p['getattr'](self, 'cur_project_panel'));
-				}
-				eng_services_fields = $m['Eng_Services_Fields']();
-				self['project_panel']['add'](eng_services_fields);
-				self['cur_project_panel'] = eng_services_fields;
-			}
-			else {
-				if ($p['bool'](($p['getattr'](self, 'cur_project_panel') !== null))) {
-					self['project_panel']['remove']($p['getattr'](self, 'cur_project_panel'));
-				}
-				dev_fields = $m['Dev_Fields']();
-				self['project_panel']['add'](dev_fields);
-				self['cur_project_panel'] = dev_fields;
-			}
+			dev_fields = $m['Dev_Fields']();
+			self['project_panel']['add'](dev_fields);
+			self['cur_project_panel'] = dev_fields;
 			return null;
 		}
 	, 1, [null,null,['self'],['project']]);
 		$cls_definition['_load_project'] = $method;
-		$method = $pyjs__bind_method2('onRemoteResponse', function(response, request_info) {
+		$method = $pyjs__bind_method2('send_data', function() {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
-				response = arguments[1];
-				request_info = arguments[2];
+			}
+			var data;
+			data = self['cur_project_panel']['prep_data']();
+			self['controller']['process_msg']($m['SEND_DATA_MSG'], data);
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['send_data'] = $method;
+		$method = $pyjs__bind_method2('on_project_changed', function(event) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				event = arguments[1];
+			}
+			var project,proj_list;
+			proj_list = self['proj_row']['widget']();
+			project = proj_list['getItemText'](proj_list['getSelectedIndex']());
+			if ($p['bool'](!$p['op_eq'](project, ''))) {
+				self['controller']['process_msg']($m['PROJ_CHANGED_MSG'], project);
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['event']]);
+		$cls_definition['on_project_changed'] = $method;
+		var $bases = new Array($m['Abstract_View']);
+		var $data = $p['dict']();
+		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
+		return $p['_create_class']('Input_Form', $p['tuple']($bases), $data);
+	})();
+	$m['Form_Controller'] = (function(){
+		var $cls_definition = new Object();
+		var $method;
+		$cls_definition['__module__'] = 'form';
+		$method = $pyjs__bind_method2('__init__', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
 			}
 
-			$pyjs_kwargs_call($m['HTTPRequest'](), 'asyncGet', null, null, [{'content_type':'text/html'}, '/success/', self]);
+			self['model'] = null;
+			self['view'] = null;
+			self['remote'] = $m['Data_Service']();
 			return null;
 		}
-	, 1, [null,null,['self'],['response'],['request_info']]);
-		$cls_definition['onRemoteResponse'] = $method;
-		$method = $pyjs__bind_method2('onCompletion', function(response) {
+	, 1, [null,null,['self']]);
+		$cls_definition['__init__'] = $method;
+		$method = $pyjs__bind_method2('register', function(model, view) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
-				response = arguments[1];
+				model = arguments[1];
+				view = arguments[2];
 			}
-			var html;
-			self['root']['remove']($p['getattr'](self, 'panel'));
-			html = $m['HTML']();
-			html['setHTML'](response);
-			self['root']['add'](html);
+
+			self['model'] = model;
+			self['view'] = view;
+			self['process_msg']($m['GET_PRJ_MSG']);
 			return null;
 		}
-	, 1, [null,null,['self'],['response']]);
-		$cls_definition['onCompletion'] = $method;
+	, 1, [null,null,['self'],['model'],['view']]);
+		$cls_definition['register'] = $method;
+		$method = $pyjs__bind_method2('process_msg', function(msg) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+				var args = $p['tuple']($pyjs_array_slice['call'](arguments,1,arguments['length']));
+
+			} else {
+				var self = arguments[0];
+				msg = arguments[1];
+				var args = $p['tuple']($pyjs_array_slice['call'](arguments,2,arguments['length']));
+
+			}
+			var project,data,proj_list;
+			if ($p['bool']($p['op_eq'](msg, $m['SEND_DATA_MSG']))) {
+				data = args['__getitem__'](0);
+				self['remote']['sendRequest']('send_data', $p['dict']([['message', $m['json']['dumps'](data)]]), self);
+			}
+			if ($p['bool']($p['op_eq'](msg, $m['GET_REPORT_MSG']))) {
+				proj_list = self['view']['proj_row']['widget']();
+				project = proj_list['getItemText'](proj_list['getSelectedIndex']());
+				self['remote']['sendRequest']('get_report_for_project', $p['dict']([['message', $m['json']['dumps'](project)]]), self);
+			}
+			if ($p['bool']($p['op_eq'](msg, $m['PROJ_CHANGED_MSG']))) {
+				project = args['__getitem__'](0);
+				self['view']['_load_project'](project);
+				self['view']['submit_btn']['setEnabled'](true);
+			}
+			if ($p['bool']($p['op_eq'](msg, $m['GET_PRJ_MSG']))) {
+				self['remote']['sendRequest']('get_projects', $p['dict']([['message', $m['json']['dumps'](null)]]), self);
+			}
+			return null;
+		}
+	, 1, ['args',null,['self'],['msg']]);
+		$cls_definition['process_msg'] = $method;
 		$method = $pyjs__bind_method2('onRemoteError', function(code, errobj, request_info) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -24092,43 +24050,177 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self'],['code'],['errobj'],['request_info']]);
 		$cls_definition['onRemoteError'] = $method;
-		$method = $pyjs__bind_method2('send_data', function() {
+		$method = $pyjs__bind_method2('onRemoteResponse', function(response, request_info) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
+				response = arguments[1];
+				request_info = arguments[2];
 			}
-			var data;
-			data = self['cur_project_panel']['prep_data']();
-			self['remote']['sendRequest']('send_data', $p['dict']([['message', $m['json']['dumps'](data)]]), self);
+			var $iter1_nextval,$iter1_type,row,proj_list,$iter1_array,msg,$iter1_iter,data,$iter1_idx;
+			msg = response['__getitem__']('msg');
+			if ($p['bool']($p['op_eq'](msg, 'send_data'))) {
+				$pyjs_kwargs_call($m['HTTPRequest'](), 'asyncGet', null, null, [{'content_type':'text/html'}, '/success/', self]);
+			}
+			if ($p['bool']($p['op_eq'](msg, 'get_projects'))) {
+				data = $m['json']['loads'](response['__getitem__']('data'));
+				proj_list = self['view']['proj_row']['widget']();
+				$iter1_iter = data;
+				$iter1_nextval=$p['__iter_prepare']($iter1_iter,false);
+				while (typeof($p['__wrapped_next']($iter1_nextval)['$nextval']) != 'undefined') {
+					row = $iter1_nextval['$nextval'];
+					proj_list['addItem'](row['__getitem__'](1));
+				}
+			}
 			return null;
 		}
-	, 1, [null,null,['self']]);
-		$cls_definition['send_data'] = $method;
-		$method = $pyjs__bind_method2('on_project_changed', function(event) {
+	, 1, [null,null,['self'],['response'],['request_info']]);
+		$cls_definition['onRemoteResponse'] = $method;
+		$method = $pyjs__bind_method2('onCompletion', function(response) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
-				event = arguments[1];
+				response = arguments[1];
 			}
-			var project,proj_list;
-			proj_list = self['proj_row']['widget']();
-			project = proj_list['getItemText'](proj_list['getSelectedIndex']());
-			self['_load_project'](project);
+			var html;
+			self['view']['root']['remove']($p['getattr']($p['getattr'](self, 'view'), 'panel'));
+			html = $m['HTML']();
+			html['setHTML'](response);
+			self['view']['root']['add'](html);
 			return null;
 		}
-	, 1, [null,null,['self'],['event']]);
-		$cls_definition['on_project_changed'] = $method;
+	, 1, [null,null,['self'],['response']]);
+		$cls_definition['onCompletion'] = $method;
 		var $bases = new Array($p['object']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
-		return $p['_create_class']('Input_Form', $p['tuple']($bases), $data);
+		return $p['_create_class']('Form_Controller', $p['tuple']($bases), $data);
+	})();
+	$m['Report_Model'] = (function(){
+		var $cls_definition = new Object();
+		var $method;
+		$cls_definition['__module__'] = 'form';
+		$method = $pyjs__bind_method2('__init__', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			self['report_data'] = $p['dict']();
+			$p['getattr'](self, 'report_data')['__setitem__']('status', '');
+			$p['getattr'](self, 'report_data')['__setitem__']('milestones', '');
+			$p['getattr'](self, 'report_data')['__setitem__']('milestones', $p['list']([]));
+			$p['getattr'](self, 'report_data')['__setitem__']('impediments', $p['list']([]));
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['__init__'] = $method;
+		$method = $pyjs__bind_method2('get_impediments_count', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			return $p['len']($p['getattr'](self, 'report_data')['__getitem__']('impediments'));
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['get_impediments_count'] = $method;
+		$method = $pyjs__bind_method2('get_milestones_count', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			return $p['len']($p['getattr'](self, 'report_data')['__getitem__']('milestones'));
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['get_milestones_count'] = $method;
+		$method = $pyjs__bind_method2('add_milestone', function(name, end_date, expected_completion) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				name = arguments[1];
+				end_date = arguments[2];
+				expected_completion = arguments[3];
+			}
+			var milestone_data;
+			milestone_data = $p['dict']();
+			milestone_data['__setitem__']('name', name);
+			milestone_data['__setitem__']('end_date', end_date);
+			milestone_data['__setitem__']('expected_completion', expected_completion);
+			$p['getattr'](self, 'report_data')['__getitem__']('milestones')['append'](milestone_data);
+			return null;
+		}
+	, 1, [null,null,['self'],['name'],['end_date'],['expected_completion']]);
+		$cls_definition['add_milestone'] = $method;
+		$method = $pyjs__bind_method2('add_impediment', function(description, $$comment, start_date, end_date, state) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				description = arguments[1];
+				$$comment = arguments[2];
+				start_date = arguments[3];
+				end_date = arguments[4];
+				state = arguments[5];
+			}
+			var $$comment,impediment_data;
+			impediment_data = $p['dict']();
+			impediment_data['__setitem__']('description', description);
+			impediment_data['__setitem__']('comment', $$comment);
+			impediment_data['__setitem__']('start_date', start_date);
+			impediment_data['__setitem__']('end_date', end_date);
+			impediment_data['__setitem__']('state', state);
+			$p['getattr'](self, 'report_data')['__getitem__']('impediments')['append'](impediment_data);
+			return null;
+		}
+	, 1, [null,null,['self'],['description'],['$$comment'],['start_date'],['end_date'],['state']]);
+		$cls_definition['add_impediment'] = $method;
+		$method = $pyjs__bind_method2('add_status', function(status) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				status = arguments[1];
+			}
+
+			$p['getattr'](self, 'report_data')['__setitem__']('status', status);
+			return null;
+		}
+	, 1, [null,null,['self'],['status']]);
+		$cls_definition['add_status'] = $method;
+		$method = $pyjs__bind_method2('add_risks', function(risks) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				risks = arguments[1];
+			}
+
+			$p['getattr'](self, 'report_data')['__setitem__']('risks', risks);
+			return null;
+		}
+	, 1, [null,null,['self'],['risks']]);
+		$cls_definition['add_risks'] = $method;
+		var $bases = new Array($p['object']);
+		var $data = $p['dict']();
+		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
+		return $p['_create_class']('Report_Model', $p['tuple']($bases), $data);
 	})();
 	if ($p['bool']($p['op_eq']((typeof __name__ == "undefined"?$m['__name__']:__name__), '__main__'))) {
 		$m['pyjd']['setup']('form.html');
-		$m['app'] = $m['Input_Form']();
-		$m['app']['onModuleLoad']();
+		$m['view'] = $m['Input_Form']();
+		$m['view']['onModuleLoad']();
+		$m['model'] = null;
+		$m['controller'] = $m['Form_Controller']();
+		$m['controller']['register']($m['model'], $m['view']);
+		$m['view']['register']($m['controller']);
 		$m['pyjd']['run']();
 	}
 	return this;
@@ -24139,7 +24231,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Report_Date_Field', 'common']
+PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Report_Date_Field', 'common.Data_Service']
 */
 
 --></script>
@@ -31047,6 +31139,27 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 	$m['SEL_ROW_MSG'] = 'sel-row-msg';
 	$m['DESEL_ROW_MSG'] = 'desel-row-msg';
 	$m['CAL_DATE_MSG'] = 'cal-date-msg';
+	$m['Data_Service'] = (function(){
+		var $cls_definition = new Object();
+		var $method;
+		$cls_definition['__module__'] = 'common';
+		$method = $pyjs__bind_method2('__init__', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+
+			$m['JSONProxy']['__init__'](self, 'process/');
+			return null;
+		}
+	, 1, [null,null,['self']]);
+		$cls_definition['__init__'] = $method;
+		var $bases = new Array($m['JSONProxy']);
+		var $data = $p['dict']();
+		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
+		return $p['_create_class']('Data_Service', $p['tuple']($bases), $data);
+	})();
 	$m['Abstract_View'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -31244,8 +31357,8 @@ $pyjs['loaded_modules']['common'] = function (__mod_name__) {
 				row = arguments[1];
 				selected = arguments[2];
 			}
-
-			if ($p['bool'](($p['cmp'](row, 0) == 1))) {
+			var $and1,$and2;
+			if ($p['bool'](($p['bool']($and1=($p['cmp'](row, 0) == 1))?($p['cmp'](row, self['getRowCount']()) == -1):$and1))) {
 				if ($p['bool'](selected)) {
 					self['getRowFormatter']()['addStyleName'](row, 'user-SelectedRow');
 				}
