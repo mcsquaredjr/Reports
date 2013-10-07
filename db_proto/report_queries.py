@@ -41,13 +41,16 @@ def get_report(project):
     print impediments
 
 
-def get_projects():
+def get_projects(inactive=True):
     '''Return a list of lists representing projects in the projects form, using join.
     Return only projects with state != Deleted.
     '''
     q = session.query(Project.id, Project.name, Project_State.name)
     q = q.filter(Project.state_id == Project_State.id)
-    p = q.filter(Project_State.name != 'Deleted').all()
+    if inactive is False:
+        p = q.filter(Project_State.name != 'Deleted').filter(Project_State.name != 'Deleted').all()
+    else:
+        p = q.filter(Project_State.name != 'Deleted').all()
     p = [list(el) for el in p]
     return p
 
@@ -81,7 +84,7 @@ def commit_projects(new_data):
         print '\n*** DB INTEGRITY ERROR: Cannot commit projects. Rolled back.'
 
 
-def get_milestones():
+def get_milestones(inactive=True):
     '''Return a list of lists representing milestones in the form,
     only milestones in states other than Deleted will be returned. 
     '''
@@ -91,7 +94,10 @@ def get_milestones():
                       Milestone.start,
                       Milestone.end)
     q = q.filter(Milestone.state_id == Milestone_State.id)
-    m = q.filter(Milestone_State.name != 'Deleted').all()
+    if inactive is False:
+        m = q.filter(Milestone_State.name != 'Deleted').filter(Milestone_State.name != 'Inactive').all()
+    else:
+        m = q.filter(Milestone_State.name != 'Deleted').all()
     # Convert to list of lists
     m = [list(el) for el in m]
    

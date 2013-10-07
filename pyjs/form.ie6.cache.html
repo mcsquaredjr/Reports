@@ -25705,7 +25705,26 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 	$m['GET_REPORT_MSG'] = 'get-report-msg';
 	$m['PROJ_CHANGED_MSG'] = 'proj-changed-msg';
 	$m['GET_PRJ_MSG'] = 'get-prj-msg';
+	$m['ADD_MLS_MSG'] = 'add-mls-msg';
 	$m['DATE_MATCHER'] = '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$';
+	$m['datetime'] = $p['___import___']('datetime', null);
+	$m['time'] = $p['___import___']('time', null);
+	$m['today'] = function() {
+
+		return $m['datetime']['date']['today']();
+	};
+	$m['today']['__name__'] = 'today';
+
+	$m['today']['__bind_type__'] = 0;
+	$m['today']['__args__'] = [null,null];
+	$m['to_date'] = function(date_time_obj) {
+
+		return date_time_obj['strftime']('%d/%m/%Y');
+	};
+	$m['to_date']['__name__'] = 'to_date';
+
+	$m['to_date']['__bind_type__'] = 0;
+	$m['to_date']['__args__'] = [null,null,['date_time_obj']];
 	$m['Form_Row'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -25777,34 +25796,49 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		var $cls_definition = new Object();
 		var $method;
 		$cls_definition['__module__'] = 'form';
-		$method = $pyjs__bind_method2('__init__', function() {
+		$method = $pyjs__bind_method2('__init__', function(milestone_names, milestone_dates) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
+				milestone_names = arguments[1];
+				milestone_dates = arguments[2];
 			}
-
+			var $iter1_nextval,$iter1_type,m,$iter1_iter,$iter1_array,$iter1_idx;
 			$m['SimplePanel']['__init__'](self);
+			self['milestone_dates'] = milestone_dates;
 			self['hpanel'] = $m['HorizontalPanel']();
 			self['hpanel']['setVerticalAlignment']($p['getattr']($m['HasAlignment'], 'ALIGN_TOP'));
-			self['$$name'] = $m['TextBox']();
-			self['$$name']['setStyleName']('form-control');
-			self['start'] = $m['Label']('12/01/2013');
-			self['start']['setStyleName']('form-control text-normal');
-			self['end'] = $pyjs_kwargs_call(null, $m['Report_Date_Field'], null, null, [{'cal_ID':'end'}]);
-			self['end']['getTextBox']()['setStyleName']('form-control');
-			self['end']['setRegex']($m['DATE_MATCHER']);
-			self['end']['appendValidListener']($p['getattr'](self, '_display_ok'));
-			self['end']['appendInvalidListener']($p['getattr'](self, '_display_error'));
-			self['end']['validate'](null);
+			self['$$name'] = $pyjs_kwargs_call(null, $m['ListBox'], null, null, [{'Height':'34px', 'Width':'208px'}]);
+			self['$$name']['setStyleName']('form-control input-lg');
+			self['$$name']['addChangeListener']($p['getattr'](self, 'on_milestone_changed'));
+			$iter1_iter = milestone_names;
+			$iter1_nextval=$p['__iter_prepare']($iter1_iter,false);
+			while (typeof($p['__wrapped_next']($iter1_nextval)['$nextval']) != 'undefined') {
+				m = $iter1_nextval['$nextval'];
+				self['$$name']['addItem'](m);
+			}
+			if ($p['bool'](($p['cmp']($p['len']($p['getattr'](self, 'milestone_dates')), 0) == 1))) {
+				self['planned_completion'] = $m['Label']($p['getattr'](self, 'milestone_dates')['__getitem__'](0));
+			}
+			else {
+				self['planned_completion'] = $m['Label']('Undefined');
+			}
+			self['planned_completion']['setStyleName']('form-control text-normal');
+			self['expected_completion'] = $pyjs_kwargs_call(null, $m['Report_Date_Field'], null, null, [{'cal_ID':'end'}]);
+			self['expected_completion']['getTextBox']()['setStyleName']('form-control');
+			self['expected_completion']['setRegex']($m['DATE_MATCHER']);
+			self['expected_completion']['appendValidListener']($p['getattr'](self, '_display_ok'));
+			self['expected_completion']['appendInvalidListener']($p['getattr'](self, '_display_error'));
+			self['expected_completion']['validate'](null);
 			self['hpanel']['add']($p['getattr'](self, '$$name'));
 			self['hpanel']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'10px'}]));
-			self['hpanel']['add']($p['getattr'](self, 'start'));
+			self['hpanel']['add']($p['getattr'](self, 'planned_completion'));
 			self['hpanel']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'10px'}]));
-			self['hpanel']['add']($p['getattr'](self, 'end'));
+			self['hpanel']['add']($p['getattr'](self, 'expected_completion'));
 			return null;
 		}
-	, 1, [null,null,['self']]);
+	, 1, [null,null,['self'],['milestone_names'],['milestone_dates']]);
 		$cls_definition['__init__'] = $method;
 		$method = $pyjs__bind_method2('get_name_txt', function() {
 			if (this['__is_instance__'] === true) {
@@ -25823,16 +25857,11 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			} else {
 				var self = arguments[0];
 			}
-			var end_txt,$and1,start_txt,valid,name_txt,data,$and2;
-			valid = false;
-			name_txt = self['get_name_txt']();
-			start_txt = self['start']['getText']();
-			end_txt = self['end']['getTextBox']()['getText']();
-			data = $p['list']([name_txt, start_txt, end_txt]);
-			if ($p['bool'](($p['bool']($and1=($p['cmp']($p['len'](name_txt['strip']()), 0) == 1))?$p['op_eq']($p['getattr']($p['getattr'](self, 'end'), 'valid'), true):$and1))) {
-				valid = true;
-			}
-			return $p['tuple']([valid, data]);
+			var name,expected_completion,planned_completion;
+			name = self['$$name']['getItemText'](self['$$name']['getSelectedIndex']());
+			planned_completion = self['planned_completion']['getText']();
+			expected_completion = self['expected_completion']['getTextBox']()['getText']();
+			return $p['tuple']([name, planned_completion, expected_completion]);
 		}
 	, 1, [null,null,['self']]);
 		$cls_definition['get_milestone_data'] = $method;
@@ -25864,6 +25893,20 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self'],['obj']]);
 		$cls_definition['_display_error'] = $method;
+		$method = $pyjs__bind_method2('on_milestone_changed', function(event) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				event = arguments[1];
+			}
+			var ind;
+			ind = self['$$name']['getSelectedIndex']();
+			self['planned_completion']['setText']($p['getattr'](self, 'milestone_dates')['__getitem__'](ind));
+			return null;
+		}
+	, 1, [null,null,['self'],['event']]);
+		$cls_definition['on_milestone_changed'] = $method;
 		var $bases = new Array($m['SimplePanel']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
@@ -25917,8 +25960,20 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			} else {
 				var self = arguments[0];
 			}
-
- 			return null;
+			var $$comment,end_date,lbl_text,state,ind,start_date,desc;
+			desc = self['desc_box']['getText']();
+			$$comment = self['$$comment']['widget']()['getText']();
+			state = self['status_lst']['getItemText'](self['status_lst']['getSelectedIndex']());
+			lbl_text = self['status_lbl']['getText']();
+			ind = lbl_text['find'](':');
+			start_date = $p['__getslice'](lbl_text, ind, null);
+			if ($p['bool']($p['op_eq'](state, 'Open'))) {
+				end_date = null;
+			}
+			else {
+				end_date = $m['today']()['to_date']();
+			}
+			return $p['tuple']([desc, $$comment, start_date, end_date, state]);
 		}
 	, 1, [null,null,['self']]);
 		$cls_definition['get_impediment_data'] = $method;
@@ -25966,10 +26021,15 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			}
 			var hp_impd,milestone_panel,hp_mlst,impediment_panel;
 			$m['VerticalPanel']['__init__'](self);
+			$m['Abstract_View']['__init__'](self);
+			self['milestone_names'] = $p['list']([]);
+			self['milestone_dates'] = $p['list']([]);
+			self['milestones'] = $p['list']([]);
+			self['impediments'] = $p['list']([]);
 			self['status_area'] = $pyjs_kwargs_call(null, $m['Text_Area_Row'], null, null, [{'help':'status of the project'}, 'Status']);
 			self['main_mlst_panel'] = $m['VerticalPanel']();
 			hp_mlst = $m['HorizontalPanel']();
-			self['add_milestone_btn'] = $m['Button']('Add', $p['getattr'](self, 'add_milestone'));
+			self['add_milestone_btn'] = $m['Button']('Add', $p['getattr'](self, 'on_add_milestone_btn_click'));
 			self['add_milestone_btn']['setStyleName']('btn btn-info');
 			self['remove_milestone_btn'] = $m['Button']('Remove', $p['getattr'](self, 'remove_milestone'));
 			self['remove_milestone_btn']['setStyleName']('btn btn-danger');
@@ -26019,19 +26079,32 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self']]);
 		$cls_definition['prep_data'] = $method;
-		$method = $pyjs__bind_method2('add_milestone', function(sender) {
+		$method = $pyjs__bind_method2('on_add_milestone_btn_click', function() {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
-				sender = arguments[1];
 			}
-			var milestone;
-			milestone = $m['Milestones_Row']();
-			self['milestone_row']['widget']()['add']($p['getattr'](milestone, 'hpanel'));
+
+			self['controller']['process_msg']($m['ADD_MLS_MSG']);
 			return null;
 		}
-	, 1, [null,null,['self'],['sender']]);
+	, 1, [null,null,['self']]);
+		$cls_definition['on_add_milestone_btn_click'] = $method;
+		$method = $pyjs__bind_method2('add_milestone', function() {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+			}
+			var milestone;
+			milestone = $m['Milestones_Row']($p['getattr'](self, 'milestone_names'), $p['getattr'](self, 'milestone_dates'));
+			self['milestone_row']['widget']()['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Height':'5px'}]));
+			self['milestone_row']['widget']()['add']($p['getattr'](milestone, 'hpanel'));
+			self['milestones']['append'](milestone);
+			return null;
+		}
+	, 1, [null,null,['self']]);
 		$cls_definition['add_milestone'] = $method;
 		$method = $pyjs__bind_method2('remove_milestone', function(sender) {
 			if (this['__is_instance__'] === true) {
@@ -26040,8 +26113,21 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var self = arguments[0];
 				sender = arguments[1];
 			}
-
- 			return null;
+			var $pyjs_try_err;
+			try {
+				$p['getattr'](self, 'milestones')['__getitem__']((typeof ($usub1=1)=='number'?
+					-$usub1:
+					$p['op_usub']($usub1)))['hpanel']['removeFromParent']();
+				self['milestones']['remove']($p['getattr'](self, 'milestones')['__getitem__']((typeof ($usub2=1)=='number'?
+					-$usub2:
+					$p['op_usub']($usub2))));
+			} catch($pyjs_try_err) {
+				var $pyjs_try_err_name = (typeof $pyjs_try_err['__name__'] == 'undefined' ? $pyjs_try_err['name'] : $pyjs_try_err['__name__'] );
+				$pyjs['__last_exception__'] = {'error': $pyjs_try_err, 'module': $m};
+				if (($pyjs_try_err_name == $p['IndexError']['__name__'])||$p['_isinstance']($pyjs_try_err,$p['IndexError'])) {
+				} else { $pyjs['__active_exception_stack__'] = $pyjs['__last_exception_stack__']; $pyjs['__last_exception_stack__'] = null; throw $pyjs_try_err; }
+			}
+			return null;
 		}
 	, 1, [null,null,['self'],['sender']]);
 		$cls_definition['remove_milestone'] = $method;
@@ -26055,6 +26141,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			var impediment;
 			impediment = $m['Impediments']();
 			self['impediment_row']['widget']()['add']($p['getattr'](impediment, 'vpanel'));
+			self['impediments']['append'](impediment);
 			return null;
 		}
 	, 1, [null,null,['self'],['sender']]);
@@ -26066,12 +26153,25 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var self = arguments[0];
 				sender = arguments[1];
 			}
-
- 			return null;
+			var $pyjs_try_err;
+			try {
+				$p['getattr'](self, 'impediments')['__getitem__']((typeof ($usub3=1)=='number'?
+					-$usub3:
+					$p['op_usub']($usub3)))['vpanel']['removeFromParent']();
+				self['impediments']['remove']($p['getattr'](self, 'impediments')['__getitem__']((typeof ($usub4=1)=='number'?
+					-$usub4:
+					$p['op_usub']($usub4))));
+			} catch($pyjs_try_err) {
+				var $pyjs_try_err_name = (typeof $pyjs_try_err['__name__'] == 'undefined' ? $pyjs_try_err['name'] : $pyjs_try_err['__name__'] );
+				$pyjs['__last_exception__'] = {'error': $pyjs_try_err, 'module': $m};
+				if (($pyjs_try_err_name == $p['IndexError']['__name__'])||$p['_isinstance']($pyjs_try_err,$p['IndexError'])) {
+				} else { $pyjs['__active_exception_stack__'] = $pyjs['__last_exception_stack__']; $pyjs['__last_exception_stack__'] = null; throw $pyjs_try_err; }
+			}
+			return null;
 		}
 	, 1, [null,null,['self'],['sender']]);
 		$cls_definition['remove_impediment'] = $method;
-		var $bases = new Array($m['VerticalPanel']);
+		var $bases = new Array($m['VerticalPanel'],$m['Abstract_View']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
 		return $p['_create_class']('Dev_Fields', $p['tuple']($bases), $data);
@@ -26088,6 +26188,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			}
 
 			$m['Abstract_View']['__init__'](self);
+			self['dev_fields'] = $m['Dev_Fields']();
 			return null;
 		}
 	, 1, [null,null,['self']]);
@@ -26101,6 +26202,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			}
 
 			self['controller'] = controller;
+			self['dev_fields']['register'](controller);
 			return null;
 		}
 	, 1, [null,null,['self'],['controller']]);
@@ -26112,7 +26214,6 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var self = arguments[0];
 			}
 			var proj_list;
-			self['cur_project_panel'] = null;
 			self['panel'] = $m['VerticalPanel']();
 			self['panel']['setSpacing'](10);
 			proj_list = $pyjs_kwargs_call(null, $m['ListBox'], null, null, [{'Height':'34px'}]);
@@ -26142,13 +26243,12 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var self = arguments[0];
 				project = arguments[1];
 			}
-			var dev_fields;
-			if ($p['bool'](($p['getattr'](self, 'cur_project_panel') !== null))) {
-				self['project_panel']['remove']($p['getattr'](self, 'cur_project_panel'));
+
+			if ($p['bool'](($p['getattr'](self, 'dev_fields') !== null))) {
+				self['project_panel']['remove']($p['getattr'](self, 'dev_fields'));
 			}
-			dev_fields = $m['Dev_Fields']();
-			self['project_panel']['add'](dev_fields);
-			self['cur_project_panel'] = dev_fields;
+			self['dev_fields'] = $m['Dev_Fields']();
+			self['project_panel']['add']($p['getattr'](self, 'dev_fields'));
 			return null;
 		}
 	, 1, [null,null,['self'],['project']]);
@@ -26159,9 +26259,8 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			} else {
 				var self = arguments[0];
 			}
-			var data;
-			data = self['cur_project_panel']['prep_data']();
-			self['controller']['process_msg']($m['SEND_DATA_MSG'], data);
+
+			self['controller']['process_msg']($m['SEND_DATA_MSG']);
 			return null;
 		}
 	, 1, [null,null,['self']]);
@@ -26233,10 +26332,26 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var args = $p['tuple']($pyjs_array_slice['call'](arguments,2,arguments['length']));
 
 			}
-			var project,data,proj_list;
+			var status,$iter2_nextval,$iter2_type,$iter2_iter,$iter3_array,m,proj_list,project,imp,$iter2_idx,$iter3_idx,risks,$iter3_type,$iter3_nextval,$iter2_array,$iter3_iter;
 			if ($p['bool']($p['op_eq'](msg, $m['SEND_DATA_MSG']))) {
-				data = args['__getitem__'](0);
-				self['remote']['sendRequest']('send_data', $p['dict']([['message', $m['json']['dumps'](data)]]), self);
+				status = self['view']['dev_fields']['status_area']['widget']()['getText']();
+				risks = self['view']['dev_fields']['risks_area']['widget']()['getText']();
+				self['model']['add_status'](status);
+				self['model']['add_risks'](risks);
+				$iter2_iter = $p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'impediments');
+				$iter2_nextval=$p['__iter_prepare']($iter2_iter,false);
+				while (typeof($p['__wrapped_next']($iter2_nextval)['$nextval']) != 'undefined') {
+					imp = $iter2_nextval['$nextval'];
+					$pyjs_kwargs_call(self['model'], 'add_impediment', imp['get_impediment_data'](), null, [{}]);
+				}
+				$iter3_iter = $p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones');
+				$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
+				while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
+					m = $iter3_nextval['$nextval'];
+					$pyjs_kwargs_call(self['model'], 'add_milestone', m['get_milestone_data'](), null, [{}]);
+				}
+				$m['Window']['alert']($p['getattr']($p['getattr'](self, 'model'), 'report_data'));
+				self['remote']['sendRequest']('send_data', $p['dict']([['message', $m['json']['dumps']((typeof report_data == "undefined"?$m['report_data']:report_data))]]), self);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['GET_REPORT_MSG']))) {
 				proj_list = self['view']['proj_row']['widget']();
@@ -26246,10 +26361,15 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			if ($p['bool']($p['op_eq'](msg, $m['PROJ_CHANGED_MSG']))) {
 				project = args['__getitem__'](0);
 				self['view']['_load_project'](project);
+				self['view']['dev_fields']['register'](self);
 				self['view']['submit_btn']['setEnabled'](true);
+				self['remote']['sendRequest']('get_active_milestones', $p['dict']([['message', $m['json']['dumps'](project)]]), self);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['GET_PRJ_MSG']))) {
-				self['remote']['sendRequest']('get_projects', $p['dict']([['message', $m['json']['dumps'](null)]]), self);
+				self['remote']['sendRequest']('get_active_projects', $p['dict']([['message', $m['json']['dumps'](null)]]), self);
+			}
+			if ($p['bool']($p['op_eq'](msg, $m['ADD_MLS_MSG']))) {
+				self['view']['dev_fields']['add_milestone']();
 			}
 			return null;
 		}
@@ -26278,20 +26398,34 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				response = arguments[1];
 				request_info = arguments[2];
 			}
-			var $iter1_nextval,$iter1_type,row,proj_list,$iter1_array,msg,$iter1_iter,data,$iter1_idx;
+			var $iter5_nextval,milestone_names,$iter5_idx,$iter5_array,$iter4_iter,milestone_dates,$iter4_idx,$iter4_array,$iter5_iter,proj_list,$iter4_type,$iter4_nextval,msg,$iter5_type,data,row;
 			msg = response['__getitem__']('msg');
 			if ($p['bool']($p['op_eq'](msg, 'send_data'))) {
 				$pyjs_kwargs_call($m['HTTPRequest'](), 'asyncGet', null, null, [{'content_type':'text/html'}, '/success/', self]);
 			}
-			if ($p['bool']($p['op_eq'](msg, 'get_projects'))) {
+			if ($p['bool']($p['op_eq'](msg, 'get_active_projects'))) {
 				data = $m['json']['loads'](response['__getitem__']('data'));
 				proj_list = self['view']['proj_row']['widget']();
-				$iter1_iter = data;
-				$iter1_nextval=$p['__iter_prepare']($iter1_iter,false);
-				while (typeof($p['__wrapped_next']($iter1_nextval)['$nextval']) != 'undefined') {
-					row = $iter1_nextval['$nextval'];
+				$iter4_iter = data;
+				$iter4_nextval=$p['__iter_prepare']($iter4_iter,false);
+				while (typeof($p['__wrapped_next']($iter4_nextval)['$nextval']) != 'undefined') {
+					row = $iter4_nextval['$nextval'];
 					proj_list['addItem'](row['__getitem__'](1));
 				}
+			}
+			if ($p['bool']($p['op_eq'](msg, 'get_active_milestones'))) {
+				data = $m['json']['loads'](response['__getitem__']('data'));
+				milestone_names = $p['list']([]);
+				milestone_dates = $p['list']([]);
+				$iter5_iter = data;
+				$iter5_nextval=$p['__iter_prepare']($iter5_iter,false);
+				while (typeof($p['__wrapped_next']($iter5_nextval)['$nextval']) != 'undefined') {
+					row = $iter5_nextval['$nextval'];
+					milestone_names['append'](row['__getitem__'](1));
+					milestone_dates['append'](row['__getitem__'](3));
+				}
+				$p['getattr']($p['getattr'](self, 'view'), 'dev_fields')['milestone_names'] = milestone_names;
+				$p['getattr']($p['getattr'](self, 'view'), 'dev_fields')['milestone_dates'] = milestone_dates;
 			}
 			return null;
 		}
@@ -26437,7 +26571,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		$m['pyjd']['setup']('form.html');
 		$m['view'] = $m['Input_Form']();
 		$m['view']['onModuleLoad']();
-		$m['model'] = null;
+		$m['model'] = $m['Report_Model']();
 		$m['controller'] = $m['Form_Controller']();
 		$m['controller']['register']($m['model'], $m['view']);
 		$m['view']['register']($m['controller']);
@@ -26451,7 +26585,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Report_Date_Field', 'common.Data_Service']
+PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Report_Date_Field', 'common.Data_Service', 'datetime', 'time']
 */
 
 --></script>

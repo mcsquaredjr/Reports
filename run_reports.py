@@ -233,17 +233,33 @@ def process():
             answer['msg'] = 'send_milestones'
 
         elif data['method'] == 'get_projects':
+            # Get all projects 
             projects_in_db = get_projects()
             answer = dict()
             answer['data'] = json.dumps(projects_in_db)
             answer['msg'] = 'get_projects'
             
         elif data['method'] == 'get_milestones':
+            # Get all milestones
             milestones_in_db = get_milestones()
             answer = dict()
             answer['data'] = json.dumps(milestones_in_db)
             answer['msg'] = 'get_milestones'
+
+        elif data['method'] == 'get_active_projects':
+            # Get active projects
+            projects_in_db = get_projects(inactive=False)
+            answer = dict()
+            answer['data'] = json.dumps(projects_in_db)
+            answer['msg'] = 'get_active_projects'
             
+        elif data['method'] == 'get_active_milestones':
+            # Get active milestones
+            milestones_in_db = get_milestones(inactive=False)
+            answer = dict()
+            answer['data'] = json.dumps(milestones_in_db)
+            answer['msg'] = 'get_active_milestones'    
+
         else:
             # We don't know what we are doing
             # TODO: do proper processing here
