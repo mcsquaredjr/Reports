@@ -481,7 +481,10 @@ class Form_Controller(object):
             risks = self.view.dev_fields.risks_area.widget().getText()
             self.model.add_status(status)
             self.model.add_risks(risks)
-
+            proj_list = self.view.proj_row.widget()
+            project = proj_list.getItemText(proj_list.getSelectedIndex())
+            self.model.add_project(project)
+            
             # Ask each impediment about its data
             for imp in self.view.dev_fields.impediments:
                 self.model.add_impediment(*imp.get_impediment_data())
@@ -489,7 +492,7 @@ class Form_Controller(object):
                 self.model.add_milestone(*m.get_milestone_data())
 
             Window.alert(self.model.report_data)
-            self.remote.sendRequest('send_data', {'message': json.dumps(report_data)}, self)
+            self.remote.sendRequest('send_data', {'message': json.dumps(self.model.report_data)}, self)
 
         if msg == GET_REPORT_MSG:
             '''Get report data from the database.
@@ -569,7 +572,8 @@ class Report_Model(object):
         # Keep milestones and impediments in an array
         self.report_data['milestones'] = []
         self.report_data['impediments'] = []
-
+        self.report_data['project'] = ''
+        
     def get_impediments_count(self):
         '''Number of impemediments.
         '''
@@ -611,7 +615,10 @@ class Report_Model(object):
         '''
         self.report_data['risks'] = risks
 
-
+    def add_project(self, project):
+        '''Add project to the report data.
+        '''
+        self.report_data['project'] = project
 
         
 ######################################################################

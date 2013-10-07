@@ -38,6 +38,7 @@ from db_proto.report_queries import commit_projects
 from db_proto.report_queries import commit_milestones
 from db_proto.report_queries import get_projects
 from db_proto.report_queries import get_milestones
+from db_proto.report_queries import commit_report
 
 
 
@@ -206,11 +207,13 @@ def process():
         data = json.loads(request.data)
 
         if data['method'] == 'send_data':
-            # We send report data here
+            # Commit report to the database
+            report = json.loads(data['params']['message'])
+            report['author'] = login.current_user.email
+            commit_report(report)
             answer = dict()
-            answer['data'] = data['params']['message']
-            answer['msg'] = 'send_data'
-            report_maker.add_data(json.loads(answer))
+            answer['data'] = None
+            answer['msg'] = 'send_data'            
             
         elif data['method'] == 'send_projects':
             # We want to commit projects data in the db

@@ -659,12 +659,15 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var args = $p['tuple']($pyjs_array_slice['call'](arguments,2,arguments['length']));
 
 			}
-			var status,$iter2_nextval,$iter2_type,$iter2_iter,$iter3_array,m,proj_list,project,imp,$iter2_idx,$iter3_idx,risks,$iter3_type,$iter3_nextval,$iter2_array,$iter3_iter;
+			var status,$iter2_nextval,$iter2_type,$iter2_iter,$iter3_array,m,project,imp,$iter2_idx,$iter3_idx,risks,$iter3_type,$iter3_nextval,proj_list,$iter2_array,$iter3_iter;
 			if ($p['bool']($p['op_eq'](msg, $m['SEND_DATA_MSG']))) {
 				status = self['view']['dev_fields']['status_area']['widget']()['getText']();
 				risks = self['view']['dev_fields']['risks_area']['widget']()['getText']();
 				self['model']['add_status'](status);
 				self['model']['add_risks'](risks);
+				proj_list = self['view']['proj_row']['widget']();
+				project = proj_list['getItemText'](proj_list['getSelectedIndex']());
+				self['model']['add_project'](project);
 				$iter2_iter = $p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'impediments');
 				$iter2_nextval=$p['__iter_prepare']($iter2_iter,false);
 				while (typeof($p['__wrapped_next']($iter2_nextval)['$nextval']) != 'undefined') {
@@ -678,7 +681,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 					$pyjs_kwargs_call(self['model'], 'add_milestone', m['get_milestone_data'](), null, [{}]);
 				}
 				$m['Window']['alert']($p['getattr']($p['getattr'](self, 'model'), 'report_data'));
-				self['remote']['sendRequest']('send_data', $p['dict']([['message', $m['json']['dumps']((typeof report_data == "undefined"?$m['report_data']:report_data))]]), self);
+				self['remote']['sendRequest']('send_data', $p['dict']([['message', $m['json']['dumps']($p['getattr']($p['getattr'](self, 'model'), 'report_data'))]]), self);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['GET_REPORT_MSG']))) {
 				proj_list = self['view']['proj_row']['widget']();
@@ -795,6 +798,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			$p['getattr'](self, 'report_data')['__setitem__']('milestones', '');
 			$p['getattr'](self, 'report_data')['__setitem__']('milestones', $p['list']([]));
 			$p['getattr'](self, 'report_data')['__setitem__']('impediments', $p['list']([]));
+			$p['getattr'](self, 'report_data')['__setitem__']('project', '');
 			return null;
 		}
 	, 1, [null,null,['self']]);
@@ -889,6 +893,19 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self'],['risks']]);
 		$cls_definition['add_risks'] = $method;
+		$method = $pyjs__bind_method2('add_project', function(project) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				project = arguments[1];
+			}
+
+			$p['getattr'](self, 'report_data')['__setitem__']('project', project);
+			return null;
+		}
+	, 1, [null,null,['self'],['project']]);
+		$cls_definition['add_project'] = $method;
 		var $bases = new Array($p['object']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }

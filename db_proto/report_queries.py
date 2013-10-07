@@ -141,9 +141,23 @@ def commit_milestones(new_data):
         session.rollback()
         print '\n*** DB INTEGRIY ERROR: Cannot commit milestones. Rolled back.'
 
-        
     
-
 def commit_report(data):
-    pass
+    '''Commit report and its counterparts.
+    '''
+    print '------>', data
+    project = data['project']
+    status = data['status']
+    risks = data['risks']
+    created = timeutils.now()
+    author = data['author']
+    report = Report(status, risks, author, created)
+    session.add(report)
+    try:
+        session.commit()
+    except IntegrityError:
+        session.rollback()
+        print '\n*** DB INTEGRITY ERROR: Cannot commit report. Rolled back.'
+    
+    
 
