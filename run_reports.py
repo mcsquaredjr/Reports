@@ -294,8 +294,15 @@ def show_report(name=None):
 # Load requested file here 
 @app.route('/<requestedfile>')
 def serve(requestedfile):
-    with file('pyjs/' + requestedfile) as f:
-        return f.read()
+    try:
+        with file('pyjs/' + requestedfile) as f:
+            return f.read()
+    except IOError as e:
+        return page_not_found(e)
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html')
     
 if __name__ == '__main__':
     ## db.drop_all()

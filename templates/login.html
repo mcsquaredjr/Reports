@@ -37,7 +37,21 @@
           <ul class="nav navbar-nav">
             <li class="active"><a href="/">Home</a></li>
             {% if user and user.is_authenticated() %}
+              <li><a href="/form">Report Form</a></li>
               <li><a href="/report">Current report</a></li>
+              <li class="dropdown">
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown">Actions <b class="caret"></b></a>
+                <ul class="dropdown-menu">
+                  <li><a href="/report">Generate report now</a></li>
+                  {% if user.is_admin() %}
+                  <li><a href="/projects">Proejcts editor</a></li>
+                  <li class="disabled"><a href="/milestones">Milestones editor</a></li>
+                  <li class="divider"></li>
+                  <li class="dropdown-header">Users</li>
+                  <li><a href="/admin/userview">Users admin</a></li>
+                  {% endif %}
+                </ul>
+              </li>
             {% else %}
               <li><a href="{{ url_for('register_view') }}">Register</a></li>
             {% endif %}
@@ -114,4 +128,10 @@
       </footer>
     </div> <!-- /container -->
  </body>
+
+     <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/js/jquery.js"></script>
+    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
  </html>
