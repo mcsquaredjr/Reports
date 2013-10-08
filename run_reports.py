@@ -38,6 +38,7 @@ from db_proto.report_queries import commit_projects
 from db_proto.report_queries import commit_milestones
 from db_proto.report_queries import get_projects
 from db_proto.report_queries import get_milestones
+from db_proto.report_queries import get_report
 from db_proto.report_queries import commit_report
 
 
@@ -282,9 +283,12 @@ def success():
 @app.route('/report/<name>')
 @login_required
 def show_report(name=None):
-    mmd_report = report_maker.data2md()
-    html_report = Markup(markdown2.markdown(mmd_report))
-    return render_template('report.html', report=html_report, user=login.current_user)
+    #mmd_report = report_maker.data2md()
+    #html_report = Markup(markdown2.markdown(mmd_report))
+    html_report1 = get_report('Project 1')
+    html_report2 = get_report('Project 2')
+    
+    return render_template('report.html', report=[html_report1, html_report2], user=login.current_user)
     
 
 # Load requested file here 

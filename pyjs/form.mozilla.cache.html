@@ -24919,30 +24919,14 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 	$m['Abstract_View'] = $p['___import___']('common.Abstract_View', null, null, false);
 	$m['Report_Date_Field'] = $p['___import___']('common.Report_Date_Field', null, null, false);
 	$m['Data_Service'] = $p['___import___']('common.Data_Service', null, null, false);
+	$m['datetime'] = $p['___import___']('datetime', null);
+	$m['time'] = $p['___import___']('time', null);
 	$m['SEND_DATA_MSG'] = 'send-data-msg';
 	$m['GET_REPORT_MSG'] = 'get-report-msg';
 	$m['PROJ_CHANGED_MSG'] = 'proj-changed-msg';
 	$m['GET_PRJ_MSG'] = 'get-prj-msg';
 	$m['ADD_MLS_MSG'] = 'add-mls-msg';
 	$m['DATE_MATCHER'] = '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$';
-	$m['datetime'] = $p['___import___']('datetime', null);
-	$m['time'] = $p['___import___']('time', null);
-	$m['today'] = function() {
-
-		return $m['datetime']['date']['today']();
-	};
-	$m['today']['__name__'] = 'today';
-
-	$m['today']['__bind_type__'] = 0;
-	$m['today']['__args__'] = [null,null];
-	$m['to_date'] = function(date_time_obj) {
-
-		return date_time_obj['strftime']('%d/%m/%Y');
-	};
-	$m['to_date']['__name__'] = 'to_date';
-
-	$m['to_date']['__bind_type__'] = 0;
-	$m['to_date']['__args__'] = [null,null,['date_time_obj']];
 	$m['Form_Row'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -25134,13 +25118,14 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		var $cls_definition = new Object();
 		var $method;
 		$cls_definition['__module__'] = 'form';
-		$method = $pyjs__bind_method2('__init__', function() {
+		$method = $pyjs__bind_method2('__init__', function(start_date) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
+				start_date = arguments[1];
 			}
-			var hpanel,status_panel,desc_lbl,desc_panel;
+			var desc_panel,status_panel,$add2,$add1,desc_lbl,hpanel,date_str;
 			$m['SimplePanel']['__init__'](self);
 			self['vpanel'] = $m['VerticalPanel']();
 			desc_panel = $m['VerticalPanel']();
@@ -25156,7 +25141,8 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			self['status_lst']['setStyleName']('form-control input-lg');
 			self['status_lst']['addItem']('Open');
 			self['status_lst']['addItem']('Closed');
-			self['status_lbl'] = $m['Label']('added on: 02/02/2013');
+			date_str = $p['__op_add']($add1='added on: ',$add2=start_date);
+			self['status_lbl'] = $m['Label'](date_str);
 			self['status_lbl']['setStyleName']('text-muted');
 			status_panel = $m['VerticalPanel']();
 			status_panel['add']($p['getattr'](self, 'status_lst'));
@@ -25170,7 +25156,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			self['vpanel']['add'](self['$$comment']['panel']());
 			return null;
 		}
-	, 1, [null,null,['self']]);
+	, 1, [null,null,['self'],['start_date']]);
 		$cls_definition['__init__'] = $method;
 		$method = $pyjs__bind_method2('get_impediment_data', function() {
 			if (this['__is_instance__'] === true) {
@@ -25178,18 +25164,18 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			} else {
 				var self = arguments[0];
 			}
-			var $$comment,end_date,lbl_text,state,ind,start_date,desc;
+			var $$comment,end_date,lbl_text,$add3,state,$add4,ind,start_date,desc;
 			desc = self['desc_box']['getText']();
 			$$comment = self['$$comment']['widget']()['getText']();
 			state = self['status_lst']['getItemText'](self['status_lst']['getSelectedIndex']());
 			lbl_text = self['status_lbl']['getText']();
-			ind = lbl_text['find'](':');
-			start_date = $p['__getslice'](lbl_text, ind, null);
+			ind = $p['__op_add']($add3=lbl_text['find'](':'),$add4=1);
+			start_date = $p['__getslice'](lbl_text, ind, null)['strip']();
 			if ($p['bool']($p['op_eq'](state, 'Open'))) {
 				end_date = null;
 			}
 			else {
-				end_date = $m['today']()['to_date']();
+				end_date = $m['datetime']['date']['today']()['strftime']('%d/%m/%Y');
 			}
 			return $p['tuple']([desc, $$comment, start_date, end_date, state]);
 		}
@@ -25356,8 +25342,9 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var self = arguments[0];
 				sender = arguments[1];
 			}
-			var impediment;
-			impediment = $m['Impediments']();
+			var today_date,impediment;
+			today_date = $m['datetime']['date']['today']()['strftime']('%d/%m/%Y');
+			impediment = $m['Impediments'](today_date);
 			self['impediment_row']['widget']()['add']($p['getattr'](impediment, 'vpanel'));
 			self['impediments']['append'](impediment);
 			return null;

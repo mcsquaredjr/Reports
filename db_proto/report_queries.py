@@ -32,13 +32,14 @@ def get_report(project):
     print reports[-1]
     # now find all milestones associated to the report
     report_id = reports[-1].id
-    milestones = session.query(Milestone).filter(Milestone.report_id == report_id).all()
+    milestones = reports[-1].milestones
 
     print milestones
     # now find all impediments:
-    impediments = session.query(Impediment).filter(Impediment.project_id == project_id).all()
+    #impediments = session.query(Impediment).filter(Impediment.project_id == project_id).all()
 
-    print impediments
+    #print impediments
+    return [milestones, None]
 
 
 def get_projects(inactive=True):
@@ -145,16 +146,52 @@ def commit_milestones(new_data):
 def commit_report(data):
     '''Commit report and its counterparts.
     '''
-    print '------>', data
-    project = data['project']
+
+    project_name = data['project']
     status = data['status']
     risks = data['risks']
     created = timeutils.now()
     author = data['author']
+    project = session.query(Project).filter(Project.name == project_name).first()
     report = Report(status, risks, author, created)
+    report.project = project
     session.add(report)
+    
+    # Now process impediments and milestones
+    impediments = data['impediments']
+    milestones = data['milestones']
+    # Cycle through impediments and add them if we have any
+    if len(impediments) > 0:
+        for imp in impediments:
+            desc = imp['description']
+            comment = imp['comment']
+            start = timeutils.to_date_time_obj(imp['start_date'])
+            try:
+                end = timeutils.to_date_time_obj(imp['end_date'])
+            except TypeError:
+                end = None
+            state_name = imp['state']
+            impediment = Impediment(desc, comment, start, end)
+            
+            impediment.project = project
+            impediment.report = report
+            state = session.query(Impediment_State).filter(Impediment_State.name == state_name).first()
+            impediment.state = state
+            session.add(impediment)
+
+    # Now do similarly to milestones:
+    if len(milestones) > 0:
+        for mil in milestones:
+            milestone = session.query(Milestone).filter(Milestone.name == mil['name']).first()
+            try:
+                report.milestones.extend([milestone])
+            except AttributeError:
+                report.milestones = []
+                report.milestones.extend([milestone]) 
+                
     try:
         session.commit()
+        
     except IntegrityError:
         session.rollback()
         print '\n*** DB INTEGRITY ERROR: Cannot commit report. Rolled back.'

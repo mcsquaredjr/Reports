@@ -140,9 +140,9 @@ class Milestone(db.Model):
     state = db.relationship('Milestone_State',
                              backref=db.backref('milestones', order_by=id))
     # It reads: one  report is associated with one or more milestones
-    report_id = db.Column(db.Integer, db.ForeignKey('reports.id'))
-    report = db.relationship('Report',
-                             backref=db.backref('milestones', order_by=id))
+    #report_id = db.Column(db.Integer, db.ForeignKey('reports.id'))
+    #report = db.relationship('Report',
+    #                         backref=db.backref('milestones', order_by=id))
 
     def __init__(self, name, start, end):
     	self.name = name
@@ -170,10 +170,10 @@ class Impediment(db.Model):
     state = db.relationship('Impediment_State',
                              backref=db.backref('impediments', order_by=id))
 
-    project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
-    project = db.relationship('Project',
-                             backref=db.backref('impediments', order_by=id))
-
+    #project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
+    #project = db.relationship('Project',
+    #                         backref=db.backref('impediments', order_by=id))
+    # Since one there is 1:1 between projects and reports we don't need it
     report_id = db.Column(db.Integer, db.ForeignKey('reports.id'))
     report = db.relationship('Report',
                              backref=db.backref('impediments', order_by=id))
@@ -190,6 +190,9 @@ class Impediment(db.Model):
         return '<Impediment %r>' % (self.name)
 
 
+rep_mil_ass = db.Table('rep_mil_ass',
+                      db.Column('report_id', db.Integer, db.ForeignKey('reports.id')),
+                      db.Column('milestone_id', db.Integer, db.ForeignKey('milestones.id')))
     
 
 ######################################################################
@@ -207,7 +210,10 @@ class Report(db.Model):
     project_id = db.Column(db.Integer, db.ForeignKey('projects.id'))
     project = db.relationship('Project',
                              backref=db.backref('reports', order_by=id))
-    
+    # We will have many to many relationship here
+    milestones = db.relationship('Milestone',
+                              secondary=rep_mil_ass,
+                              backref='reports')
     def __init__(self, status, risks, author, created):
     	self.status = status
         self.risks = risks
