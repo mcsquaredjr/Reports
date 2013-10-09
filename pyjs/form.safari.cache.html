@@ -24567,21 +24567,6 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self']]);
 		$cls_definition['__init__'] = $method;
-		$method = $pyjs__bind_method2('prep_data', function() {
-			if (this['__is_instance__'] === true) {
-				var self = this;
-			} else {
-				var self = arguments[0];
-			}
-			var data;
-			data = $p['dict']();
-			data['__setitem__']('project', 'Dev Project');
-			data['__setitem__']('Status', self['status_area']['widget']()['getText']());
-			data['__setitem__']('Risks', self['risks_area']['widget']()['getText']());
-			return data;
-		}
-	, 1, [null,null,['self']]);
-		$cls_definition['prep_data'] = $method;
 		$method = $pyjs__bind_method2('on_add_milestone_btn_click', function() {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -24929,7 +24914,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				while (typeof($p['__wrapped_next']($iter5_nextval)['$nextval']) != 'undefined') {
 					row = $iter5_nextval['$nextval'];
 					milestone_names['append'](row['__getitem__'](1));
-					milestone_dates['append'](row['__getitem__'](3));
+					milestone_dates['append'](row['__getitem__'](4));
 				}
 				$p['getattr']($p['getattr'](self, 'view'), 'dev_fields')['milestone_names'] = milestone_names;
 				$p['getattr']($p['getattr'](self, 'view'), 'dev_fields')['milestone_dates'] = milestone_dates;

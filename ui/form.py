@@ -311,13 +311,13 @@ class Dev_Fields(VerticalPanel, Abstract_View):
         self.add(self.main_impd_panel)
 
 
-    def prep_data(self):
-        data = dict()
-        data['project'] = 'Dev Project'
-        data['Status'] = self.status_area.widget().getText()
-        data['Risks'] = self.risks_area.widget().getText()
+    ## def prep_data(self):
+    ##     data = dict()
+    ##     data['project'] = 'Dev Project'
+    ##     data['Status'] = self.status_area.widget().getText()
+    ##     data['Risks'] = self.risks_area.widget().getText()
         
-        return data
+    ##     return data
 
     def on_add_milestone_btn_click(self):
         '''Inform controller we want to add a milestone.
@@ -535,7 +535,7 @@ class Form_Controller(object):
             milestone_dates = []
             for row in data:
                 milestone_names.append(row[1])
-                milestone_dates.append(row[3])
+                milestone_dates.append(row[4])
                 
             self.view.dev_fields.milestone_names = milestone_names
             self.view.dev_fields.milestone_dates = milestone_dates

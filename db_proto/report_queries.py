@@ -22,18 +22,48 @@ from app import db
 session = db.session
 
 
+def get_reports():
+    '''Generate report for all active projects given they were submitted this week.'''
+    this_week_start, this_week_end = timeutils.this_week_start_end()
+    # Get all reports for projects that are active and were submitted this week
+    active_projects = get_projects(inactive=False)
+    all_reports_data = []
+    # Find all reports that match current week
+    
+    for p in active_projects:
+        p_obj = session.query(Project).filter(Project.name == p[1]).first()
+        this_week_reports = session.query(Report).\
+          filter(Report.created >= this_week_start).\
+          filter(Report.created <= this_week_end).\
+          filter(Report.project_id == p_obj.id).order_by(Report.created).all()  
+  
+        if len(this_week_reports) > 0:
+            all_reports_data.append(get_report(p[1], this_week_reports[-1]))
 
-def get_report(project):
+    return all_reports_data
+
+
+def get_current_report_for_project(project):
+    '''Return the most recent report object for a given project.
+    '''
+    reports = session.query(Report).filter(Report.project_id == project_id).\
+      order_by(Report.created).all()
+    return reports[-1]
+    
+
+
+def get_report(project, report=None):
     '''Generate data structure suitable for presenting a report for a given project
     and date.
     '''
     project = session.query(Project).filter(Project.name == project).first()
     project_id = project.id
-    
-    reports = session.query(Report).filter(Report.project_id == project_id).order_by(Report.created).all()
-    
-    # now find all milestones associated to the report
-    report = reports[-1]
+
+    if report is None:
+        reports = session.query(Report).filter(Report.project_id == project_id).order_by(Report.created).all()
+        # now find all milestones associated to the report
+        report = reports[-1]
+
     report_id = report.id
     milestones = report.milestones
     impediments = report.impediments
@@ -97,7 +127,7 @@ def get_projects(inactive=True):
     q = session.query(Project.id, Project.name, Project_State.name)
     q = q.filter(Project.state_id == Project_State.id)
     if inactive is False:
-        p = q.filter(Project_State.name != 'Deleted').filter(Project_State.name != 'Deleted').all()
+        p = q.filter(Project_State.name != 'Deleted').filter(Project_State.name != 'Inactive').all()
     else:
         p = q.filter(Project_State.name != 'Deleted').all()
     p = [list(el) for el in p]

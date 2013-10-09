@@ -40,6 +40,8 @@ from db_proto.report_queries import commit_milestones
 from db_proto.report_queries import get_projects
 from db_proto.report_queries import get_milestones
 from db_proto.report_queries import get_report
+from db_proto.report_queries import get_reports
+
 from db_proto.report_queries import commit_report
 
 
@@ -284,11 +286,9 @@ def success():
 @app.route('/report/<name>')
 @login_required
 def show_report(name=None):
-    data = [get_report('Project 1')]
-    #report_maker.add_data(data)
-    #mmd_report = report_maker.data2md()
-    #html_report = Markup(markdown2.markdown(mmd_report))
-
+    # Get data for all recent reports
+    data = get_reports()
+    
     for report in data:
         report['status'] = Markup(markdown2.markdown(report['status'].replace('\n', '\n\n')))
         report['risks'] = Markup(markdown2.markdown(report['risks'].replace('\n', '\n\n')))

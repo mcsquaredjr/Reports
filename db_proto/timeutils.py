@@ -15,6 +15,11 @@ def get_week_from_num(year, month, day):
     '''
     return datetime.date(year, month, day).isocalendar()[1]
 
+def get_week_from_date_obj(date_obj):
+    '''Return week number from a date object.
+    '''
+    return date_obj.isocalendar()[1]
+    
 
 def get_week_from_obj(date_time_obj):
     '''Return week number from datetime object.
@@ -42,6 +47,20 @@ def to_date_time_obj(date_str):
     '''
     return datetime.datetime.fromtimestamp(time.mktime(time.strptime(date_str, '%d/%m/%Y')))
 
+
+def this_week_start_end():
+    '''This week limits as dateobjects.
+    '''
+    week = this_week()
+    year = today().isocalendar()[0]
+    d = datetime.date(year,1,1)
+    d = d - datetime.timedelta(d.weekday())
+    dlt = datetime.timedelta(days = (week-1)*7)
+    return d + dlt,  d + dlt + datetime.timedelta(days=6)
+
+
+
+
 if __name__ == '__main__':
     # Test functions above
     print 'Today in Python is: {0}'.format(today())
@@ -51,4 +70,4 @@ if __name__ == '__main__':
     print 'Now formatted to date: {0}'.format(to_date(now()))
     print 'Converted to Python: {0}'.format(to_date_time_obj('01/12/2010'))
     print "And back: '{0}'".format(to_date(to_date_time_obj('01/12/2010')))
-    
+    print 'This week start and end:', this_week_start_end()
