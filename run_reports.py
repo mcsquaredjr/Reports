@@ -32,6 +32,7 @@ from db_proto.report_models import User
 from db_proto.report_models import Project_State
 from db_proto.report_models import Project
 from db_proto.report_models import Milestone_State
+from db_proto.report_models import Impediment_State
 from db_proto.report_models import Milestone
 
 from db_proto.report_queries import commit_projects
@@ -50,7 +51,7 @@ SUCC_MSG = \
 </div>
 <div>
     <p>
-        <a href="/" class="btn btn-primary btn-lg">Back to the form</a>
+        <a href="/form" class="btn btn-primary btn-lg">Back to the form</a>
         <a href="/report/" class="btn btn-info btn-lg">Take me to the report</a>
     </p>
 </div>
@@ -63,7 +64,7 @@ ERR_MSG = \
 </div>
 <div>
     <p>
-        <a href="/" class="btn btn-primary btn-lg">Back to the form</a>
+        <a href="/form" class="btn btn-primary btn-lg">Back to the form</a>
     </p>
 </div>
 '''
@@ -283,14 +284,60 @@ def success():
 @app.route('/report/<name>')
 @login_required
 def show_report(name=None):
+    data = [get_report('Project 1')]
+    #report_maker.add_data(data)
     #mmd_report = report_maker.data2md()
     #html_report = Markup(markdown2.markdown(mmd_report))
-    html_report1 = get_report('Project 1')
-    html_report2 = get_report('Project 2')
-    
-    return render_template('report.html', report=[html_report1, html_report2], user=login.current_user)
-    
 
+    for report in data:
+        report['status'] = Markup(markdown2.markdown(report['status'].replace('\n', '\n\n')))
+        report['risks'] = Markup(markdown2.markdown(report['risks'].replace('\n', '\n\n')))
+        for i in report['impediments']:
+            i['comment'] = Markup(markdown2.markdown(i['comment'].replace('\n', '\n\n')))
+            
+    return render_template('report.html', reports=data, user=login.current_user)
+
+
+@app.route('/_resetdb_')
+#@login_required
+#@admin_required
+def resetdb():
+    # TODO: delete once in production
+    db.drop_all()
+    db.create_all()
+
+    # Create project states
+    p_state_active = Project_State('Active')
+    p_state_inactive = Project_State('Inactive')
+    p_state_deleted = Project_State('Deleted')
+    # Create admin user for testing
+    adm_usr = User(email='admin', password='admin', usertype=1)
+
+    db.session.add(p_state_active)
+    db.session.add(p_state_inactive)
+    db.session.add(p_state_deleted)
+    db.session.add(adm_usr)
+
+    # Create milestone states
+    m_state_active = Milestone_State('Active')
+    m_state_inactive = Milestone_State('Inactive')
+    m_state_deleted = Milestone_State('Deleted')
+
+    db.session.add(m_state_active)
+    db.session.add(m_state_inactive)
+    db.session.add(m_state_deleted)
+
+
+    # Create impediments states
+    i_state_open = Impediment_State('Open')
+    i_state_closed = Impediment_State('Closed')
+
+    db.session.add(i_state_open)
+    db.session.add(i_state_closed)
+    
+    db.session.commit()
+    return '<h3>Database has been reset!</h3>'
+    
 # Load requested file here 
 @app.route('/<requestedfile>')
 def serve(requestedfile):
@@ -305,32 +352,7 @@ def page_not_found(e):
     return render_template('404.html')
     
 if __name__ == '__main__':
-    ## db.drop_all()
-    ## db.create_all()
 
-    ## # Create project states
-    ## p_state_active = Project_State('Active')
-    ## p_state_inactive = Project_State('Inactive')
-    ## p_state_deleted = Project_State('Deleted')
-
-    ## adm_usr = User(email='admin', password='admin', usertype=1)
-
-    ## db.session.add(p_state_active)
-    ## db.session.add(p_state_inactive)
-    ## db.session.add(p_state_deleted)
-    ## db.session.add(adm_usr)
-
-    ## # Create milestone states
-    ## m_state_active = Milestone_State('Active')
-    ## m_state_inactive = Milestone_State('Inactive')
-    ## m_state_deleted = Milestone_State('Deleted')
-
-    ## db.session.add(m_state_active)
-    ## db.session.add(m_state_inactive)
-    ## db.session.add(m_state_deleted)
-
-    ## db.session.commit()
-    
     # Initialize flask-login
     init_login()
     

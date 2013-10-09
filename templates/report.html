@@ -70,8 +70,84 @@
       <div class="container">
         <div class="page-header">
           <h1>Neo report</h1>
+	  <p class="text-info">Generated on:<em> {{reports[0].created}}</em></p>
         </div>
-	  {{report}}
+	{% for report in reports %}
+	<h2>{{ report.project }}</h2>
+	<p class="text-info">Submitted on: <em>{{report.created}}</em>
+	  by <em><{{report.author}}></em> </p>
+	
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Status</h3>
+	  </div>
+	  <div class="panel-body">
+	      {{report.status}}
+	  </div>
+	</div>
+	
+	
+	<div class="panel panel-warning">
+          <div class="panel-heading">
+            <h2 class="panel-title">Risks</h2>
+          </div>
+          <div class="panel-body">
+            {{report.risks}}
+          </div>
+	</div>
+	
+	<div class="panel panel-default">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Milestones</h3>
+	  </div>
+	  
+	  <div class="panel-body">
+	    <p>Reported milestones and expected completion dates</p>
+	  </div>
+	  
+	  <!-- Table -->
+	  <table class="table table-condensed table-striped">
+	  <thead>
+            <tr>
+              <th>#</th>
+              <th>Miestone</th>
+              <th>Planned Completion</th>
+              <th>Expected Completion</th>
+            </tr>
+          </thead>
+          <tbody>
+	    
+	    {% for m in report.milestones%}
+            <tr class="{{m.tr_class}}">
+              <td>{{loop.index}}</td>
+              <td>{{m.name}}</td>
+              <td>{{m.end_date}}</td>
+              <td>{{m.expected_completion}}</td>
+            </tr>
+          <tbody>
+	    {% endfor %}
+	  </table>
+	</div>
+
+
+	<div class="panel panel-default">
+          <div class="panel-heading">
+            <h2 class="panel-title">Impediments</h2>
+          </div>
+          <div class="panel-body">
+            {% for i in report.impediments%}
+	    <div class="{{i.alert_class}}">
+	      <strong>{{i.description}}</strong>
+	      <p>State: <em>{{i.state}}</em> Added: <em>{{i.start_date}}</em> Removed: <em>{{i.end_date}}</em></p>
+	    </div>
+	    {{i.comment}}
+	    <br>
+	    {% endfor %}
+          </div>
+	</div>
+
+      {% endfor %}
       </div>
     </div>
     

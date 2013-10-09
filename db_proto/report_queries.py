@@ -2,6 +2,8 @@ from report_models import Project
 from report_models import Milestone
 from report_models import Impediment
 from report_models import Report
+from report_models import Expected_Completion
+
 
 from report_models import Project_State
 from report_models import Milestone_State
@@ -20,6 +22,7 @@ from app import db
 session = db.session
 
 
+
 def get_report(project):
     '''Generate data structure suitable for presenting a report for a given project
     and date.
@@ -28,18 +31,63 @@ def get_report(project):
     project_id = project.id
     
     reports = session.query(Report).filter(Report.project_id == project_id).order_by(Report.created).all()
-
-    print reports[-1]
+    
     # now find all milestones associated to the report
-    report_id = reports[-1].id
-    milestones = reports[-1].milestones
+    report = reports[-1]
+    report_id = report.id
+    milestones = report.milestones
+    impediments = report.impediments
 
-    print milestones
-    # now find all impediments:
-    #impediments = session.query(Impediment).filter(Impediment.project_id == project_id).all()
+    report_data = dict()
+    report_data['project'] = project.name
+    report_data['status'] = report.status
+    report_data['author'] = report.author
+    report_data['risks'] = report.risks
+    report_data['created'] = timeutils.to_date(report.created)
+    report_data['milestones'] = []
+    report_data['impediments'] = []
+    # Retrieve data for milestones
+    for m in milestones:
+        milestone_data = dict()
+        milestone_data['name'] = m.name
+        milestone_data['end_date'] = timeutils.to_date(m.end)
+        expected_completion = session.query(Expected_Completion).\
+          filter(Expected_Completion.milestone_id == m.id).\
+          filter(Expected_Completion.report_id == report.id).first()
+        try:
+            milestone_data['expected_completion'] = timeutils.to_date(expected_completion.completion)
+        except AttributeError:
+            milestone_data['expected_completion'] = None
+        report_data['milestones'].append(milestone_data)
+        # Decide which color to use to display table data
+        if (milestone_data['end_date'] is not None) and (milestone_data['expected_completion'] is not None):
+            if timeutils.to_date_time_obj(milestone_data['end_date']) >= timeutils.to_date_time_obj(milestone_data['expected_completion']):
+                milestone_data['tr_class'] = "success"
+            else:
+                milestone_data['tr_class'] = "danger"
+        else:
+            milestone_data['tr_class'] = "warning"
+        
+    # Retrieve data for impediments
+    for i in impediments:
+        impediment_data = dict()
+        impediment_data['description'] = i.name
+        impediment_data['comment'] = i.comment
+        impediment_data['start_date'] = timeutils.to_date(i.start)
+        try:
+            impediment_data['end_date'] = timeutils.to_date(i.end)
+        except AttributeError:
+            impediment_data['end_date'] = None
+        state_id = i.state_id
+        state = session.query(Impediment_State).filter(Impediment_State.id == state_id).first()
+        impediment_data['state'] = state.name
+        report_data['impediments'].append(impediment_data)
+        if state.name == 'Open':
+            impediment_data['alert_class'] = "alert alert-danger"
+        else:
+            impediment_data['alert_class'] = "alert alert-success"
 
-    #print impediments
-    return [milestones, None]
+    return report_data
 
 
 def get_projects(inactive=True):
@@ -177,12 +225,26 @@ def commit_report(data):
             impediment.report = report
             state = session.query(Impediment_State).filter(Impediment_State.name == state_name).first()
             impediment.state = state
+            # Create many-to-many relationship
+            try:
+                report.impediments.extend([impediment])
+            except AttributeError:
+                report.impediments = []
+                report.impediments.extend([impediment]) 
+            
             session.add(impediment)
 
     # Now do similarly to milestones:
     if len(milestones) > 0:
         for mil in milestones:
             milestone = session.query(Milestone).filter(Milestone.name == mil['name']).first()
+            try:
+                completion_date = timeutils.to_date_time_obj(mil['expected_completion'])
+                expected_completion = Expected_Completion(completion_date)
+                expected_completion.milestone = milestone
+                expected_completion.report = report
+            except ValueError:
+                pass
             try:
                 report.milestones.extend([milestone])
             except AttributeError:

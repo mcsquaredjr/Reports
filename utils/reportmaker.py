@@ -21,7 +21,7 @@ class Report_Maker(object):
         mmd_txt = ''
         for entry in self.data:
             keys = sorted(entry.keys())
-            #mmd_txt += '# Neo report\n'
+
             mmd_txt += '## ' + entry['project'] + '\n'
             for key in keys:
                 if key != 'project':
