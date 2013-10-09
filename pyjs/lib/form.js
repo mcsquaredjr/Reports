@@ -15,6 +15,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 	$m['Label'] = $p['___import___']('pyjamas.ui.Label.Label', null, null, false);
 	$m['Button'] = $p['___import___']('pyjamas.ui.Button.Button', null, null, false);
 	$m['HTML'] = $p['___import___']('pyjamas.ui.HTML.HTML', null, null, false);
+	$m['HTMLPanel'] = $p['___import___']('pyjamas.ui.HTMLPanel.HTMLPanel', null, null, false);
 	$m['VerticalPanel'] = $p['___import___']('pyjamas.ui.VerticalPanel.VerticalPanel', null, null, false);
 	$m['HorizontalPanel'] = $p['___import___']('pyjamas.ui.HorizontalPanel.HorizontalPanel', null, null, false);
 	$m['ListBox'] = $p['___import___']('pyjamas.ui.ListBox.ListBox', null, null, false);
@@ -35,6 +36,14 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 	$m['PROJ_CHANGED_MSG'] = 'proj-changed-msg';
 	$m['GET_PRJ_MSG'] = 'get-prj-msg';
 	$m['ADD_MLS_MSG'] = 'add-mls-msg';
+	$m['create_error_message'] = function(error) {
+		var $add2,$add3,$add1,$add4;
+		return $p['__op_add']($add3=$p['__op_add']($add1='\n        <div class="alert alert-danger fade in">\n            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>\n            <strong>Error:</strong> ',$add2=error),$add4='\n        </div>\n        ');
+	};
+	$m['create_error_message']['__name__'] = 'create_error_message';
+
+	$m['create_error_message']['__bind_type__'] = 0;
+	$m['create_error_message']['__args__'] = [null,null,['error']];
 	$m['DATE_MATCHER'] = '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$';
 	$m['Form_Row'] = (function(){
 		var $cls_definition = new Object();
@@ -234,7 +243,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var self = arguments[0];
 				start_date = arguments[1];
 			}
-			var desc_panel,status_panel,$add2,$add1,desc_lbl,hpanel,date_str;
+			var desc_panel,status_panel,hpanel,desc_lbl,$add5,$add6,date_str;
 			$m['SimplePanel']['__init__'](self);
 			self['vpanel'] = $m['VerticalPanel']();
 			desc_panel = $m['VerticalPanel']();
@@ -250,7 +259,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			self['status_lst']['setStyleName']('form-control input-lg');
 			self['status_lst']['addItem']('Open');
 			self['status_lst']['addItem']('Closed');
-			date_str = $p['__op_add']($add1='added on: ',$add2=start_date);
+			date_str = $p['__op_add']($add5='added on: ',$add6=start_date);
 			self['status_lbl'] = $m['Label'](date_str);
 			self['status_lbl']['setStyleName']('text-muted');
 			status_panel = $m['VerticalPanel']();
@@ -273,12 +282,12 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			} else {
 				var self = arguments[0];
 			}
-			var $$comment,end_date,lbl_text,$add3,state,$add4,ind,start_date,desc;
+			var $$comment,end_date,lbl_text,state,$add7,ind,$add8,start_date,desc;
 			desc = self['desc_box']['getText']();
 			$$comment = self['$$comment']['widget']()['getText']();
 			state = self['status_lst']['getItemText'](self['status_lst']['getSelectedIndex']());
 			lbl_text = self['status_lbl']['getText']();
-			ind = $p['__op_add']($add3=lbl_text['find'](':'),$add4=1);
+			ind = $p['__op_add']($add7=lbl_text['find'](':'),$add8=1);
 			start_date = $p['__getslice'](lbl_text, ind, null)['strip']();
 			if ($p['bool']($p['op_eq'](state, 'Open'))) {
 				end_date = null;
@@ -540,9 +549,11 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			self['submit_btn'] = $m['Button']('Submit report', $p['getattr'](self, 'send_data'));
 			self['submit_btn']['setStyleName']('btn btn-primary btn-lg');
 			self['submit_btn']['setEnabled'](false);
+			self['msg_lbl'] = $pyjs_kwargs_call(null, $m['HTMLPanel'], null, null, [{'Width':'475px'}, '']);
 			self['panel']['add'](self['proj_row']['panel']());
 			self['panel']['add']($p['getattr'](self, 'project_panel'));
 			self['panel']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Height':'20px'}]));
+			self['panel']['add']($p['getattr'](self, 'msg_lbl'));
 			self['panel']['add']($p['getattr'](self, 'submit_btn'));
 			self['root'] = $m['RootPanel']('report');
 			self['root']['add']($p['getattr'](self, 'panel'));
@@ -635,6 +646,37 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self'],['model'],['view']]);
 		$cls_definition['register'] = $method;
+		$method = $pyjs__bind_method2('validate', function(model) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				model = arguments[1];
+			}
+			var $iter3_type,im,$or1,$iter3_idx,$iter2_iter,$iter3_iter,$or5,$or4,$or7,$or6,$iter2_type,$or3,$or2,$or8,$iter2_idx,$iter3_array,$iter2_nextval,m,$iter3_nextval,$iter2_array;
+			if ($p['bool']($p['op_eq']($p['getattr'](model, 'report_data')['__getitem__']('status'), ''))) {
+				return 'Status is empty';
+			}
+			$iter2_iter = $p['getattr'](model, 'report_data')['__getitem__']('milestones');
+			$iter2_nextval=$p['__iter_prepare']($iter2_iter,false);
+			while (typeof($p['__wrapped_next']($iter2_nextval)['$nextval']) != 'undefined') {
+				m = $iter2_nextval['$nextval'];
+				if ($p['bool'](($p['bool']($or1=$p['op_eq'](m['__getitem__']('name'), ''))?$or1:($p['bool']($or2=$p['op_eq'](m['__getitem__']('end_date'), ''))?$or2:$p['op_eq'](m['__getitem__']('expected_completion'), ''))))) {
+					return 'Invalid milestone';
+				}
+			}
+			$iter3_iter = $p['getattr'](model, 'report_data')['__getitem__']('impediments');
+			$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
+			while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
+				im = $iter3_nextval['$nextval'];
+				if ($p['bool'](($p['bool']($or4=$p['op_eq'](im['__getitem__']('description'), ''))?$or4:($p['bool']($or5=$p['op_eq'](im['__getitem__']('comment'), ''))?$or5:($p['bool']($or6=$p['op_eq'](im['__getitem__']('start_date'), ''))?$or6:($p['bool']($or7=$p['op_eq'](im['__getitem__']('end_date'), ''))?$or7:$p['op_eq'](im['__getitem__']('state'), ''))))))) {
+					return 'Invalid impediment';
+				}
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['model']]);
+		$cls_definition['validate'] = $method;
 		$method = $pyjs__bind_method2('process_msg', function(msg) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -646,7 +688,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var args = $p['tuple']($pyjs_array_slice['call'](arguments,2,arguments['length']));
 
 			}
-			var status,$iter2_nextval,$iter2_type,$iter2_iter,$iter3_array,m,project,imp,$iter2_idx,$iter3_idx,risks,$iter3_type,$iter3_nextval,proj_list,$iter2_array,$iter3_iter;
+			var status,$iter4_idx,error,$iter5_idx,imp,$iter4_nextval,m,project,$iter4_array,$iter5_nextval,$iter5_iter,risks,$iter4_type,$iter5_array,$iter5_type,$iter4_iter,proj_list;
 			if ($p['bool']($p['op_eq'](msg, $m['SEND_DATA_MSG']))) {
 				status = self['view']['dev_fields']['status_area']['widget']()['getText']();
 				risks = self['view']['dev_fields']['risks_area']['widget']()['getText']();
@@ -655,20 +697,27 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				proj_list = self['view']['proj_row']['widget']();
 				project = proj_list['getItemText'](proj_list['getSelectedIndex']());
 				self['model']['add_project'](project);
-				$iter2_iter = $p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'impediments');
-				$iter2_nextval=$p['__iter_prepare']($iter2_iter,false);
-				while (typeof($p['__wrapped_next']($iter2_nextval)['$nextval']) != 'undefined') {
-					imp = $iter2_nextval['$nextval'];
+				$iter4_iter = $p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'impediments');
+				$iter4_nextval=$p['__iter_prepare']($iter4_iter,false);
+				while (typeof($p['__wrapped_next']($iter4_nextval)['$nextval']) != 'undefined') {
+					imp = $iter4_nextval['$nextval'];
 					$pyjs_kwargs_call(self['model'], 'add_impediment', imp['get_impediment_data'](), null, [{}]);
 				}
-				$iter3_iter = $p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones');
-				$iter3_nextval=$p['__iter_prepare']($iter3_iter,false);
-				while (typeof($p['__wrapped_next']($iter3_nextval)['$nextval']) != 'undefined') {
-					m = $iter3_nextval['$nextval'];
+				$iter5_iter = $p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones');
+				$iter5_nextval=$p['__iter_prepare']($iter5_iter,false);
+				while (typeof($p['__wrapped_next']($iter5_nextval)['$nextval']) != 'undefined') {
+					m = $iter5_nextval['$nextval'];
 					$pyjs_kwargs_call(self['model'], 'add_milestone', m['get_milestone_data'](), null, [{}]);
 				}
-				$m['Window']['alert']($p['getattr']($p['getattr'](self, 'model'), 'report_data'));
-				self['remote']['sendRequest']('send_data', $p['dict']([['message', $m['json']['dumps']($p['getattr']($p['getattr'](self, 'model'), 'report_data'))]]), self);
+				error = self['validate']($p['getattr'](self, 'model'));
+				if ($p['bool']((error !== null))) {
+					self['view']['msg_lbl']['setHTML']($m['create_error_message'](error));
+					self['model'] = (typeof Report_Model == "undefined"?$m['Report_Model']:Report_Model)();
+				}
+				else {
+					$m['Window']['alert']($p['getattr']($p['getattr'](self, 'model'), 'report_data'));
+					self['remote']['sendRequest']('send_data', $p['dict']([['message', $m['json']['dumps']($p['getattr']($p['getattr'](self, 'model'), 'report_data'))]]), self);
+				}
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['GET_REPORT_MSG']))) {
 				proj_list = self['view']['proj_row']['widget']();
@@ -715,7 +764,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				response = arguments[1];
 				request_info = arguments[2];
 			}
-			var $iter5_nextval,milestone_names,$iter5_idx,$iter5_array,$iter4_iter,milestone_dates,$iter4_idx,$iter4_array,$iter5_iter,proj_list,$iter4_type,$iter4_nextval,msg,$iter5_type,data,row;
+			var $iter7_type,$iter7_nextval,$iter6_idx,$iter6_type,$iter7_iter,$iter7_array,milestone_names,$iter6_array,proj_list,$iter7_idx,milestone_dates,msg,$iter6_iter,row,data,$iter6_nextval;
 			msg = response['__getitem__']('msg');
 			if ($p['bool']($p['op_eq'](msg, 'send_data'))) {
 				$pyjs_kwargs_call($m['HTTPRequest'](), 'asyncGet', null, null, [{'content_type':'text/html'}, '/success/', self]);
@@ -723,10 +772,10 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			if ($p['bool']($p['op_eq'](msg, 'get_active_projects'))) {
 				data = $m['json']['loads'](response['__getitem__']('data'));
 				proj_list = self['view']['proj_row']['widget']();
-				$iter4_iter = data;
-				$iter4_nextval=$p['__iter_prepare']($iter4_iter,false);
-				while (typeof($p['__wrapped_next']($iter4_nextval)['$nextval']) != 'undefined') {
-					row = $iter4_nextval['$nextval'];
+				$iter6_iter = data;
+				$iter6_nextval=$p['__iter_prepare']($iter6_iter,false);
+				while (typeof($p['__wrapped_next']($iter6_nextval)['$nextval']) != 'undefined') {
+					row = $iter6_nextval['$nextval'];
 					proj_list['addItem'](row['__getitem__'](1));
 				}
 			}
@@ -734,10 +783,10 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				data = $m['json']['loads'](response['__getitem__']('data'));
 				milestone_names = $p['list']([]);
 				milestone_dates = $p['list']([]);
-				$iter5_iter = data;
-				$iter5_nextval=$p['__iter_prepare']($iter5_iter,false);
-				while (typeof($p['__wrapped_next']($iter5_nextval)['$nextval']) != 'undefined') {
-					row = $iter5_nextval['$nextval'];
+				$iter7_iter = data;
+				$iter7_nextval=$p['__iter_prepare']($iter7_iter,false);
+				while (typeof($p['__wrapped_next']($iter7_nextval)['$nextval']) != 'undefined') {
+					row = $iter7_nextval['$nextval'];
 					milestone_names['append'](row['__getitem__'](1));
 					milestone_dates['append'](row['__getitem__'](3));
 				}
@@ -782,7 +831,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 
 			self['report_data'] = $p['dict']();
 			$p['getattr'](self, 'report_data')['__setitem__']('status', '');
-			$p['getattr'](self, 'report_data')['__setitem__']('milestones', '');
+			$p['getattr'](self, 'report_data')['__setitem__']('risks', '');
 			$p['getattr'](self, 'report_data')['__setitem__']('milestones', $p['list']([]));
 			$p['getattr'](self, 'report_data')['__setitem__']('impediments', $p['list']([]));
 			$p['getattr'](self, 'report_data')['__setitem__']('project', '');
@@ -916,5 +965,5 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Report_Date_Field', 'common.Data_Service', 'datetime', 'time']
+PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLPanel.HTMLPanel', 'pyjamas.ui.HTMLPanel', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Report_Date_Field', 'common.Data_Service', 'datetime', 'time']
 */
