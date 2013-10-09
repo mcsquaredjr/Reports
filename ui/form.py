@@ -5,6 +5,7 @@ from pyjamas.ui.TextArea import TextArea
 from pyjamas.ui.Label import Label
 from pyjamas.ui.Button import Button
 from pyjamas.ui.HTML import HTML
+from pyjamas.ui.HTMLPanel import HTMLPanel
 from pyjamas.ui.VerticalPanel import VerticalPanel
 from pyjamas.ui.HorizontalPanel import HorizontalPanel
 from pyjamas.ui.ListBox import ListBox
@@ -30,7 +31,13 @@ PROJ_CHANGED_MSG = 'proj-changed-msg'
 GET_PRJ_MSG = 'get-prj-msg'
 ADD_MLS_MSG = 'add-mls-msg'
 
-
+def create_error_message(error):
+    return '''
+        <div class="alert alert-danger fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <strong>Error:</strong> ''' + error + '''
+        </div>
+        '''
 
 DATE_MATCHER = \
 r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
@@ -407,10 +414,13 @@ class Input_Form(Abstract_View):
         self.submit_btn.setStyleName('btn btn-primary btn-lg')
         self.submit_btn.setEnabled(False)
 
+        self.msg_lbl = HTMLPanel('', Width='475px')
+
         # Add controls here
         self.panel.add(self.proj_row.panel())
         self.panel.add(self.project_panel)
         self.panel.add(Label(Height='20px'))
+        self.panel.add(self.msg_lbl)
         self.panel.add(self.submit_btn)
         
         self.root = RootPanel('report')
@@ -462,6 +472,20 @@ class Form_Controller(object):
         # Ask database for report data
         # self.process_msg(GET_REPORT_MSG)
         self.process_msg(GET_PRJ_MSG)
+
+    def validate(self, model):
+        if model.report_data['status'] == '':
+            return 'Status is empty'
+
+        for m in model.report_data['milestones']:
+            if m['name'] == '' or m['end_date'] == '' or m['expected_completion'] == '':
+                return 'Invalid milestone'
+
+        for im in model.report_data['impediments']:
+            if im['description'] == '' or im['comment'] == '' or im['start_date'] == '' or im['end_date'] == '' or im['state'] == '' :
+                return 'Invalid impediment'
+
+        return None
         
                 
     def process_msg(self, msg, *args):
@@ -485,8 +509,14 @@ class Form_Controller(object):
             for m in self.view.dev_fields.milestones:
                 self.model.add_milestone(*m.get_milestone_data())
 
-            Window.alert(self.model.report_data)
-            self.remote.sendRequest('send_data', {'message': json.dumps(self.model.report_data)}, self)
+            error = self.validate(self.model)
+            
+            if error is not None:
+                self.view.msg_lbl.setHTML(create_error_message(error))
+                self.model = Report_Model()
+            else:
+                Window.alert(self.model.report_data)
+                self.remote.sendRequest('send_data', {'message': json.dumps(self.model.report_data)}, self)
 
         if msg == GET_REPORT_MSG:
             '''Get report data from the database.
@@ -562,7 +592,7 @@ class Report_Model(object):
     def __init__(self):
         self.report_data = dict()
         self.report_data['status'] = ''
-        self.report_data['milestones'] = ''
+        self.report_data['risks'] = ''
         # Keep milestones and impediments in an array
         self.report_data['milestones'] = []
         self.report_data['impediments'] = []
