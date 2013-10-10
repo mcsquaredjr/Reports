@@ -22,6 +22,30 @@ from app import db
 session = db.session
 
 
+def get_milestones(inactive=True):
+    '''Return a list of lists representing milestones in the form,
+    only milestones in states other than Deleted will be returned. 
+    '''
+    q = session.query(Milestone.id,
+                      Milestone.name,
+                      Milestone_State.name,
+                      Milestone.start,
+                      Milestone.end)
+    q = q.filter(Milestone.state_id == Milestone_State.id)
+    if inactive is False:
+        m = q.filter(Milestone_State.name != 'Deleted').filter(Milestone_State.name != 'Inactive').all()
+    else:
+        m = q.filter(Milestone_State.name != 'Deleted').all()
+    # Convert to list of lists
+    m = [list(el) for el in m]
+   
+    for row in m:
+        # Convert dates to strings
+        row[3] = timeutils.to_date(row[3])
+        row[4] = timeutils.to_date(row[4])
+    return m    
+
+
 def get_reports():
     '''Generate report for all active projects given they were submitted this week.'''
     this_week_start, this_week_end = timeutils.this_week_start_end()
@@ -52,17 +76,20 @@ def get_current_report_for_project(project):
     
 
 
-def get_report(project, report=None):
+def get_report(project_name, report=None):
     '''Generate data structure suitable for presenting a report for a given project
     and date.
     '''
-    project = session.query(Project).filter(Project.name == project).first()
+    project = session.query(Project).filter(Project.name == project_name).first()
     project_id = project.id
 
     if report is None:
         reports = session.query(Report).filter(Report.project_id == project_id).order_by(Report.created).all()
         # now find all milestones associated to the report
-        report = reports[-1]
+        try:
+            report = reports[-1]
+        except IndexError:
+            return None
 
     report_id = report.id
     milestones = report.milestones
@@ -76,6 +103,7 @@ def get_report(project, report=None):
     report_data['created'] = timeutils.to_date(report.created)
     report_data['milestones'] = []
     report_data['impediments'] = []
+    report_data['all_milestones'] = get_milestones(inactive=False)
     # Retrieve data for milestones
     for m in milestones:
         milestone_data = dict()
@@ -163,28 +191,7 @@ def commit_projects(new_data):
         print '\n*** DB INTEGRITY ERROR: Cannot commit projects. Rolled back.'
 
 
-def get_milestones(inactive=True):
-    '''Return a list of lists representing milestones in the form,
-    only milestones in states other than Deleted will be returned. 
-    '''
-    q = session.query(Milestone.id,
-                      Milestone.name,
-                      Milestone_State.name,
-                      Milestone.start,
-                      Milestone.end)
-    q = q.filter(Milestone.state_id == Milestone_State.id)
-    if inactive is False:
-        m = q.filter(Milestone_State.name != 'Deleted').filter(Milestone_State.name != 'Inactive').all()
-    else:
-        m = q.filter(Milestone_State.name != 'Deleted').all()
-    # Convert to list of lists
-    m = [list(el) for el in m]
-   
-    for row in m:
-        # Convert dates to strings
-        row[3] = timeutils.to_date(row[3])
-        row[4] = timeutils.to_date(row[4])
-    return m    
+
 
     
 def commit_milestones(new_data):

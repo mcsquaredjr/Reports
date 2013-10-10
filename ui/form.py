@@ -120,18 +120,7 @@ class Milestones_Row(SimplePanel):
         '''
         return self.name.getText()
 
-    ## def get_milestone_data(self):
-    ##     '''Return all data for a milestone and validation result.
-    ##     '''
-    ##     valid = False
-    ##     name_txt = self.get_name_txt()
-    ##     start_txt = self.planned_completion.getText()
-    ##     end_txt = self.expected_completion.getTextBox().getText()
-    ##     data = [name_txt, start_txt, end_txt]
-    ##     # We are only valid if these conditions are met
-    ##     if len(name_txt.strip()) > 0 and self.expected_completion.valid == True:
-    ##         valid = True 
-    ##     return (valid, data)
+
 
     def get_milestone_data(self):
         '''Get milestone data and return in the form suitable for passing to
@@ -165,7 +154,7 @@ class Impediments(SimplePanel):
     '''
     Create and edit projects
     '''
-    def __init__(self, start_date):
+    def __init__(self, start_date, can_delete=True):
         # We need to use old form of inheritance because of pyjamas
         SimplePanel.__init__(self)
         self.vpanel = VerticalPanel()
@@ -177,7 +166,9 @@ class Impediments(SimplePanel):
         desc_lbl.setStyleName('text-muted')
         desc_panel.add(self.desc_box)
         desc_panel.add(desc_lbl)
-
+        # Set to False if loaded from database
+        self.can_delete = can_delete
+        
         status_panel = VerticalPanel()
         self.status_lst = ListBox(Height='34px')
         self.status_lst.setStyleName('form-control input-lg')
@@ -316,15 +307,6 @@ class Dev_Fields(VerticalPanel, Abstract_View):
         self.add(self.risks_area.panel())
         self.add(self.main_mlst_panel)
         self.add(self.main_impd_panel)
-
-
-    ## def prep_data(self):
-    ##     data = dict()
-    ##     data['project'] = 'Dev Project'
-    ##     data['Status'] = self.status_area.widget().getText()
-    ##     data['Risks'] = self.risks_area.widget().getText()
-        
-    ##     return data
 
     def on_add_milestone_btn_click(self):
         '''Inform controller we want to add a milestone.
@@ -515,16 +497,17 @@ class Form_Controller(object):
                 self.view.msg_lbl.setHTML(create_error_message(error))
                 self.model = Report_Model()
             else:
-                Window.alert(self.model.report_data)
+                #Window.alert(self.model.report_data)
                 self.remote.sendRequest('send_data', {'message': json.dumps(self.model.report_data)}, self)
 
-        if msg == GET_REPORT_MSG:
-            '''Get report data from the database.
-            '''
-            proj_list = self.view.proj_row.widget()
-            project = proj_list.getItemText(proj_list.getSelectedIndex())
-            self.remote.sendRequest('get_report_for_project',
-                                    {'message': json.dumps(project)}, self)
+        ## if msg == GET_REPORT_MSG:
+        ##     '''Get report data from the database.
+        ##     '''
+        ##     proj_list = self.view.proj_row.widget()
+        ##     project = proj_list.getItemText(proj_list.getSelectedIndex())
+        ##     self.remote.sendRequest('get_report_for_project',
+        ##                             {'message': json.dumps(project)}, self)
+        
         if msg == PROJ_CHANGED_MSG:
             project = args[0]
             self.view._load_project(project)
@@ -534,6 +517,10 @@ class Form_Controller(object):
             # Receive milestones and configure milestone list 
             self.remote.sendRequest('get_active_milestones',
                                     {'message': json.dumps(project)}, self)
+            # Receive data for last week's project
+            self.remote.sendRequest('get_report_for_project',
+                                    {'message': json.dumps(project)}, self)
+            
         if msg == GET_PRJ_MSG:
             # Receive data from remote
             self.remote.sendRequest('get_active_projects',
@@ -554,11 +541,13 @@ class Form_Controller(object):
         msg = response['msg']
         if msg == 'send_data':
             HTTPRequest().asyncGet('/success/', self, content_type='text/html')
+            
         if msg == 'get_active_projects':
             data = json.loads(response['data'])
             proj_list = self.view.proj_row.widget()
             for row in data:
                 proj_list.addItem(row[1])
+
         if msg == 'get_active_milestones':
             data = json.loads(response['data'])
             milestone_names = []
@@ -569,7 +558,25 @@ class Form_Controller(object):
                 
             self.view.dev_fields.milestone_names = milestone_names
             self.view.dev_fields.milestone_dates = milestone_dates
-           
+
+        if msg == 'get_report_for_project':
+            data = json.loads(response['data'])
+            # TODO: set data here
+            all_milestones = data['all_milestones']
+            milestone_names = []
+            milestone_dates = []
+            for row in all_milestones:
+                milestone_names.append(row[1])
+                milestone_dates.append(row[4])
+                
+            self.view.dev_fields.milestone_names = milestone_names
+            self.view.dev_fields.milestone_dates = milestone_dates
+            
+            
+            if data is not None:
+                self._populate_fields(data)
+                
+            
 
             
     def onCompletion(self, response):
@@ -582,7 +589,22 @@ class Form_Controller(object):
         html.setHTML(response)
         self.view.root.add(html)        
 
-
+    def _populate_fields(self, data):
+        '''Populate empty dev_fields with data received from the database.
+        '''
+        # Status and risks are easy:
+        
+        self.view.dev_fields.status_area.widget().setText(data['status'])
+        self.view.dev_fields.risks_area.widget().setText(data['risks'])
+        # Now restore milestones:
+        milestones = data['milestones']
+        
+        for m in milestones:
+            self.view.dev_fields.add_milestone()
+            self.view.dev_fields.milestones[-1].name.selectItem(m['name'])
+            self.view.dev_fields.milestones[-1].planned_completion.setText(m['end_date'])
+            self.view.dev_fields.milestones[-1].expected_completion.getTextBox().setText(m['expected_completion'])
+          
 
 
 ######################################################################

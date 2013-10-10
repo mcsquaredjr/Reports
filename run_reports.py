@@ -265,7 +265,15 @@ def process():
             milestones_in_db = get_milestones(inactive=False)
             answer = dict()
             answer['data'] = json.dumps(milestones_in_db)
-            answer['msg'] = 'get_active_milestones'    
+            answer['msg'] = 'get_active_milestones'
+            
+        elif  data['method'] == 'get_report_for_project':
+            # Get latest report data for a given project
+            project = data['params']['message']
+            report_data = get_report(json.loads(project))
+            answer = dict()
+            answer['data'] = json.dumps(report_data)
+            answer['msg'] = 'get_report_for_project'
 
         else:
             # We don't know what we are doing

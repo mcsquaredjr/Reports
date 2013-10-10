@@ -26109,13 +26109,15 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		var $cls_definition = new Object();
 		var $method;
 		$cls_definition['__module__'] = 'form';
-		$method = $pyjs__bind_method2('__init__', function(start_date) {
+		$method = $pyjs__bind_method2('__init__', function(start_date, can_delete) {
 			if (this['__is_instance__'] === true) {
 				var self = this;
 			} else {
 				var self = arguments[0];
 				start_date = arguments[1];
+				can_delete = arguments[2];
 			}
+			if (typeof can_delete == 'undefined') can_delete=arguments['callee']['__args__'][4][1];
 			var desc_panel,status_panel,hpanel,desc_lbl,$add5,$add6,date_str;
 			$m['SimplePanel']['__init__'](self);
 			self['vpanel'] = $m['VerticalPanel']();
@@ -26127,6 +26129,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			desc_lbl['setStyleName']('text-muted');
 			desc_panel['add']($p['getattr'](self, 'desc_box'));
 			desc_panel['add'](desc_lbl);
+			self['can_delete'] = can_delete;
 			status_panel = $m['VerticalPanel']();
 			self['status_lst'] = $pyjs_kwargs_call(null, $m['ListBox'], null, null, [{'Height':'34px'}]);
 			self['status_lst']['setStyleName']('form-control input-lg');
@@ -26147,7 +26150,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			self['vpanel']['add'](self['$$comment']['panel']());
 			return null;
 		}
-	, 1, [null,null,['self'],['start_date']]);
+	, 1, [null,null,['self'],['start_date'],['can_delete', true]]);
 		$cls_definition['__init__'] = $method;
 		$method = $pyjs__bind_method2('get_impediment_data', function() {
 			if (this['__is_instance__'] === true) {
@@ -26573,14 +26576,8 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 					self['model'] = (typeof Report_Model == "undefined"?$m['Report_Model']:Report_Model)();
 				}
 				else {
-					$m['Window']['alert']($p['getattr']($p['getattr'](self, 'model'), 'report_data'));
 					self['remote']['sendRequest']('send_data', $p['dict']([['message', $m['json']['dumps']($p['getattr']($p['getattr'](self, 'model'), 'report_data'))]]), self);
 				}
-			}
-			if ($p['bool']($p['op_eq'](msg, $m['GET_REPORT_MSG']))) {
-				proj_list = self['view']['proj_row']['widget']();
-				project = proj_list['getItemText'](proj_list['getSelectedIndex']());
-				self['remote']['sendRequest']('get_report_for_project', $p['dict']([['message', $m['json']['dumps'](project)]]), self);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['PROJ_CHANGED_MSG']))) {
 				project = args['__getitem__'](0);
@@ -26588,6 +26585,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				self['view']['dev_fields']['register'](self);
 				self['view']['submit_btn']['setEnabled'](true);
 				self['remote']['sendRequest']('get_active_milestones', $p['dict']([['message', $m['json']['dumps'](project)]]), self);
+				self['remote']['sendRequest']('get_report_for_project', $p['dict']([['message', $m['json']['dumps'](project)]]), self);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['GET_PRJ_MSG']))) {
 				self['remote']['sendRequest']('get_active_projects', $p['dict']([['message', $m['json']['dumps'](null)]]), self);
@@ -26622,7 +26620,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				response = arguments[1];
 				request_info = arguments[2];
 			}
-			var $iter7_type,$iter7_nextval,$iter6_idx,$iter6_type,$iter7_iter,$iter7_array,milestone_names,$iter6_array,proj_list,$iter7_idx,milestone_dates,msg,$iter6_iter,row,data,$iter6_nextval;
+			var $iter6_type,$iter8_iter,$iter6_iter,proj_list,row,all_milestones,msg,$iter7_type,$iter8_idx,$iter6_idx,$iter7_iter,$iter8_type,milestone_names,$iter6_array,$iter8_nextval,$iter7_idx,data,$iter6_nextval,$iter7_nextval,$iter7_array,$iter8_array,milestone_dates;
 			msg = response['__getitem__']('msg');
 			if ($p['bool']($p['op_eq'](msg, 'send_data'))) {
 				$pyjs_kwargs_call($m['HTTPRequest'](), 'asyncGet', null, null, [{'content_type':'text/html'}, '/success/', self]);
@@ -26651,6 +26649,24 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				$p['getattr']($p['getattr'](self, 'view'), 'dev_fields')['milestone_names'] = milestone_names;
 				$p['getattr']($p['getattr'](self, 'view'), 'dev_fields')['milestone_dates'] = milestone_dates;
 			}
+			if ($p['bool']($p['op_eq'](msg, 'get_report_for_project'))) {
+				data = $m['json']['loads'](response['__getitem__']('data'));
+				all_milestones = data['__getitem__']('all_milestones');
+				milestone_names = $p['list']([]);
+				milestone_dates = $p['list']([]);
+				$iter8_iter = all_milestones;
+				$iter8_nextval=$p['__iter_prepare']($iter8_iter,false);
+				while (typeof($p['__wrapped_next']($iter8_nextval)['$nextval']) != 'undefined') {
+					row = $iter8_nextval['$nextval'];
+					milestone_names['append'](row['__getitem__'](1));
+					milestone_dates['append'](row['__getitem__'](4));
+				}
+				$p['getattr']($p['getattr'](self, 'view'), 'dev_fields')['milestone_names'] = milestone_names;
+				$p['getattr']($p['getattr'](self, 'view'), 'dev_fields')['milestone_dates'] = milestone_dates;
+				if ($p['bool']((data !== null))) {
+					self['_populate_fields'](data);
+				}
+			}
 			return null;
 		}
 	, 1, [null,null,['self'],['response'],['request_info']]);
@@ -26671,6 +26687,36 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self'],['response']]);
 		$cls_definition['onCompletion'] = $method;
+		$method = $pyjs__bind_method2('_populate_fields', function(data) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				data = arguments[1];
+			}
+			var milestones,$iter9_iter,m,$iter9_nextval,$iter9_idx,$iter9_array,$iter9_type;
+			self['view']['dev_fields']['status_area']['widget']()['setText'](data['__getitem__']('status'));
+			self['view']['dev_fields']['risks_area']['widget']()['setText'](data['__getitem__']('risks'));
+			milestones = data['__getitem__']('milestones');
+			$iter9_iter = milestones;
+			$iter9_nextval=$p['__iter_prepare']($iter9_iter,false);
+			while (typeof($p['__wrapped_next']($iter9_nextval)['$nextval']) != 'undefined') {
+				m = $iter9_nextval['$nextval'];
+				self['view']['dev_fields']['add_milestone']();
+				$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones')['__getitem__']((typeof ($usub5=1)=='number'?
+					-$usub5:
+					$p['op_usub']($usub5)))['$$name']['selectItem'](m['__getitem__']('name'));
+				$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones')['__getitem__']((typeof ($usub6=1)=='number'?
+					-$usub6:
+					$p['op_usub']($usub6)))['planned_completion']['setText'](m['__getitem__']('end_date'));
+				$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones')['__getitem__']((typeof ($usub7=1)=='number'?
+					-$usub7:
+					$p['op_usub']($usub7)))['expected_completion']['getTextBox']()['setText'](m['__getitem__']('expected_completion'));
+			}
+			return null;
+		}
+	, 1, [null,null,['self'],['data']]);
+		$cls_definition['_populate_fields'] = $method;
 		var $bases = new Array($p['object']);
 		var $data = $p['dict']();
 		for (var $item in $cls_definition) { $data['__setitem__']($item, $cls_definition[$item]); }
