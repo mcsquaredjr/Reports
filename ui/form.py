@@ -39,6 +39,14 @@ def create_error_message(error):
         </div>
         '''
 
+def create_warning_message(warning):
+    return '''
+        <div class="alert alert-warning fade in">
+            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+            <strong>Warning:</strong> ''' + warning + '''
+        </div>
+        '''            
+
 DATE_MATCHER = \
 r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
 
@@ -515,8 +523,8 @@ class Form_Controller(object):
             self.view.dev_fields.register(self)
             self.view.submit_btn.setEnabled(True)
             # Receive milestones and configure milestone list 
-            self.remote.sendRequest('get_active_milestones',
-                                    {'message': json.dumps(project)}, self)
+            #self.remote.sendRequest('get_active_milestones',
+            #                        {'message': json.dumps(project)}, self)
             # Receive data for last week's project
             self.remote.sendRequest('get_report_for_project',
                                     {'message': json.dumps(project)}, self)
@@ -600,11 +608,15 @@ class Form_Controller(object):
         milestones = data['milestones']
         
         for m in milestones:
-            self.view.dev_fields.add_milestone()
-            self.view.dev_fields.milestones[-1].name.selectItem(m['name'])
-            self.view.dev_fields.milestones[-1].planned_completion.setText(m['end_date'])
-            self.view.dev_fields.milestones[-1].expected_completion.getTextBox().setText(m['expected_completion'])
-          
+            if m['name'] in self.view.dev_fields.milestone_names:
+                self.view.dev_fields.add_milestone()
+                self.view.dev_fields.milestones[-1].name.selectItem(m['name'])
+                self.view.dev_fields.milestones[-1].name.setEnabled(False)
+                self.view.dev_fields.milestones[-1].planned_completion.setText(m['end_date'])
+                self.view.dev_fields.milestones[-1].expected_completion.getTextBox().setText(m['expected_completion'])
+            else:
+                msg = create_warning_message('One of the previously reported milestones became inactive and cannot be loaded.')
+                self.view.msg_lbl.setHTML(msg)
 
 
 ######################################################################
