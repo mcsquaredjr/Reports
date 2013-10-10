@@ -4,6 +4,8 @@ import os
 import datetime
 import json
 import markdown2
+import urllib2
+
 from jinja2 import Template
 
 from flask import render_template
@@ -194,7 +196,6 @@ def logout_view():
 @admin_required
 def projects():
     projects_tmpl = Template(serve('projects.html'))
-
     return projects_tmpl.render(title='Projects', user=login.current_user)
 
 @app.route('/milestones')
@@ -302,7 +303,7 @@ def show_report(name=None):
         report['risks'] = Markup(markdown2.markdown(report['risks'].replace('\n', '\n\n')))
         for i in report['impediments']:
             i['comment'] = Markup(markdown2.markdown(i['comment'].replace('\n', '\n\n')))
-            
+
     return render_template('report.html', reports=data, user=login.current_user)
 
 
