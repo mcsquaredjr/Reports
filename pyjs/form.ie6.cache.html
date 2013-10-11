@@ -6015,6 +6015,28 @@ $pyjs['loaded_modules']['binascii'] = function (__mod_name__) {
 
 --></script>
 <script type="text/javascript"><!--
+/* start module: consts */
+$pyjs['loaded_modules']['consts'] = function (__mod_name__) {
+	if($pyjs['loaded_modules']['consts']['__was_initialized__']) return $pyjs['loaded_modules']['consts'];
+	var $m = $pyjs['loaded_modules']['consts'];
+	$m['__repr__'] = function() { return '<module: consts>'; };
+	$m['__was_initialized__'] = true;
+	if ((__mod_name__ === null) || (typeof __mod_name__ == 'undefined')) __mod_name__ = 'consts';
+	$m['__name__'] = __mod_name__;
+
+
+	$m['DATE_MATCHER'] = '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$';
+	$m['MODAL_PNL'] = '\n<!-- Button trigger modal -->\n  <a data-toggle="modal" href="#myModal" class="btn btn-default btn-lg">Markdown help</a>\n\n  <!-- Modal -->\n  <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">\n    <div class="modal-dialog">\n      <div class="modal-content">\n        <div class="modal-header">\n          <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>\n          <h4 class="modal-title">Markdown help</h4>\n        </div>\n        <div class="modal-body">\n        <h4>Section headers and subheaders</h4>\n        <p>\n        To create a header, use three pounds <code>###</code>, in a row, to create sub-header use four pounds <code>####</code>\n        </p>\n        <pre>\n        <code>\n        ### I am a header\n        #### I am a sub-header\n        </code>\n        </pre>\n        <p>\n        It will be rendered as:\n        </p>\n        <hr>\n        <h3>I am a header</h3>\n        <h4>I am a subheader</h4>\n        <hr>\n        <h4>Bullets</h4>\n        <p>Use asterisk <code>*</code>to create a bulleted list:</p>\n        <pre>\n        * this is item one\n        * this item two\n        * this item three\n        </pre>\n        <p>\n        It will be rendered as:\n        </p>\n        <hr>\n        <ul>\n        <li>this is item one</li>\n        <li>this is item two</li>\n        <li>this is item three</li>\n        </ul>\n        <hr>\n        <h4>Numbered list</h4>\n        <p>\n           Use numbers (even not sequential to create a numbered list:)\n        </p>\n        <pre>\n        1. this is item one\n        1. this is item two\n        1. this is item three\n        </pre>\n        <p>\n        It will be rendered as:\n        <p/>\n        <hr>\n        <ol>\n        <li>this is item one</li>\n        <li>this is item two</li>\n        <li>this is item three</li>\n        </ol>\n        <hr>\n        <h4>Links</h4>\n        <p>To insert a link, use this:</p>\n        <pre>\nIf you want to find to lear more about markdown, go [here](http://daringfireball.net/projects/markdown/syntax)\n        </pre>\n<p>It will be rendered as:</p>\n<hr>\n<p>If you want to learn more about markdown, go  <a href="http://daringfireball.net/projects/markdown/syntax">here</a></p>\n<hr>\n<p>This really all you need to know to start using markdown!</p>\n        </div>\n        <div class="modal-footer">\n          <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>\n          \n        </div>\n      </div><!-- /.modal-content -->\n    </div><!-- /.modal-dialog -->\n  </div><!-- /.modal -->\n';
+	return this;
+}; /* end consts */
+
+
+/* end module: consts */
+
+
+
+--></script>
+<script type="text/javascript"><!--
 /* start module: regextextbox */
 $pyjs['loaded_modules']['regextextbox'] = function (__mod_name__) {
 	if($pyjs['loaded_modules']['regextextbox']['__was_initialized__']) return $pyjs['loaded_modules']['regextextbox'];
@@ -25902,6 +25924,8 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 	$m['Abstract_View'] = $p['___import___']('common.Abstract_View', null, null, false);
 	$m['Report_Date_Field'] = $p['___import___']('common.Report_Date_Field', null, null, false);
 	$m['Data_Service'] = $p['___import___']('common.Data_Service', null, null, false);
+	$m['DATE_MATCHER'] = $p['___import___']('consts.DATE_MATCHER', null, null, false);
+	$m['MODAL_PNL'] = $p['___import___']('consts.MODAL_PNL', null, null, false);
 	$m['datetime'] = $p['___import___']('datetime', null);
 	$m['time'] = $p['___import___']('time', null);
 	$m['SEND_DATA_MSG'] = 'send-data-msg';
@@ -25909,6 +25933,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 	$m['PROJ_CHANGED_MSG'] = 'proj-changed-msg';
 	$m['GET_PRJ_MSG'] = 'get-prj-msg';
 	$m['ADD_MLS_MSG'] = 'add-mls-msg';
+	$m['CANT_DEL_IMP_MSG'] = 'cant-del-imp-msg';
 	$m['create_error_message'] = function(error) {
 		var $add2,$add3,$add1,$add4;
 		return $p['__op_add']($add3=$p['__op_add']($add1='\n        <div class="alert alert-danger fade in">\n            <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>\n            <strong>Error:</strong> ',$add2=error),$add4='\n        </div>\n        ');
@@ -25925,7 +25950,6 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 
 	$m['create_warning_message']['__bind_type__'] = 0;
 	$m['create_warning_message']['__args__'] = [null,null,['warning']];
-	$m['DATE_MATCHER'] = '^(?:(?:31(\\/|-|\\.)(?:0?[13578]|1[02]))\\1|(?:(?:29|30)(\\/|-|\\.)(?:0?[1,3-9]|1[0-2])\\2))(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$|^(?:29(\\/|-|\\.)0?2\\3(?:(?:(?:1[6-9]|[2-9]\\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\\d|2[0-8])(\\/|-|\\.)(?:(?:0?[1-9])|(?:1[0-2]))\\4(?:(?:1[6-9]|[2-9]\\d)?\\d{2})$';
 	$m['Form_Row'] = (function(){
 		var $cls_definition = new Object();
 		var $method;
@@ -26126,7 +26150,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				can_delete = arguments[2];
 			}
 			if (typeof can_delete == 'undefined') can_delete=arguments['callee']['__args__'][4][1];
-			var desc_panel,status_panel,hpanel,desc_lbl,$add10,$add9,date_str;
+			var desc_panel,status_panel,desc_lbl,hpanel;
 			$m['SimplePanel']['__init__'](self);
 			self['vpanel'] = $m['VerticalPanel']();
 			desc_panel = $m['VerticalPanel']();
@@ -26143,8 +26167,8 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			self['status_lst']['setStyleName']('form-control input-lg');
 			self['status_lst']['addItem']('Open');
 			self['status_lst']['addItem']('Closed');
-			date_str = $p['__op_add']($add9='added on: ',$add10=start_date);
-			self['status_lbl'] = $m['Label'](date_str);
+			self['status_lbl'] = $m['Label']('');
+			self['set_start_date'](start_date);
 			self['status_lbl']['setStyleName']('text-muted');
 			status_panel = $m['VerticalPanel']();
 			status_panel['add']($p['getattr'](self, 'status_lst'));
@@ -26160,6 +26184,20 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 		}
 	, 1, [null,null,['self'],['start_date'],['can_delete', true]]);
 		$cls_definition['__init__'] = $method;
+		$method = $pyjs__bind_method2('set_start_date', function(start_date) {
+			if (this['__is_instance__'] === true) {
+				var self = this;
+			} else {
+				var self = arguments[0];
+				start_date = arguments[1];
+			}
+			var date_str,$add9,$add10;
+			date_str = $p['__op_add']($add9='added on: ',$add10=start_date);
+			self['status_lbl']['setText'](date_str);
+			return null;
+		}
+	, 1, [null,null,['self'],['start_date']]);
+		$cls_definition['set_start_date'] = $method;
 		$method = $pyjs__bind_method2('get_impediment_data', function() {
 			if (this['__is_instance__'] === true) {
 				var self = this;
@@ -26347,12 +26385,19 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			}
 			var $pyjs_try_err;
 			try {
-				$p['getattr'](self, 'impediments')['__getitem__']((typeof ($usub3=1)=='number'?
+				if ($p['bool']($p['op_eq']($p['getattr']($p['getattr'](self, 'impediments')['__getitem__']((typeof ($usub3=1)=='number'?
 					-$usub3:
-					$p['op_usub']($usub3)))['vpanel']['removeFromParent']();
-				self['impediments']['remove']($p['getattr'](self, 'impediments')['__getitem__']((typeof ($usub4=1)=='number'?
-					-$usub4:
-					$p['op_usub']($usub4))));
+					$p['op_usub']($usub3))), 'can_delete'), true))) {
+					$p['getattr'](self, 'impediments')['__getitem__']((typeof ($usub4=1)=='number'?
+						-$usub4:
+						$p['op_usub']($usub4)))['vpanel']['removeFromParent']();
+					self['impediments']['remove']($p['getattr'](self, 'impediments')['__getitem__']((typeof ($usub5=1)=='number'?
+						-$usub5:
+						$p['op_usub']($usub5))));
+				}
+				else {
+					self['controller']['process_msg']($m['CANT_DEL_IMP_MSG']);
+				}
 			} catch($pyjs_try_err) {
 				var $pyjs_try_err_name = (typeof $pyjs_try_err['__name__'] == 'undefined' ? $pyjs_try_err['name'] : $pyjs_try_err['__name__'] );
 				$pyjs['__last_exception__'] = {'error': $pyjs_try_err, 'module': $m};
@@ -26405,7 +26450,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			} else {
 				var self = arguments[0];
 			}
-			var proj_list;
+			var help_btn,proj_list,btn_holder;
 			self['panel'] = $m['VerticalPanel']();
 			self['panel']['setSpacing'](10);
 			proj_list = $pyjs_kwargs_call(null, $m['ListBox'], null, null, [{'Height':'34px'}]);
@@ -26423,7 +26468,13 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			self['panel']['add']($p['getattr'](self, 'project_panel'));
 			self['panel']['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Height':'20px'}]));
 			self['panel']['add']($p['getattr'](self, 'msg_lbl'));
-			self['panel']['add']($p['getattr'](self, 'submit_btn'));
+			btn_holder = $m['HorizontalPanel']();
+			btn_holder['add']($p['getattr'](self, 'submit_btn'));
+			help_btn = $m['HTMLPanel']('');
+			help_btn['setHTML']($m['MODAL_PNL']);
+			btn_holder['add']($pyjs_kwargs_call(null, $m['Label'], null, null, [{'Width':'10px'}]));
+			btn_holder['add'](help_btn);
+			self['panel']['add'](btn_holder);
 			self['root'] = $m['RootPanel']('report');
 			self['root']['add']($p['getattr'](self, 'panel'));
 			return null;
@@ -26592,6 +26643,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				self['view']['_load_project'](project);
 				self['view']['dev_fields']['register'](self);
 				self['view']['submit_btn']['setEnabled'](true);
+				self['remote']['sendRequest']('get_active_milestones', $p['dict']([['message', $m['json']['dumps'](project)]]), self);
 				self['remote']['sendRequest']('get_report_for_project', $p['dict']([['message', $m['json']['dumps'](project)]]), self);
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['GET_PRJ_MSG']))) {
@@ -26599,6 +26651,10 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 			}
 			if ($p['bool']($p['op_eq'](msg, $m['ADD_MLS_MSG']))) {
 				self['view']['dev_fields']['add_milestone']();
+			}
+			if ($p['bool']($p['op_eq'](msg, $m['CANT_DEL_IMP_MSG']))) {
+				msg = $m['create_warning_message']('You cannot remove previously reported open impediment.');
+				self['view']['msg_lbl']['setHTML'](msg);
 			}
 			return null;
 		}
@@ -26613,8 +26669,9 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				errobj = arguments[2];
 				request_info = arguments[3];
 			}
-
-			$m['Window']['alert']('got an error');
+			var msg;
+			msg = $m['create_error_message']('Oh, snap. Check your data and resubmit.');
+			self['view']['msg_lbl']['setHTML'](msg);
 			return null;
 		}
 	, 1, [null,null,['self'],['code'],['errobj'],['request_info']]);
@@ -26701,7 +26758,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				var self = arguments[0];
 				data = arguments[1];
 			}
-			var milestones,$iter9_iter,m,$iter9_nextval,$iter9_idx,$iter9_array,msg,$iter9_type;
+			var impediments,milestones,$iter9_iter,i,m,$iter10_idx,$iter9_nextval,$iter9_idx,$iter10_array,$iter9_array,$iter10_type,$iter10_nextval,msg,$iter10_iter,$iter9_type;
 			self['view']['dev_fields']['status_area']['widget']()['setText'](data['__getitem__']('status'));
 			self['view']['dev_fields']['risks_area']['widget']()['setText'](data['__getitem__']('risks'));
 			milestones = data['__getitem__']('milestones');
@@ -26711,22 +26768,49 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 				m = $iter9_nextval['$nextval'];
 				if ($p['bool']($p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestone_names')['__contains__'](m['__getitem__']('name')))) {
 					self['view']['dev_fields']['add_milestone']();
-					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones')['__getitem__']((typeof ($usub5=1)=='number'?
-						-$usub5:
-						$p['op_usub']($usub5)))['$$name']['selectItem'](m['__getitem__']('name'));
 					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones')['__getitem__']((typeof ($usub6=1)=='number'?
 						-$usub6:
-						$p['op_usub']($usub6)))['$$name']['setEnabled'](false);
+						$p['op_usub']($usub6)))['$$name']['selectItem'](m['__getitem__']('name'));
 					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones')['__getitem__']((typeof ($usub7=1)=='number'?
 						-$usub7:
-						$p['op_usub']($usub7)))['planned_completion']['setText'](m['__getitem__']('end_date'));
+						$p['op_usub']($usub7)))['$$name']['setEnabled'](false);
 					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones')['__getitem__']((typeof ($usub8=1)=='number'?
 						-$usub8:
-						$p['op_usub']($usub8)))['expected_completion']['getTextBox']()['setText'](m['__getitem__']('expected_completion'));
+						$p['op_usub']($usub8)))['planned_completion']['setText'](m['__getitem__']('end_date'));
+					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'milestones')['__getitem__']((typeof ($usub9=1)=='number'?
+						-$usub9:
+						$p['op_usub']($usub9)))['expected_completion']['getTextBox']()['setText'](m['__getitem__']('expected_completion'));
 				}
 				else {
 					msg = $m['create_warning_message']('One of the previously reported milestones became inactive and cannot be loaded.');
 					self['view']['msg_lbl']['setHTML'](msg);
+				}
+			}
+			impediments = data['__getitem__']('impediments');
+			$iter10_iter = impediments;
+			$iter10_nextval=$p['__iter_prepare']($iter10_iter,false);
+			while (typeof($p['__wrapped_next']($iter10_nextval)['$nextval']) != 'undefined') {
+				i = $iter10_nextval['$nextval'];
+				if ($p['bool']($p['op_eq'](i['__getitem__']('state'), 'Open'))) {
+					self['view']['dev_fields']['add_impediment']();
+					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'impediments')['__getitem__']((typeof ($usub10=1)=='number'?
+						-$usub10:
+						$p['op_usub']($usub10)))['status_lst']['selectItem'](i['__getitem__']('state'));
+					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'impediments')['__getitem__']((typeof ($usub11=1)=='number'?
+						-$usub11:
+						$p['op_usub']($usub11)))['desc_box']['setText'](i['__getitem__']('description'));
+					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'impediments')['__getitem__']((typeof ($usub12=1)=='number'?
+						-$usub12:
+						$p['op_usub']($usub12)))['desc_box']['setEnabled'](false);
+					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'impediments')['__getitem__']((typeof ($usub13=1)=='number'?
+						-$usub13:
+						$p['op_usub']($usub13)))['$$comment']['widget']()['setText'](i['__getitem__']('comment'));
+					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'impediments')['__getitem__']((typeof ($usub14=1)=='number'?
+						-$usub14:
+						$p['op_usub']($usub14)))['set_start_date'](i['__getitem__']('start_date'));
+					$p['getattr']($p['getattr']($p['getattr'](self, 'view'), 'dev_fields'), 'impediments')['__getitem__']((typeof ($usub15=1)=='number'?
+						-$usub15:
+						$p['op_usub']($usub15)))['can_delete'] = false;
 				}
 			}
 			return null;
@@ -26885,7 +26969,7 @@ $pyjs['loaded_modules']['form'] = function (__mod_name__) {
 
 
 /*
-PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLPanel.HTMLPanel', 'pyjamas.ui.HTMLPanel', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Report_Date_Field', 'common.Data_Service', 'datetime', 'time']
+PYJS_DEPS: ['pyjd', 'pyjamas.ui.RootPanel.RootPanel', 'pyjamas', 'pyjamas.ui', 'pyjamas.ui.RootPanel', 'pyjamas.ui.SimplePanel.SimplePanel', 'pyjamas.ui.SimplePanel', 'pyjamas.ui.TextArea.TextArea', 'pyjamas.ui.TextArea', 'pyjamas.ui.Label.Label', 'pyjamas.ui.Label', 'pyjamas.ui.Button.Button', 'pyjamas.ui.Button', 'pyjamas.ui.HTML.HTML', 'pyjamas.ui.HTML', 'pyjamas.ui.HTMLPanel.HTMLPanel', 'pyjamas.ui.HTMLPanel', 'pyjamas.ui.VerticalPanel.VerticalPanel', 'pyjamas.ui.VerticalPanel', 'pyjamas.ui.HorizontalPanel.HorizontalPanel', 'pyjamas.ui.HorizontalPanel', 'pyjamas.ui.ListBox.ListBox', 'pyjamas.ui.ListBox', 'pyjamas.ui.FormPanel.FormPanel', 'pyjamas.ui.FormPanel', 'pyjamas.ui.TextBox.TextBox', 'pyjamas.ui.TextBox', 'pyjamas.Window', 'pyjamas.ui.HasAlignment', 'pyjamas.JSONService.JSONProxy', 'pyjamas.JSONService', 'pyjamas.HTTPRequest.HTTPRequest', 'pyjamas.HTTPRequest', 'json', 'common.Abstract_View', 'common', 'common.Report_Date_Field', 'common.Data_Service', 'consts.DATE_MATCHER', 'consts', 'consts.MODAL_PNL', 'datetime', 'time']
 */
 
 --></script>
@@ -37195,7 +37279,7 @@ function prepare_app() {
         };
         wait();
     }
-    wait_for_loading_modules(app_imported, ['pyjamas.ui','pyjamas.ui.FocusWidget','pyjamas.Window','pyjamas.ui.PopupPanel','pyjamas.ui.InnerText','pyjamas.ui.Widget','pyjamas.ui.ClickListener','pygwt','pyjamas.Location','pyjamas.ui.VerticalPanel','sys','pyjamas.ui.ChangeListener','pyjamas.ui.DropHandler','pyjamas.ui.UIObject','pyjamas.ui.EventObject','pyjamas.ui.TextBoxBase','pyjamas','struct','pyjamas.ui.HorizontalPanel','pyjamas.ui.RowFormatter','pyjamas.ui.TextBox','pyjamas.ui.Focus','binascii','pyjamas.ui.Label','re','json','pyjamas.ui.FormPanel','pyjamas.ui.HTMLPanel','pyjamas.HTTPRequest','getopt','pyjamas.ui.AbsolutePanel','pyjamas.ui.KeyboardListener','math','pyjamas.ui.Event','pyjamas.ui.Button','pyjamas.EventController','form','regextextbox','dynamic','pyjamas.History','pyjamas.ui.Panel','pyjamas.Factory','base64','pyjamas.ui.Composite','pyjd','pyjamas.ui.HyperlinkImage','pyjamas.ui.CellPanel','datetime','pyjamas.ui.Image','pyjamas.ui.MouseListener','common','pyjamas.ui.InnerHTML','pyjamas.ui.ComplexPanel','pyjslib','pyjamas.ui.ButtonBase','pyjamas.JSONService','pyjamas.ui.InputListener','pyjamas.ui.RootPanel','pyjamas.ui.FocusPanel','pyjamas.ui.ScrollPanel','pyjamas.ui.SimplePanel','pyjamas.DOM','pyjamas.ui.Hyperlink','pyjamas.ui.Grid','pyjamas.ui.HTMLTable','time','pyjamas.ui.TextArea','pyjamas.ui.HTML','pyjamas.ui.ListBox','pyjamas.ui.DragHandler','pyjamas.ui.Calendar','pyjamas.ui.CellFormatter','pyjamas.ui.FocusListener']);
+    wait_for_loading_modules(app_imported, ['pyjamas.ui','pyjamas.ui.FocusWidget','pyjamas.Window','pyjamas.ui.PopupPanel','pyjamas.ui.InnerText','pyjamas.ui.Widget','pyjamas.ui.ClickListener','pygwt','pyjamas.Location','pyjamas.ui.VerticalPanel','sys','pyjamas.ui.ChangeListener','pyjamas.ui.DropHandler','pyjamas.ui.UIObject','pyjamas.ui.EventObject','pyjamas.ui.TextBoxBase','pyjamas','struct','pyjamas.ui.HorizontalPanel','pyjamas.ui.RowFormatter','pyjamas.ui.TextBox','pyjamas.ui.Focus','binascii','pyjamas.ui.Label','re','json','pyjamas.ui.FormPanel','pyjamas.ui.HTMLPanel','pyjamas.HTTPRequest','getopt','pyjamas.ui.AbsolutePanel','pyjamas.ui.KeyboardListener','math','pyjamas.ui.Event','pyjamas.ui.Button','pyjamas.EventController','form','regextextbox','dynamic','pyjamas.History','pyjamas.ui.Panel','pyjamas.Factory','base64','pyjamas.ui.Composite','pyjd','pyjamas.ui.HyperlinkImage','consts','pyjamas.ui.CellPanel','datetime','pyjamas.ui.Image','pyjamas.ui.MouseListener','common','pyjamas.ui.InnerHTML','pyjamas.ui.ComplexPanel','pyjslib','pyjamas.ui.ButtonBase','pyjamas.JSONService','pyjamas.ui.InputListener','pyjamas.ui.RootPanel','pyjamas.ui.FocusPanel','pyjamas.ui.ScrollPanel','pyjamas.ui.SimplePanel','pyjamas.DOM','pyjamas.ui.Hyperlink','pyjamas.ui.Grid','pyjamas.ui.HTMLTable','time','pyjamas.ui.TextArea','pyjamas.ui.HTML','pyjamas.ui.ListBox','pyjamas.ui.DragHandler','pyjamas.ui.Calendar','pyjamas.ui.CellFormatter','pyjamas.ui.FocusListener']);
 }
 
 function pygwtOnLoad(onLoadError, name) {

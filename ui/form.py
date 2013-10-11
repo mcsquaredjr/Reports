@@ -20,6 +20,9 @@ import json
 from common import Abstract_View
 from common import Report_Date_Field
 from common import Data_Service
+from consts import DATE_MATCHER
+from consts import MODAL_PNL
+
 
 import datetime
 import time
@@ -30,6 +33,7 @@ GET_REPORT_MSG = 'get-report-msg'
 PROJ_CHANGED_MSG = 'proj-changed-msg'
 GET_PRJ_MSG = 'get-prj-msg'
 ADD_MLS_MSG = 'add-mls-msg'
+CANT_DEL_IMP_MSG = 'cant-del-imp-msg'
 
 def create_error_message(error):
     return '''
@@ -45,10 +49,8 @@ def create_warning_message(warning):
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
             <strong>Warning:</strong> ''' + warning + '''
         </div>
-        '''            
+        '''
 
-DATE_MATCHER = \
-r'^(?:(?:31(\/|-|\.)(?:0?[13578]|1[02]))\1|(?:(?:29|30)(\/|-|\.)(?:0?[1,3-9]|1[0-2])\2))(?:(?:1[6-9]|[2-9]\d)?\d{2})$|^(?:29(\/|-|\.)0?2\3(?:(?:(?:1[6-9]|[2-9]\d)?(?:0[48]|[2468][048]|[13579][26])|(?:(?:16|[2468][048]|[3579][26])00))))$|^(?:0?[1-9]|1\d|2[0-8])(\/|-|\.)(?:(?:0?[1-9])|(?:1[0-2]))\4(?:(?:1[6-9]|[2-9]\d)?\d{2})$'
 
 ######################################################################
 #                         CLASS FORM ROW                             #
@@ -129,7 +131,6 @@ class Milestones_Row(SimplePanel):
         return self.name.getText()
 
 
-
     def get_milestone_data(self):
         '''Get milestone data and return in the form suitable for passing to
         the model.
@@ -183,8 +184,9 @@ class Impediments(SimplePanel):
         self.status_lst.addItem('Open')
         self.status_lst.addItem('Closed')
         # we put date here
-        date_str = 'added on: ' + start_date
-        self.status_lbl = Label(date_str)
+        
+        self.status_lbl = Label('')
+        self.set_start_date(start_date)
         self.status_lbl.setStyleName('text-muted')
         status_panel = VerticalPanel()
         status_panel.add(self.status_lst)
@@ -196,6 +198,10 @@ class Impediments(SimplePanel):
         hpanel.add(status_panel)
         self.vpanel.add(hpanel)
         self.vpanel.add(self.comment.panel())
+
+    def set_start_date(self, start_date):
+        date_str = 'added on: ' + start_date
+        self.status_lbl.setText(date_str)
 
     def get_impediment_data(self):
         '''Get impediment data as a list suitable to passing to model.
@@ -355,8 +361,12 @@ class Dev_Fields(VerticalPanel, Abstract_View):
         '''Remove impediment.
         '''
         try:
-            self.impediments[-1].vpanel.removeFromParent()
-            self.impediments.remove(self.impediments[-1])
+            if self.impediments[-1].can_delete == True:
+                self.impediments[-1].vpanel.removeFromParent()
+                self.impediments.remove(self.impediments[-1])
+            else:
+                self.controller.process_msg(CANT_DEL_IMP_MSG)
+                pass
         except IndexError:
             pass
 
@@ -411,7 +421,14 @@ class Input_Form(Abstract_View):
         self.panel.add(self.project_panel)
         self.panel.add(Label(Height='20px'))
         self.panel.add(self.msg_lbl)
-        self.panel.add(self.submit_btn)
+        btn_holder = HorizontalPanel()
+        btn_holder.add(self.submit_btn)
+        help_btn = HTMLPanel('')
+
+        help_btn.setHTML(MODAL_PNL)
+        btn_holder.add(Label(Width='10px'))
+        btn_holder.add(help_btn)
+        self.panel.add(btn_holder)
         
         self.root = RootPanel('report')
         self.root.add(self.panel)
@@ -505,7 +522,6 @@ class Form_Controller(object):
                 self.view.msg_lbl.setHTML(create_error_message(error))
                 self.model = Report_Model()
             else:
-                #Window.alert(self.model.report_data)
                 self.remote.sendRequest('send_data', {'message': json.dumps(self.model.report_data)}, self)
 
         ## if msg == GET_REPORT_MSG:
@@ -522,9 +538,14 @@ class Form_Controller(object):
             # Re-register controller as the one is created
             self.view.dev_fields.register(self)
             self.view.submit_btn.setEnabled(True)
-            # Receive milestones and configure milestone list 
-            #self.remote.sendRequest('get_active_milestones',
-            #                        {'message': json.dumps(project)}, self)
+            # Receive milestones and configure milestone list just in case we
+            # won't get it from DB
+            # TODO: this is ugly, but requires some code refactoring which I'm
+            # not in the mood to do now. To fix it we need to fire this method
+            # only if we do not have data from the report. Should not happen,
+            # too frequenly, really.
+            self.remote.sendRequest('get_active_milestones',
+                                    {'message': json.dumps(project)}, self)
             # Receive data for last week's project
             self.remote.sendRequest('get_report_for_project',
                                     {'message': json.dumps(project)}, self)
@@ -537,9 +558,15 @@ class Form_Controller(object):
             # We want to add a milestone
             self.view.dev_fields.add_milestone()
 
+        if msg == CANT_DEL_IMP_MSG:
+            # Tell user we can't remove impediment from DB
+            msg = create_warning_message('You cannot remove previously reported open impediment.')
+            self.view.msg_lbl.setHTML(msg)
+
             
     def onRemoteError(self, code, errobj, request_info):
-        Window.alert("got an error")
+        msg = create_error_message('Oh, snap. Check your data and resubmit.')
+        self.view.msg_lbl.setHTML(msg)
 
         
     def onRemoteResponse(self, response, request_info):
@@ -583,10 +610,8 @@ class Form_Controller(object):
             
             if data is not None:
                 self._populate_fields(data)
-                
-            
 
-            
+
     def onCompletion(self, response):
         '''This method is called when asyncGet returns. If we know parameters of the
         repsponse we may process differently for various cases. For example we may setup
@@ -596,6 +621,7 @@ class Form_Controller(object):
         html = HTML()
         html.setHTML(response)
         self.view.root.add(html)        
+
 
     def _populate_fields(self, data):
         '''Populate empty dev_fields with data received from the database.
@@ -618,7 +644,19 @@ class Form_Controller(object):
                 msg = create_warning_message('One of the previously reported milestones became inactive and cannot be loaded.')
                 self.view.msg_lbl.setHTML(msg)
 
+        # Now restore impediments
+        impediments = data['impediments']
+        for i in impediments:
+            if i['state'] == 'Open':
+                self.view.dev_fields.add_impediment()
+                self.view.dev_fields.impediments[-1].status_lst.selectItem(i['state'])
+                self.view.dev_fields.impediments[-1].desc_box.setText(i['description'])
+                self.view.dev_fields.impediments[-1].desc_box.setEnabled(False)
+                self.view.dev_fields.impediments[-1].comment.widget().setText(i['comment'])
+                self.view.dev_fields.impediments[-1].set_start_date(i['start_date'])
+                self.view.dev_fields.impediments[-1].can_delete = False
 
+                
 ######################################################################
 #                          REPORT MODEL                              #
 ######################################################################

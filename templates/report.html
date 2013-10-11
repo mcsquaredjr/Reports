@@ -68,15 +68,32 @@
 
       <!-- Begin page content -->
       <div class="container">
+
         <div class="page-header">
           <h1>Neo Status Report</h1>
 	  <p class="text-info">Generated on:<em> {{reports[0].created}}</em></p>
         </div>
+	
+	
+	<ul class="nav nav-pills" style="max-width:
+						     300px;">
+
+	  {% for report in reports %}
+	  
+	  <li><a href="#{{loop.index}}">{{report.project}}</a></li>
+	  {% endfor %}
+	</ul>
+	
+	<!-- We start here -->
+
 	{% for report in reports %}
+
+	
 	<h2>{{ report.project }}</h2>
+	
 	<p class="text-info">Submitted on: <em>{{report.created}}</em>
 	  by <em><{{report.author}}></em> </p>
-	
+	<a name="{{loop.index}}"></a>
 	<div class="panel panel-default">
 	  <div class="panel-heading">
 	    <h3 class="panel-title">Status</h3>
@@ -147,7 +164,18 @@
           </div>
 	</div>
 
-      {% endfor %}
+
+
+	<!-- We end here -->
+
+      
+	<!-- We end here -->
+
+
+
+	{% endfor %}
+	
+	
       </div>
     </div>
     
