@@ -1,37 +1,29 @@
-
 <!DOCTYPE html>
 <html lang="en">
-  <head>
+<head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
-    <link rel="shortcut icon" href="/static/img/favicon.ico">
 
-    <title>Projects and Milestones</title>
-    <meta name="pygwt:module" content="milestones">
+    <title>Report</title>
+
     <!-- Bootstrap core CSS -->
-    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.css" rel="stylesheet">
+    <link href="../static/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
-    <link href="/static/css/sticky-footer-navbar.css" rel="stylesheet">
-    <link href="/static/css/datefield.css" rel="stylesheet">
-    <link href="/static/css/table.css" rel="stylesheet">
-
+    <link href="../static/css/jumbotron.css" rel="stylesheet">
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
       <script src="../../assets/js/html5shiv.js"></script>
       <script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
-  </head>
-
-  <body>
-
-    <!-- Wrap all page content here -->
+</head>
+<body>
+<!-- Wrap all page content here -->
     <div id="wrap">
-
-      <!-- Fixed navbar -->
+        <!-- Fixed navbar -->
       <div class="navbar navbar-default navbar-fixed-top">
         <div class="container">
           <div class="navbar-header">
@@ -46,14 +38,14 @@
             <ul class="nav navbar-nav">
               <li><a href="/form">Report Form</a></li>
               <li><a href="/report/">Current Report</a></li>
-              <li><a href="/archive">Archive</a></li>
+              <li class=active><a href="/archive">Archive</a></li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Actions <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="/report">Generate report now</a></li>
                   {% if user and user.is_authenticated() and user.is_admin() %}
-                  <li><a href="/projects">Proejcts editor</a></li>
-                  <li class="disabled"><a href="/milestones">Milestones editor</a></li>
+                  <li><a href="/projects">Projects editor</a></li>
+                  <li><a href="/milestones">Milestones editor</a></li>
                   <li class="divider"></li>
                   <li class="dropdown-header">Users</li>
                   <li><a href="/admin/userview">Users admin</a></li>
@@ -68,47 +60,33 @@
         </div>
       </div>
 
-      <!-- Begin page content -->
-      <div class="container" style="width:80%;
-				    margin-left:auto;margin-right:auto;"
-	   >
-        <div class="page-header">
-          <h1>Edit projects and milestones</h1>
-	  
-
-        </div>
-
-	<ul class="nav nav-tabs">
-	  <li><a href="/projects">Projects</a></li>
-	  <li class="active"><a href="/milestones">Milestones</a></li>
-	  
-	</ul>
-
-	<div id="projects_" class="form-group">
-	  
-	 </div>
-      </div>
+       <div class="container">
+        <h2>Archived Reports</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Date</th>
+                    <th>Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in data %}
+                <tr>
+                    <td>{{ loop.index }}</td>
+                    <td>{{ row[0] }}</td>
+                    <td>{{ row[1] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
     </div>
-    
-
-
-
-
-
-    <div id="footer">
-      <div class="container">
-        <p class="text-muted credit">Lovingly crafted with <a href="http://python.org">Python</a> and <a href="http://flask.pocoo.org">Flask</a>.</p>
-      </div>
     </div>
-
-
-    <!-- Bootstrap core JavaScript
-    ================================================== -->
-    <!-- Placed at the end of the document so the pages load faster -->
-    <script src="/static/js/jquery.js"></script>
-    <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-   
-<script type="text/javascript" src="milestones_boot.js"></script>
-<iframe id="__pygwt_historyFrame" style="display:none;"></iframe>
 </body>
+
+<!-- Bootstrap core JavaScript
+================================================== -->
+<!-- Placed at the end of the document so the pages load faster -->
+<script src="/static/js/jquery.js"></script>
+<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
 </html>

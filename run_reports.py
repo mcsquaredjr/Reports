@@ -4,6 +4,9 @@ import os
 import datetime
 import json
 import markdown2
+import urllib2
+import re
+
 from jinja2 import Template
 
 from flask import render_template
@@ -44,7 +47,7 @@ from db_proto.report_queries import get_reports
 
 from db_proto.report_queries import commit_report
 
-
+from db_proto.timeutils import this_week_start_end
 
 SUCC_MSG = \
 '''
@@ -194,7 +197,6 @@ def logout_view():
 @admin_required
 def projects():
     projects_tmpl = Template(serve('projects.html'))
-
     return projects_tmpl.render(title='Projects', user=login.current_user)
 
 @app.route('/milestones')
@@ -204,6 +206,54 @@ def milestones():
     projects_tmpl = Template(serve('milestones.html'))
     return projects_tmpl.render(title='Milestones', user=login.current_user)
 
+def extract_date(file_name):
+    allmatches = re.findall(r'\d{4}-\d{1,2}-\d{1,2}', file_name)
+    return allmatches
+
+def write_report():
+    dir_name = 'archive'
+    if not os.path.exists(dir_name):
+        os.makedirs(dir_name)
+
+    # Get data for all recent reports
+    data = get_reports()
+    
+    for report in data:
+        report['status'] = Markup(markdown2.markdown(report['status'].replace('\n', '\n\n')))
+        report['risks'] = Markup(markdown2.markdown(report['risks'].replace('\n', '\n\n')))
+        for i in report['impediments']:
+            i['comment'] = Markup(markdown2.markdown(i['comment'].replace('\n', '\n\n')))
+
+    html_str = render_template('report.html', reports=data, user=login.current_user)
+
+    week_data = this_week_start_end()
+
+    file_name = 'report-' + week_data[1].strftime("%Y-%m-%d") + '.html'
+
+    file = open(dir_name + '/' + file_name, 'w')
+    file.write(html_str)
+    file.close()
+
+def get_archived_reports():
+    data = []
+
+    os.chdir("archive")
+    for files in os.listdir("."):
+        if files.endswith(".html"):
+            allmatches = extract_date(files)
+            if allmatches[0] is not None:
+                data.append([allmatches[0], files])
+
+    return data
+
+@app.route('/archive')
+@login_required
+def archive():
+    write_report()
+
+    data = get_archived_reports()
+
+    return render_template('archive.html', user=login.current_user, data=data)
 
 @app.route('/process/', methods=['GET', 'POST'])
 def process():
@@ -302,7 +352,7 @@ def show_report(name=None):
         report['risks'] = Markup(markdown2.markdown(report['risks'].replace('\n', '\n\n')))
         for i in report['impediments']:
             i['comment'] = Markup(markdown2.markdown(i['comment'].replace('\n', '\n\n')))
-            
+
     return render_template('report.html', reports=data, user=login.current_user)
 
 
