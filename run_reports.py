@@ -237,8 +237,7 @@ def write_report():
 def get_archived_reports():
     data = []
 
-    os.chdir("archive")
-    for files in os.listdir("."):
+    for files in os.listdir("archive"):
         if files.endswith(".html"):
             allmatches = extract_date(files)
             if allmatches[0] is not None:
