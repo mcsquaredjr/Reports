@@ -251,10 +251,7 @@ def get_archived_reports():
 @app.route('/archive')
 @login_required
 def archive():
-    write_report()
-
     data = get_archived_reports()
-
     return render_template('archive.html', user=login.current_user, data=data)
 
 @app.route('/process/', methods=['GET', 'POST'])
@@ -346,6 +343,9 @@ def success():
 @app.route('/report/<name>')
 @login_required
 def show_report(name=None):
+    # Generate and write report
+    write_report()
+
     # Get data for all recent reports
     data = get_reports()
     
@@ -425,6 +425,15 @@ def resetdb():
 def serve(requestedfile):
     try:
         with file('pyjs/' + requestedfile) as f:
+            return f.read()
+    except IOError as e:
+        return page_not_found(e)
+
+# Load requested file here 
+@app.route('/archive/<requestedfile>')
+def serve_archive(requestedfile):
+    try:
+        with file('archive/' + requestedfile) as f:
             return f.read()
     except IOError as e:
         return page_not_found(e)
