@@ -46,31 +46,31 @@
 	      <li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Boards and Reports<b class="caret"></b></a>
 		<ul class="dropdown-menu">
-		  {% if user and user.is_authenticated()%}
+		  
 		  <li><a href="/report">Current report</a></li>
 		  <li><a href="/impediments">Impediments board</a></li>
 		  <li><a href="/submission">Submission status</a></li>
 		  <li><a href="/archive">Historic reports</a></li>
-		  {% endif %}
+		  
 		</ul>
 	      </li>              
 	      <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Actions <b class="caret"></b></a>
                 <ul class="dropdown-menu">
                   <li><a href="/report">Generate report now</a></li>
-                  {% if user and user.is_authenticated() and user.is_admin() %}
+                  
                   <li><a href="/projects">Projects editor</a></li>
                   <li><a href="/milestones">Milestones editor</a></li>
                   <li class="divider"></li>
                   <li class="dropdown-header">Users</li>
                   <li><a href="/admin/userview">Users admin</a></li>
-                  {% endif %}
+                  
                 </ul>
               </li>
             </ul>
-            {% if user and user.is_authenticated() %}
-            <p class="navbar-text pull-right">Welcome {{ user.email }}</p>  
-            {% endif %}
+            
+            <p class="navbar-text pull-right">Welcome admin</p>  
+            
           </div><!--/.nav-collapse -->
         </div>
       </div>
@@ -80,34 +80,37 @@
       <div class="container" style="padding-top: 0px">
 	<div class="page-header">
           <h1 style="font-size: 40px; color: #3D73A4;">Neo Status Report</h1>
-	  <p class="text-info">Generated on:<em> {{reports[0].created}}</em></p>
+	  <p class="text-info">Generated on:<em> 14/10/2013</em></p>
 	</div> 	
 	<div class="row">
 	  <div class="col-md-3">
 	    <div class="bs-sidebar hidden-print"  data-spy="affix" data-offset-top="100" role="complementary">
               <ul class="nav bs-sidenav">
-		{% for report in reports %}
-		<li><a href="#{{loop.index}}">{{report.project}}</a></li>
-		{% endfor %}	  
+		
+		<li><a href="#1">Project One</a></li>
+		
+		<li><a href="#2">Project Two</a></li>
+			  
               </ul> <!-- end of navigation -->
 	    </div>
 	  </div>
 
 	  <div class="col-md-9" role="main">
 	    <!-- put page content here -->
-	    {% for report in reports %}
+	    
 	    <div class="page-header">
-	      <h2>{{ report.project }}</h2>
+	      <h2>Project One</h2>
 	    </div>
-	    <p class="text-info">Submitted on: <em>{{report.created}}</em>
-	      by <em><{{report.author}}></em> </p>
-	    <a name="{{loop.index}}"></a>
+	    <p class="text-info">Submitted on: <em>14/10/2013</em>
+	      by <em><admin></em> </p>
+	    <a name="1"></a>
 	    <div class="panel panel-default">
 	      <div class="panel-heading">
 		<h3 class="panel-title">Status</h3>
 	      </div>
 	      <div class="panel-body">
-		{{report.status}}
+		<p>blah</p>
+
 	      </div>
 	    </div>
 	    
@@ -116,7 +119,8 @@
 		<h2 class="panel-title">Risks</h2>
               </div>
               <div class="panel-body">
-		{{report.risks}}
+		<p>hello</p>
+
               </div>
 	    </div>
 	    
@@ -142,15 +146,7 @@
 		</thead>
 		<tbody>
 		  
-		  {% for m in report.milestones%}
-		  <tr class="{{m.tr_class}}">
-		    <td>{{loop.index}}</td>
-		    <td>{{m.name}}</td>
-		    <td>{{m.end_date}}</td>
-		    <td>{{m.expected_completion}}</td>
-		  </tr>
-		</tbody>
-		{% endfor %}
+		  
 	      </table>
 	    </div>
 
@@ -159,18 +155,111 @@
 		<h2 class="panel-title">Impediments</h2>
               </div>
               <div class="panel-body">
-		{% for i in report.impediments%}
-		<div class="{{i.alert_class}}">
-		  <strong>{{i.description}}</strong>
-		  <p>State: <em>{{i.state}}</em> Added: <em>{{i.start_date}}</em> Removed: <em>{{i.end_date}}</em></p>
+		
+		<div class="alert alert-danger">
+		  <strong>hey, i&#39;m impediment number one</strong>
+		  <p>State: <em>Open</em> Added: <em>13/10/2013</em> Removed: <em>None</em></p>
 		</div>
-		{{i.comment}}
+		<p>great, it does not work</p>
+
 		<br>
-		{% endfor %}
+		
+		<div class="alert alert-danger">
+		  <strong>i&#39;m anoter impediment and </strong>
+		  <p>State: <em>Open</em> Added: <em>13/09/2013</em> Removed: <em>None</em></p>
+		</div>
+		<p>i'm old</p>
+
+		<br>
+		
               </div>
 	    </div>
 	    
-	    {% endfor %}
+	    
+	    <div class="page-header">
+	      <h2>Project Two</h2>
+	    </div>
+	    <p class="text-info">Submitted on: <em>14/10/2013</em>
+	      by <em><admin></em> </p>
+	    <a name="2"></a>
+	    <div class="panel panel-default">
+	      <div class="panel-heading">
+		<h3 class="panel-title">Status</h3>
+	      </div>
+	      <div class="panel-body">
+		<p>here is some status</p>
+
+	      </div>
+	    </div>
+	    
+	    <div class="panel panel-warning">
+              <div class="panel-heading">
+		<h2 class="panel-title">Risks</h2>
+              </div>
+              <div class="panel-body">
+		<p>and here is another status:</p>
+
+<ul>
+<li><p>one</p></li>
+<li><p>two</p></li>
+<li><p>three</p></li>
+</ul>
+
+              </div>
+	    </div>
+	    
+	    <div class="panel panel-default">
+	      <!-- Default panel contents -->
+	      <div class="panel-heading">
+		<h3 class="panel-title">Milestones</h3>
+	      </div>
+	      
+	      <div class="panel-body">
+		<p>Reported milestones and expected completion dates</p>
+	      </div>
+	      
+	      <!-- Table -->
+	      <table class="table table-condensed table-striped">
+		<thead>
+		  <tr>
+		    <th>#</th>
+		    <th>Miestone</th>
+		    <th>Planned Completion</th>
+		    <th>Expected Completion</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  
+		  
+		  <tr class="danger">
+		    <td>1</td>
+		    <td>M1</td>
+		    <td>25/10/2013</td>
+		    <td>26/10/2013</td>
+		  </tr>
+		</tbody>
+		
+	      </table>
+	    </div>
+
+	    <div class="panel panel-info">
+              <div class="panel-heading">
+		<h2 class="panel-title">Impediments</h2>
+              </div>
+              <div class="panel-body">
+		
+		<div class="alert alert-danger">
+		  <strong>this is an impediment</strong>
+		  <p>State: <em>Open</em> Added: <em>13/10/2013</em> Removed: <em>None</em></p>
+		</div>
+		<p>i want  to add something here, just for the sake of completeness  </p>
+
+		<br>
+		
+              </div>
+	    </div>
+	    
+	    
 	  </div>
 	</div>
       </div>

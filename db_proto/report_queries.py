@@ -15,6 +15,7 @@ from sqlalchemy.exc import IntegrityError
 import datetime
 import timeutils
 import sys
+import itertools
 
 from app import db
 
@@ -49,16 +50,18 @@ def get_milestones(inactive=True):
 def get_reports():
     '''Generate report for all active projects given they were submitted this week.'''
     this_week_start, this_week_end = timeutils.this_week_start_end()
+
     # Get all reports for projects that are active and were submitted this week
     active_projects = get_projects(inactive=False)
     all_reports_data = []
     # Find all reports that match current week
-    
+
+
+    #filter(Report.created <= this_week_end).\
     for p in active_projects:
         p_obj = session.query(Project).filter(Project.name == p[1]).first()
         this_week_reports = session.query(Report).\
           filter(Report.created >= this_week_start).\
-          filter(Report.created <= this_week_end).\
           filter(Report.project_id == p_obj.id).order_by(Report.created).all()  
   
         if len(this_week_reports) > 0:
@@ -70,7 +73,7 @@ def get_reports():
 def get_current_report_for_project(project):
     '''Return the most recent report object for a given project.
     '''
-    reports = session.query(Report).filter(Report.project_id == project_id).\
+    reports = session.query(Report).filter(Report.project_id == project.id).\
       order_by(Report.created).all()
     return reports[-1]
     
@@ -191,9 +194,6 @@ def commit_projects(new_data):
         print '\n*** DB INTEGRITY ERROR: Cannot commit projects. Rolled back.'
 
 
-
-
-    
 def commit_milestones(new_data):
     '''Commit milestones in the database, updading or adding rows in necessary.'''
     old_data = get_milestones()
@@ -297,3 +297,104 @@ def commit_report(data):
     
     
 
+def get_impediment_board():
+    '''Return data to display impediments board, that includes:
+    * impediment name,
+    * impediment description
+    * impediment start date
+    * impediment end_date
+    * ipediment status
+    * duration.
+    '''
+    # Get all active projects
+    board_data = dict()
+    q = session.query(Project.id, Project.name, Project_State.name)
+    q = q.filter(Project.state_id == Project_State.id)
+    projects = q.filter(Project_State.name != 'Deleted').filter(Project_State.name != 'Inactive').all()
+    board_data = dict()
+    # Create dictionary to hold impediments
+    for p in projects:
+        board_data[p[1]] = []
+        
+    impediments = q.session.query(Impediment).order_by(Impediment.start).all()
+
+    for i in impediments:
+        imp_data = dict()
+        imp_data['name'] = i.name
+        imp_data['description'] = i.name
+        imp_data['comment'] = i.comment
+        imp_data['start'] = timeutils.to_date(i.start)
+        try:
+             imp_data['end'] = timeutils.to_date(i.end)
+        except AttributeError:
+            imp_data['end'] = ''
+            
+        imp_data['state'] = i.state.name
+        project_name = i.reports[0].project.name
+        if imp_data['end'] == '':
+            i_end = timeutils.today()
+        else:
+            i_end = i.end.date()
+
+        imp_data['duration'] = (i_end - i.start.date()).days
+
+        if imp_data['state'] != 'Open':
+            imp_data['_class'] = 'label label-success'
+        else:
+            if imp_data['duration'] <= 7 and imp_data['duration'] >= 1:
+                imp_data['_class'] = 'label label-warning'
+            elif imp_data['duration'] < 1:
+                imp_data['_class'] = 'label label-info'
+            elif imp_data['duration'] > 7:
+                imp_data['_class'] = 'label label-danger'
+        
+        try:           
+            board_data[project_name].append(imp_data)
+        except KeyError:
+            # Project is not active
+            print '*** Error: Cannot append data for inactive project.'
+        
+    for key in board_data.keys():
+        board_data[key].sort()
+        board_data[key] = list(board_data[key] for board_data[key], _, in itertools.groupby(board_data[key]))        
+    return board_data
+
+           
+def submission_status():
+    '''Return data representing submission status for cureent week report.
+    '''
+    this_week_start, this_week_end = timeutils.this_week_start_end()
+
+    # Get all reports for projects that are active and were submitted this week
+    active_projects = get_projects(inactive=False)
+    submission_data = []
+    # Find all reports that match current week
+
+    for p in active_projects:
+        project_status = dict()
+        p_obj = session.query(Project).filter(Project.name == p[1]).first()
+        this_week_reports = session.query(Report).\
+          filter(Report.created >= this_week_start).\
+          filter(Report.project_id == p_obj.id).order_by(Report.created).all()
+
+        print '*'*80
+        print this_week_reports
+        print '*'*80
+        
+        if len(this_week_reports) > 0:
+            latest = this_week_reports[-1]
+            project_status['project'] = p_obj.name
+            project_status['author'] = latest.author
+            project_status['created'] = timeutils.to_date(latest.created)
+            project_status['status'] = 'Submitted'
+            project_status['_class'] = "label label-success"
+        else:
+            project_status['project'] = p_obj.name
+            project_status['author'] = ''
+            project_status['created'] = ''
+            project_status['status'] = 'Not submitted'
+            project_status['_class'] = "label label-danger"
+        
+        submission_data.append(project_status)    
+            
+    return submission_data

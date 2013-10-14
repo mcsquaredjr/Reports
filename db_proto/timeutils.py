@@ -56,7 +56,7 @@ def this_week_start_end():
     d = datetime.date(year,1,1)
     d = d - datetime.timedelta(d.weekday())
     dlt = datetime.timedelta(days = (week-1)*7)
-    return d + dlt,  d + dlt + datetime.timedelta(days=6)
+    return d + dlt,  d + dlt + datetime.timedelta(days=7)
 
 
 

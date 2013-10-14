@@ -221,6 +221,7 @@ class Report(db.Model):
     milestones = db.relationship('Milestone',
                               secondary=rep_mil_ass,
                               backref='reports')
+    
 
     impediments = db.relationship('Impediment',
                                   secondary=rep_imp_ass,

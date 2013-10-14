@@ -44,6 +44,9 @@ from db_proto.report_queries import get_projects
 from db_proto.report_queries import get_milestones
 from db_proto.report_queries import get_report
 from db_proto.report_queries import get_reports
+from db_proto.report_queries import get_impediment_board
+from db_proto.report_queries import submission_status
+
 
 from db_proto.report_queries import commit_report
 
@@ -353,6 +356,28 @@ def show_report(name=None):
             i['comment'] = Markup(markdown2.markdown(i['comment'].replace('\n', '\n\n')))
 
     return render_template('report.html', reports=data, user=login.current_user)
+
+@app.route('/impediments/')
+@login_required
+def impediments_board():
+    # Get data for all recent reports
+    data = get_impediment_board()
+    for key in data.keys():
+        impediments = data[key]
+        for i in impediments:
+            i['comment'] =  Markup(markdown2.markdown(i['comment'].replace('\n', '\n\n')))
+    return render_template('impediments.html', data=data, user=login.current_user)
+
+
+
+@app.route('/submission/')
+@login_required
+def submission_board():
+    # Get data for all recent reports
+    data = submission_status()
+    return render_template('submission.html', data=data, user=login.current_user)
+
+
 
 
 @app.route('/_resetdb_')

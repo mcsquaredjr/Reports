@@ -5,29 +5,27 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="author" content="Serge Boyko">
     <link rel="shortcut icon" href="/static/img/favicon.ico">
 
-    <title>Projects and Milestones</title>
-    <meta name="pygwt:module" content="milestones">
+    <title>Impediments board</title>
+
     <!-- Bootstrap core CSS -->
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.css" rel="stylesheet">
+    <link href="http://getbootstrap.com/assets/css/docs.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="/static/css/sticky-footer-navbar.css" rel="stylesheet">
-    <link href="/static/css/datefield.css" rel="stylesheet">
-    <link href="/static/css/table.css" rel="stylesheet">
-
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-	<script src="../../assets/js/html5shiv.js"></script>
-	<script src="../../assets/js/respond.min.js"></script>
-	<![endif]-->
+    <script src="../../assets/js/html5shiv.js"></script>
+    <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
   </head>
 
   <body>
-
+    <a class="sr-only" href="#content">Skip navigation</a>
     <!-- Wrap all page content here -->
     <div id="wrap">
 
@@ -45,7 +43,7 @@
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
               <li><a href="/form">Report Form</a></li>
-	      <li class="dropdown">
+              <li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Boards and Reports<b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		  {% if user and user.is_authenticated()%}
@@ -61,8 +59,8 @@
                 <ul class="dropdown-menu">
                   <li><a href="/report">Generate report now</a></li>
                   {% if user and user.is_authenticated() and user.is_admin() %}
-                  <li><a href="/projects">Proejcts editor</a></li>
-                  <li class="disabled"><a href="/milestones">Milestones editor</a></li>
+                  <li><a href="/projects">Projects editor</a></li>
+                  <li><a href="/milestones">Milestones editor</a></li>
                   <li class="divider"></li>
                   <li class="dropdown-header">Users</li>
                   <li><a href="/admin/userview">Users admin</a></li>
@@ -77,33 +75,61 @@
         </div>
       </div>
 
-      <!-- Begin page content -->
-      <div class="container" style="width:80%;
-				    margin-left:auto;margin-right:auto;"
-	   >
-        <div class="page-header">
-          <h1 style="font-size: 40px; color: #3D73A4;">Edit projects and milestones</h1>
-	  
+      <!-- started here -->
 
-        </div>
-
-	<ul class="nav nav-tabs">
-	  <li><a href="/projects">Projects</a></li>
-	  <li class="active"><a href="/milestones">Milestones</a></li>
-	  
-	</ul>
-
-	<div id="projects_" class="form-group">
-	  
+      <div class="container" style="padding-top: 0px">
+	<div class="page-header">
+          <h1 style="font-size: 40px; color: #3D73A4;">Impediments Board</h1>
 	</div>
+	{%  for project, impediments in data.iteritems() %}
+	<h2> {{project}} </h2>
+	<hr>
+	<!-- Table -->
+	<table class="table table-condensed table-striped">
+	  <colgroup>
+	    <col span="1", style="width: 5%;"> 
+	    <col span="1", style="width: 15%;"> 
+	    <col span="1", style="width: 40%;">
+	    <col span="1", style="width: 10%;">
+	    <col span="1", style="width: 10%;">
+	    <col span="1", style="width: 10%;">
+	    <col span="1", style="width: 10%;">
+	  </colgroup>
+	  <thead>
+	    <tr>
+	      <th>#</th>
+	      <th>Desription</th>
+	      <th>Comments</th>
+	      <th>Start date</th>
+	      <th>End date</th>
+	      <th>Duration (d)</th>
+	      <th>Status</th>
+	    </tr>
+	  </thead>
+	  <tbody class="table-striped">
+
+	  {% for i in impediments %}
+	    <tr>
+	      <td>{{loop.index}}</td>
+	      <td>{{i.description}}</td>
+	      <td>{{i.comment}}</td>
+	      <td>{{i.start}}</td>
+	      <td>{{i.end}}</td>
+	      <td>{{i.duration}}</td>
+	      <td><h4><span class="{{i._class}}"> {{i.state}}</span></h4></td>
+	    </tr>
+	  
+	  {% endfor %}
+	  </tbody>
+	</table>
+
+	{% endfor %}
       </div>
     </div>
     
-
-
-
-
-
+    <!-- ended here -->
+    
+    
     <div id="footer">
       <div class="container">
         <p class="text-muted credit">Lovingly crafted with <a href="http://python.org">Python</a> and <a href="http://flask.pocoo.org">Flask</a>.</p>
@@ -112,12 +138,10 @@
 
 
     <!-- Bootstrap core JavaScript
-	 ================================================== -->
+    ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="/static/js/jquery.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
     
-    <script type="text/javascript" src="milestones_boot.js"></script>
-    <iframe id="__pygwt_historyFrame" style="display:none;"></iframe>
   </body>
 </html>

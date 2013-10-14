@@ -8,22 +8,19 @@
     <meta name="author" content="">
     <link rel="shortcut icon" href="/static/img/favicon.ico">
 
-    <title>Projects and Milestones</title>
-    <meta name="pygwt:module" content="milestones">
+    <title>Neo Status Report</title>
+
     <!-- Bootstrap core CSS -->
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.css" rel="stylesheet">
 
     <!-- Custom styles for this template -->
     <link href="/static/css/sticky-footer-navbar.css" rel="stylesheet">
-    <link href="/static/css/datefield.css" rel="stylesheet">
-    <link href="/static/css/table.css" rel="stylesheet">
-
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
-	<script src="../../assets/js/html5shiv.js"></script>
-	<script src="../../assets/js/respond.min.js"></script>
-	<![endif]-->
+      <script src="../../assets/js/html5shiv.js"></script>
+      <script src="../../assets/js/respond.min.js"></script>
+    <![endif]-->
   </head>
 
   <body>
@@ -45,7 +42,7 @@
           <div class="collapse navbar-collapse">
             <ul class="nav navbar-nav">
               <li><a href="/form">Report Form</a></li>
-	      <li class="dropdown">
+              <li class="dropdown">
 		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Boards and Reports<b class="caret"></b></a>
 		<ul class="dropdown-menu">
 		  {% if user and user.is_authenticated()%}
@@ -61,8 +58,8 @@
                 <ul class="dropdown-menu">
                   <li><a href="/report">Generate report now</a></li>
                   {% if user and user.is_authenticated() and user.is_admin() %}
-                  <li><a href="/projects">Proejcts editor</a></li>
-                  <li class="disabled"><a href="/milestones">Milestones editor</a></li>
+                  <li><a href="/projects">Projects editor</a></li>
+                  <li><a href="/milestones">Milestones editor</a></li>
                   <li class="divider"></li>
                   <li class="dropdown-header">Users</li>
                   <li><a href="/admin/userview">Users admin</a></li>
@@ -71,39 +68,125 @@
               </li>
             </ul>
             {% if user and user.is_authenticated() %}
-            <p class="navbar-text pull-right">Welcome {{ user.email }}</p>  
+              <p class="navbar-text pull-right">Welcome {{ user.email }}</p>  
             {% endif %}
           </div><!--/.nav-collapse -->
         </div>
       </div>
 
       <!-- Begin page content -->
-      <div class="container" style="width:80%;
-				    margin-left:auto;margin-right:auto;"
-	   >
+      <div class="container">
+
         <div class="page-header">
-          <h1 style="font-size: 40px; color: #3D73A4;">Edit projects and milestones</h1>
-	  
-
+          <h1>Neo Status Report</h1>
+	  <p class="text-info">Generated on:<em> {{reports[0].created}}</em></p>
         </div>
+	
+	<!-- we create our table of contents here -->
+	<ul class="nav nav-pills" style="max-width:
+						     300px;">
 
-	<ul class="nav nav-tabs">
-	  <li><a href="/projects">Projects</a></li>
-	  <li class="active"><a href="/milestones">Milestones</a></li>
+	  {% for report in reports %}
 	  
+	  <li><a href="#{{loop.index}}">{{report.project}}</a></li>
+	  {% endfor %}
 	</ul>
+	
+	<!-- We start here -->
 
-	<div id="projects_" class="form-group">
-	  
+	{% for report in reports %}
+
+	
+	<h2>{{ report.project }}</h2>
+	
+	<p class="text-info">Submitted on: <em>{{report.created}}</em>
+	  by <em><{{report.author}}></em> </p>
+	<a name="{{loop.index}}"></a>
+	<div class="panel panel-default">
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Status</h3>
+	  </div>
+	  <div class="panel-body">
+	      {{report.status}}
+	  </div>
 	</div>
-      </div>
-    </div>
+	
+	
+	<div class="panel panel-warning">
+          <div class="panel-heading">
+            <h2 class="panel-title">Risks</h2>
+          </div>
+          <div class="panel-body">
+            {{report.risks}}
+          </div>
+	</div>
+	
+	<div class="panel panel-default">
+	  <!-- Default panel contents -->
+	  <div class="panel-heading">
+	    <h3 class="panel-title">Milestones</h3>
+	  </div>
+	  
+	  <div class="panel-body">
+	    <p>Reported milestones and expected completion dates</p>
+	  </div>
+	  
+	  <!-- Table -->
+	  <table class="table table-condensed table-striped">
+	  <thead>
+            <tr>
+              <th>#</th>
+              <th>Miestone</th>
+              <th>Planned Completion</th>
+              <th>Expected Completion</th>
+            </tr>
+          </thead>
+          <tbody>
+	    
+	    {% for m in report.milestones%}
+            <tr class="{{m.tr_class}}">
+              <td>{{loop.index}}</td>
+              <td>{{m.name}}</td>
+              <td>{{m.end_date}}</td>
+              <td>{{m.expected_completion}}</td>
+            </tr>
+          <tbody>
+	    {% endfor %}
+	  </table>
+	</div>
+
+
+	<div class="panel panel-info">
+          <div class="panel-heading">
+            <h2 class="panel-title">Impediments</h2>
+          </div>
+          <div class="panel-body">
+            {% for i in report.impediments%}
+	    <div class="{{i.alert_class}}">
+	      <strong>{{i.description}}</strong>
+	      <p>State: <em>{{i.state}}</em> Added: <em>{{i.start_date}}</em> Removed: <em>{{i.end_date}}</em></p>
+	    </div>
+	    {{i.comment}}
+	    <br>
+	    {% endfor %}
+          </div>
+	</div>
+
+
+
+	<!-- We end here -->
+
+      
+	<!-- We end here -->
+
+
+
+	{% endfor %}
+	
+	
+      </div> <!-- end of page content -->
+    </div> <!-- end of the page -->
     
-
-
-
-
-
     <div id="footer">
       <div class="container">
         <p class="text-muted credit">Lovingly crafted with <a href="http://python.org">Python</a> and <a href="http://flask.pocoo.org">Flask</a>.</p>
@@ -112,12 +195,10 @@
 
 
     <!-- Bootstrap core JavaScript
-	 ================================================== -->
+    ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script src="/static/js/jquery.js"></script>
     <script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
-    
-    <script type="text/javascript" src="milestones_boot.js"></script>
-    <iframe id="__pygwt_historyFrame" style="display:none;"></iframe>
+   
   </body>
 </html>
