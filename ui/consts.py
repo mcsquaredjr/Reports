@@ -72,11 +72,11 @@ MODAL_PNL = \
         <h4>Links</h4>
         <p>To insert a link, use this:</p>
         <pre>
-If you want to find to lear more about markdown, go [here](http://daringfireball.net/projects/markdown/syntax)
+If you want to learn more about markdown, visit [this link](http://daringfireball.net/projects/markdown/syntax)
         </pre>
 <p>It will be rendered as:</p>
 <hr>
-<p>If you want to learn more about markdown, go  <a href="http://daringfireball.net/projects/markdown/syntax">here</a></p>
+<p>If you want to learn more about markdown, visit  <a href="http://daringfireball.net/projects/markdown/syntax">this link</a></p>
 <hr>
 <p>This really all you need to know to start using markdown!</p>
         </div>
