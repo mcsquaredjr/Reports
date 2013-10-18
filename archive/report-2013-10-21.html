@@ -87,9 +87,13 @@
 	    <div class="bs-sidebar hidden-print"  data-spy="affix" data-offset-top="100" role="complementary">
               <ul class="nav bs-sidenav">
 		
-		<li><a href="#1">Project One</a></li>
+		<li><a href="#1">Morpheus</a></li>
 		
-		<li><a href="#2">Project Two</a></li>
+		<li><a href="#2">Engineering Services</a></li>
+		
+		<li><a href="#3">Operations</a></li>
+		
+		<li><a href="#4">Futurama</a></li>
 			  
               </ul> <!-- end of navigation -->
 	    </div>
@@ -99,7 +103,7 @@
 	    <!-- put page content here -->
 	    
 	    <div class="page-header">
-	      <h2>Project One</h2>
+	      <h2>Morpheus</h2>
 	    </div>
 	    <p class="text-info">Submitted on: <em>14/10/2013</em>
 	      by <em><admin></em> </p>
@@ -109,7 +113,18 @@
 		<h3 class="panel-title">Status</h3>
 	      </div>
 	      <div class="panel-body">
-		<p>blah</p>
+		<ul>
+<li>MRP-1306 introduced interoperability issue with 2.3 and 2.4 client. Going to issue HF42 and land fix to Antares - it is blocker.</li>
+</ul>
+
+<p>Need to improve Morpheus testing, to get test with 2.3 and 2.4 clients.</p>
+
+<ul>
+<li><p>A Morpheus developer will be nominated to start learning about SAMBA</p></li>
+<li><p>Applications being made to land Cray Hotfixes from HF40 and 41 to a System Update for Neo 1.3.1 - Delayed due to MPR-1306 and VPN Issues</p></li>
+<li><p>Porting of Xyratex specific fixes to Lustre 2.5 branch continues</p></li>
+<li><p>LAD-13 is taking place in Paris next week. Attendees can be seen <a href="http://goo.gl/maznU9">here</a></p></li>
+</ul>
 
 	      </div>
 	    </div>
@@ -119,7 +134,7 @@
 		<h2 class="panel-title">Risks</h2>
               </div>
               <div class="panel-body">
-		<p>hello</p>
+		<p>None</p>
 
               </div>
 	    </div>
@@ -147,6 +162,22 @@
 		<tbody>
 		  
 		  
+		  <tr class="success">
+		    <td>1</td>
+		    <td>Feature Freeze</td>
+		    <td>31/10/2013</td>
+		    <td>25/10/2013</td>
+		  </tr>
+		</tbody>
+		
+		  <tr class="success">
+		    <td>2</td>
+		    <td>Branching Milestone</td>
+		    <td>20/11/2013</td>
+		    <td>25/10/2013</td>
+		  </tr>
+		</tbody>
+		
 	      </table>
 	    </div>
 
@@ -157,26 +188,10 @@
               <div class="panel-body">
 		
 		<div class="alert alert-danger">
-		  <strong>Great</strong>
-		  <p>State: <em>Open</em> Added: <em>13/10/2013</em> Removed: <em>None</em></p>
+		  <strong>VPN link problems</strong>
+		  <p>State: <em>Open</em> Added: <em>14/10/2013</em> Removed: <em>None</em></p>
 		</div>
-		<p>Here is a blue one</p>
-
-		<br>
-		
-		<div class="alert alert-danger">
-		  <strong>hey, i&#39;m impediment number one</strong>
-		  <p>State: <em>Open</em> Added: <em>13/10/2013</em> Removed: <em>None</em></p>
-		</div>
-		<p>great, it does not work</p>
-
-		<br>
-		
-		<div class="alert alert-danger">
-		  <strong>i&#39;m anoter impediment and </strong>
-		  <p>State: <em>Open</em> Added: <em>13/09/2013</em> Removed: <em>None</em></p>
-		</div>
-		<p>i'm old</p>
+		<p>Major problems with Kiev VPN link mean that critical testing has been delayed. IT are working on this</p>
 
 		<br>
 		
@@ -185,9 +200,9 @@
 	    
 	    
 	    <div class="page-header">
-	      <h2>Project Two</h2>
+	      <h2>Engineering Services</h2>
 	    </div>
-	    <p class="text-info">Submitted on: <em>14/10/2013</em>
+	    <p class="text-info">Submitted on: <em>17/10/2013</em>
 	      by <em><admin></em> </p>
 	    <a name="2"></a>
 	    <div class="panel panel-default">
@@ -195,7 +210,48 @@
 		<h3 class="panel-title">Status</h3>
 	      </div>
 	      <div class="panel-body">
-		<p>here is some status</p>
+		<h3>Release Engineering</h3>
+
+<ul>
+<li><p>MSCSA fun Uploaded files to external ftp site for MSCSA-101 (Firenze B28).</p></li>
+<li><p>Completed 3 Antares RMJT</p></li>
+<li><p>Continue work to standardize RPM versioning for NEO assets</p></li>
+<li><p>Got cs-upgrade build working</p></li>
+</ul>
+
+<h3>Reporting &amp; Dashboard:</h3>
+
+<ul>
+<li><p>Antares quality reports and Jira sanity reports</p></li>
+<li><p>Script to get changelog resource from jira</p></li>
+</ul>
+
+<h3>Automation:</h3>
+
+<ul>
+<li><p>System updates form modifications, done, testing on jiradev</p></li>
+<li><p>RTJT png generation script, in testing</p></li>
+<li><p>NEO release dashboard site work continues:</p></li>
+</ul>
+
+<h3>Infrastructure &amp; Tools:</h3>
+
+<ul>
+<li><p>Converting RE documents to native site pages (95% done)</p></li>
+<li><p>KVM based Gerrit server.</p></li>
+<li><p>Found possible solution to restrict access to Fix Release field and enable </p></li>
+</ul>
+
+<p>automation</p>
+
+<h3>Integration Testing:</h3>
+
+<ul>
+<li><p>More design discussions about KVM cluster for intesgration testing.</p></li>
+<li><p>Jenkins client rpm added to package repo </p></li>
+<li><p>Added autoboot option to kickstart routines to allow automation of vm's</p></li>
+<li><p>Adding jenkins client rpm to kickstart</p></li>
+</ul>
 
 	      </div>
 	    </div>
@@ -205,12 +261,10 @@
 		<h2 class="panel-title">Risks</h2>
               </div>
               <div class="panel-body">
-		<p>and here is another status:</p>
+		<ul>
+<li><p>Jim Klobcar has submitted his resignation (effective 9-6-13).  A backfill will be planned (an internal candidate has been identified), but in addition, cross training of existing personel will also occur.</p></li>
 
-<ul>
-<li><p>one</p></li>
-<li><p>two</p></li>
-<li><p>three</p></li>
+<li><p>Steve O'neil is on LOA, TBD impact to PDRAID.</p></li>
 </ul>
 
               </div>
@@ -239,11 +293,19 @@
 		<tbody>
 		  
 		  
-		  <tr class="danger">
+		  <tr class="success">
 		    <td>1</td>
-		    <td>M1</td>
-		    <td>25/10/2013</td>
+		    <td>Feature Freeze</td>
+		    <td>31/10/2013</td>
 		    <td>26/10/2013</td>
+		  </tr>
+		</tbody>
+		
+		  <tr class="danger">
+		    <td>2</td>
+		    <td>Branching Milestone</td>
+		    <td>20/11/2013</td>
+		    <td>30/11/2013</td>
 		  </tr>
 		</tbody>
 		
@@ -257,10 +319,231 @@
               <div class="panel-body">
 		
 		<div class="alert alert-danger">
-		  <strong>this is an impediment</strong>
-		  <p>State: <em>Open</em> Added: <em>13/10/2013</em> Removed: <em>None</em></p>
+		  <strong>OneLogin integration</strong>
+		  <p>State: <em>Open</em> Added: <em>11/10/2013</em> Removed: <em>None</em></p>
 		</div>
-		<p>i want  to add something here, just for the sake of completeness  </p>
+		<p>Need to talk to IT to find out a way to integrate with OneLogin service</p>
+
+		<br>
+		
+		<div class="alert alert-danger">
+		  <strong>Server to deploy Reports</strong>
+		  <p>State: <em>Open</em> Added: <em>14/10/2013</em> Removed: <em>None</em></p>
+		</div>
+		<p>Need Amazon service to deploy Reports and access to AWS management console</p>
+
+		<br>
+		
+		<div class="alert alert-danger">
+		  <strong>LDAP service stopped working</strong>
+		  <p>State: <em>Open</em> Added: <em>15/10/2013</em> Removed: <em>None</em></p>
+		</div>
+		<p>it prevents us from getting the latest build</p>
+
+		<br>
+		
+              </div>
+	    </div>
+	    
+	    
+	    <div class="page-header">
+	      <h2>Operations</h2>
+	    </div>
+	    <p class="text-info">Submitted on: <em>14/10/2013</em>
+	      by <em><admin></em> </p>
+	    <a name="3"></a>
+	    <div class="panel panel-default">
+	      <div class="panel-heading">
+		<h3 class="panel-title">Status</h3>
+	      </div>
+	      <div class="panel-body">
+		<h3>BUDGET</h3>
+
+<ul>
+<li><p>Received budget details from Janice. </p></li>
+<li><p>Call with Janice and Peter next week. Discussed with Peter/Janice. Waiting on an updated spreadsheet containing heads. </p></li>
+<li><p>Working on a Quarterly futures report for hiring and transfers for Ken. </p></li>
+<li><p>Report sent to Ken. Still waiting on budget with headcount.</p></li>
+</ul>
+
+<h3>MEETING PLANNING</h3>
+
+<ul>
+<li><p>Roadmap meeting completed. </p></li>
+<li><p>Sales meeting complete. </p></li>
+<li><p>QBR next week in Fremont - agenda released. SIR prep Sept 11.</p></li>
+<li><p>Need to plan a finance overview meeting with </p></li>
+</ul>
+
+<p>Janice/Les/Peter/Kenny/Ian/Prod Owners. </p>
+
+<h3>SITE</h3>
+
+<p>Adding New Customer's page. Gathering Sales info via Chris Lym. </p>
+
+<h3>RECRUITING</h3>
+
+<p>Admin accepted, starts Sept 23. </p>
+
+<h3>PLM</h3>
+
+<ul>
+<li><p>Sentinel G2 will be scheduled for September 13, pushed out as the team was not ready. Waiting on BDA final presentation from Chris/Marc to close this one out. </p></li>
+<li><p>Need to schedule G2 for Mero - Marc has requested we wait till Kenny is onboard and does his Mero review before scheduling G2. </p></li>
+<li><p>Need to schedule G2 for Futurama - Kanwal will be PjM for this project, waiting for his transfer to CS before we schedule G2. </p></li>
+<li><p>Scheduled G3 for Zee in September, pushed out as the team was not ready.</p></li>
+</ul>
+
+	      </div>
+	    </div>
+	    
+	    <div class="panel panel-warning">
+              <div class="panel-heading">
+		<h2 class="panel-title">Risks</h2>
+              </div>
+              <div class="panel-body">
+		<p>Mero and Futurama PLCP dates may slip due to onboarding of Kenny and Kanwal and spin up time</p>
+
+              </div>
+	    </div>
+	    
+	    <div class="panel panel-default">
+	      <!-- Default panel contents -->
+	      <div class="panel-heading">
+		<h3 class="panel-title">Milestones</h3>
+	      </div>
+	      
+	      <div class="panel-body">
+		<p>Reported milestones and expected completion dates</p>
+	      </div>
+	      
+	      <!-- Table -->
+	      <table class="table table-condensed table-striped">
+		<thead>
+		  <tr>
+		    <th>#</th>
+		    <th>Miestone</th>
+		    <th>Planned Completion</th>
+		    <th>Expected Completion</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  
+		  
+	      </table>
+	    </div>
+
+	    <div class="panel panel-info">
+              <div class="panel-heading">
+		<h2 class="panel-title">Impediments</h2>
+              </div>
+              <div class="panel-body">
+		
+		<div class="alert alert-danger">
+		  <strong>BDA PLCP Finish - waiting for closing presentation from Chris Girard</strong>
+		  <p>State: <em>Open</em> Added: <em>14/10/2013</em> Removed: <em>None</em></p>
+		</div>
+		<p>The presentation has not bee received yet, despite deadline is reached</p>
+
+		<br>
+		
+              </div>
+	    </div>
+	    
+	    
+	    <div class="page-header">
+	      <h2>Futurama</h2>
+	    </div>
+	    <p class="text-info">Submitted on: <em>14/10/2013</em>
+	      by <em><admin></em> </p>
+	    <a name="4"></a>
+	    <div class="panel panel-default">
+	      <div class="panel-heading">
+		<h3 class="panel-title">Status</h3>
+	      </div>
+	      <div class="panel-body">
+		<ul>
+<li><p>Sprint 3 is the continutation of completing the walking skeleton. </p></li>
+
+<li><p>Quantum of Value has guided the team through the initial stages of completing the walking skeleton.</p></li>
+</ul>
+
+<h3>Project specific milestones</h3>
+
+<p>Super Computing Inventory Application <a href="http://goo.gl/gOfnQ5">milestone</a></p>
+
+<ul>
+<li>Expected deadline: TBD</li>
+</ul>
+
+<p>Inventory Application <a href="http://goo.gl/DXCuwZ">milestone </a></p>
+
+<ul>
+<li>Expected deadline: TBD</li>
+</ul>
+
+	      </div>
+	    </div>
+	    
+	    <div class="panel panel-warning">
+              <div class="panel-heading">
+		<h2 class="panel-title">Risks</h2>
+              </div>
+              <div class="panel-body">
+		<ul>
+<li><p>Quantum of Value(QoV) meetings impacted two sprints and has led to a realignment of work and approaches. Guidance from them has led to the team working on a walking skeleton as a first step which is realigning the team to proper ATDD/TDD and Scrum practices. The report on the QoV two week effort can be found at http://goo.gl/341rLF.</p></li>
+<li><p>The team is expected to be slower over the remainder of the year in order to properly address and implement the suggestions from QoV as deemed fit. This is part of the new teams storming and norming phases.</p></li>
+<li><p>Loss of Mark and Dustin mean the team will likely need to take on infrastructure work as needed; LMJenkins and Valve1 in particular.</p></li>
+</ul>
+
+              </div>
+	    </div>
+	    
+	    <div class="panel panel-default">
+	      <!-- Default panel contents -->
+	      <div class="panel-heading">
+		<h3 class="panel-title">Milestones</h3>
+	      </div>
+	      
+	      <div class="panel-body">
+		<p>Reported milestones and expected completion dates</p>
+	      </div>
+	      
+	      <!-- Table -->
+	      <table class="table table-condensed table-striped">
+		<thead>
+		  <tr>
+		    <th>#</th>
+		    <th>Miestone</th>
+		    <th>Planned Completion</th>
+		    <th>Expected Completion</th>
+		  </tr>
+		</thead>
+		<tbody>
+		  
+		  
+		  <tr class="success">
+		    <td>1</td>
+		    <td>RCCB Commences for Features</td>
+		    <td>20/11/2013</td>
+		    <td>25/10/2013</td>
+		  </tr>
+		</tbody>
+		
+	      </table>
+	    </div>
+
+	    <div class="panel panel-info">
+              <div class="panel-heading">
+		<h2 class="panel-title">Impediments</h2>
+              </div>
+              <div class="panel-body">
+		
+		<div class="alert alert-danger">
+		  <strong>Mark and Dustin</strong>
+		  <p>State: <em>Open</em> Added: <em>14/10/2013</em> Removed: <em>None</em></p>
+		</div>
+		<p>No replacement has been found</p>
 
 		<br>
 		
