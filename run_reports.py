@@ -124,6 +124,14 @@ class Admin_Index_View(admin.AdminIndexView):
     def is_accessible(self):
         return login.current_user.is_authenticated()
 
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        user = login.current_user
+        if user is None or not user.is_authenticated():
+            return redirect(url_for('login_view'))
+        return f(*args, **kwargs)
+    return decorated_function
 
 def admin_required(f):
     @wraps(f)
