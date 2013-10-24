@@ -484,4 +484,5 @@ if __name__ == '__main__':
         # app.run(host='0.0.0.0', port=port, ssl_context=('crypt/server.crt', 'crypt/server.key'))
         #
         # Server automatically generate (cert_file, pkey_file) tuple, requires 'sudo easy_install pyopenssl'
-        app.run(host='0.0.0.0', port=port, ssl_context='adhoc')
+        # app.run(host='0.0.0.0', port=port, ssl_context='adhoc')
+        app.run(host='0.0.0.0', port=port)
