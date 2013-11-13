@@ -8,7 +8,7 @@ from report_models import Project_State
 from report_models import Milestone_State
 from report_models import Impediment_State
 
-from app import db
+#from app import db
 
 import datetime
 
