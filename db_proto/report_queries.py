@@ -69,6 +69,27 @@ def get_reports():
 
     return all_reports_data
 
+def get_milestone_completion(milestone_id):
+
+    # Get all projects
+    projects = session.query(Project).all()
+    
+    data = dict()
+
+    for p in projects:
+        reports_by_project = session.query(Report).filter(Report.project_id == p.id).order_by(Report.created).all()
+        reports_by_project = reversed(reports_by_project)
+
+        for r in reports_by_project:
+            expected_completion = session.query(Expected_Completion).\
+              filter(Expected_Completion.report_id == r.id).\
+              filter(Expected_Completion.milestone_id == milestone_id).first()
+
+            if expected_completion is not None:
+                data[p.name] = expected_completion.completion
+                break
+
+    return data
 
 def get_current_report_for_project(project):
     '''Return the most recent report object for a given project.

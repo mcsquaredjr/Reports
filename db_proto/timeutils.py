@@ -59,6 +59,16 @@ def this_week_start_end():
     return d + dlt,  d + dlt + datetime.timedelta(days=7)
 
 
+def unix_time(dt):
+    epoch = datetime.datetime.utcfromtimestamp(0)
+    delta = dt - epoch
+    return delta.total_seconds()
+
+def unix_time_millis(dt):
+    return unix_time(dt) * 1000.0
+
+def unix_time_delta(t1, t2):
+    return ( unix_time(t2) - unix_time(t1) ) / (60*60*24)
 
 
 if __name__ == '__main__':

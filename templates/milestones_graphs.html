@@ -1,12 +1,14 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
     <meta name="author" content="">
+    <link rel="shortcut icon" href="../../assets/ico/favicon.png">
 
-    <title>Report</title>
+    <title>Neo Trend Report</title>
 
     <!-- Bootstrap core CSS -->
     <link href="../static/css/bootstrap.css" rel="stylesheet">
@@ -19,9 +21,10 @@
       <script src="../../assets/js/html5shiv.js"></script>
       <script src="../../assets/js/respond.min.js"></script>
     <![endif]-->
-</head>
-<body>
-<!-- Wrap all page content here -->
+  </head>
+
+  <body>
+
     <div id="wrap">
         <!-- Fixed navbar -->
       <div class="navbar navbar-default navbar-fixed-top">
@@ -38,17 +41,17 @@
             <ul class="nav navbar-nav">
               <li><a href="/form">Report Form</a></li>
               <li class="dropdown">
-		<a href="#" class="dropdown-toggle" data-toggle="dropdown">Boards and Reports<b class="caret"></b></a>
-		<ul class="dropdown-menu">
-		  {% if user and user.is_authenticated()%}
-		  <li><a href="/report">Current report</a></li>
-		  <li><a href="/impediments">Impediments board</a></li>
-		  <li><a href="/submission">Submission status</a></li>
-		  <li><a href="/archive">Historic reports</a></li>
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">Boards and Reports<b class="caret"></b></a>
+    <ul class="dropdown-menu">
+      {% if user and user.is_authenticated()%}
+      <li><a href="/report">Current report</a></li>
+      <li><a href="/impediments">Impediments board</a></li>
+      <li><a href="/submission">Submission status</a></li>
+      <li><a href="/archive">Historic reports</a></li>
       <li><a href="/milestones_graphs">Milestones Completions</a></li>
-		  {% endif %}
-		</ul>
-	      </li>
+      {% endif %}
+    </ul>
+        </li>
               <li class="dropdown">
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Actions <b class="caret"></b></a>
                 <ul class="dropdown-menu">
@@ -70,33 +73,30 @@
         </div>
       </div>
 
-       <div class="container">
-        <h2 style="font-size: 40px; color: #3D73A4;">Archived Reports</h2>
-        <table class="table table-condensed table-striped">
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Date</th>
-                    <th>Link</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for row in data %}
-                <tr>
-                    <td>{{ loop.index }}</td>
-                    <td>{{ row[0] }}</td>
-                    <td><a href='archive/{{ row[1] }}'>Open</a></td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-    </div>
-</body>
 
-<!-- Bootstrap core JavaScript
-================================================== -->
-<!-- Placed at the end of the document so the pages load faster -->
-<script src="/static/js/jquery.js"></script>
-<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+      <!-- Begin page content -->
+      <div class="container">
+        <div class="page-header">
+          <h1>Neo Trends Report</h1>
+
+	         <h4>Generated on: <em>{{date}}</em></h4>
+           {% for f in files %}
+           <div class="row">
+            <div class="col-md-6"><img src="{{f}}" class="img-responsive"></div>
+           </div>
+           {% endfor %}
+
+    <div id="footer">
+      <div class="container">
+        <p class="text-muted credit">Powered by PytatoBugs</p>
+      </div>
+    </div>
+    </div>
+      
+	<!-- Bootstrap core JavaScript
+	================================================== -->
+	<!-- Placed at the end of the document so the pages load faster -->
+	<script src="/static/js/jquery.js"></script>
+	<script src="http://netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.min.js"></script>
+  </body>
 </html>

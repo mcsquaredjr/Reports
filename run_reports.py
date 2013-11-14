@@ -2,9 +2,11 @@
 
 import os
 import argparse
-import datetime
 import json
+import datetime
+from datetime import timedelta
 import markdown2
+import random
 import urllib2
 import re
 
@@ -23,6 +25,9 @@ from flask.ext.admin.contrib import sqlamodel as sqla
 from wtforms import form, fields, validators
 from flask.ext.security import login_required
 from functools import wraps
+
+import numpy as np
+import matplotlib.pyplot as plt
 
 from utils import helpers
 from utils.reportmaker import Report_Maker
@@ -43,6 +48,7 @@ from db_proto.report_queries import commit_projects
 from db_proto.report_queries import commit_milestones
 from db_proto.report_queries import get_projects
 from db_proto.report_queries import get_milestones
+from db_proto.report_queries import get_milestone_completion
 from db_proto.report_queries import get_report
 from db_proto.report_queries import get_reports
 from db_proto.report_queries import get_impediment_board
@@ -52,6 +58,9 @@ from db_proto.report_queries import submission_status
 from db_proto.report_queries import commit_report
 
 from db_proto.timeutils import this_week_start_end
+from db_proto.timeutils import to_date_time_obj
+from db_proto.timeutils import to_date
+from db_proto.timeutils import unix_time_delta
 
 SUCC_MSG = \
 '''
@@ -77,6 +86,8 @@ ERR_MSG = \
     </p>
 </div>
 '''
+
+GRAPHS_DIR = 'graphs'
 
 report_maker = Report_Maker()
 
@@ -336,7 +347,78 @@ def success():
     if request.method == 'GET':
         return SUCC_MSG
 
+def gen_milestone_graph(m):
+    milestone_id = m[0]
+    data = get_milestone_completion(milestone_id)
+
+    xvalues = []
+    ylables = []
+    xlabels = []
+
+    # Get milestone start date
+    start_date = to_date_time_obj(m[3])
+
+    for p in data:
+        end_date = data[p]
+        if end_date is not None:
+            ylables.append(p)
+            xvalues.append(unix_time_delta(start_date, end_date))
+
+    max_day = 0
+    for value in xvalues:
+        max_day = max(max_day, value)
+
+    xlabels_positions = []
+
+    x_step = max_day / 3;
+    for i in range(4):
+        xlabels_positions.append(x_step * i)
+        date = start_date + timedelta(days=x_step*i)
+        xlabels.append(to_date(date))
+
+    fig = plt.figure(figsize=(7, 3), dpi=300)
+    fig.clf()
+    ax = fig.add_subplot(111)
+    fig.subplots_adjust(left = 0.3)
+    ax.grid(True, which='both')
+
+    yticks_positions = range(len(xvalues))
+
+    bar = ax.barh(yticks_positions, xvalues, 0.4, align='center')
+
+    ax.set_xticks(xlabels_positions)
+    ax.set_xticklabels(xlabels)
+
+    ax.set_yticks(yticks_positions)
+    ax.set_yticklabels(ylables)
+
+    filename = GRAPHS_DIR + '/milestone_' + str(milestone_id) + '.png'
+    plt.savefig(filename)
+
+    return filename
+
+def gen_milestones_graphs():
+    if not os.path.exists(GRAPHS_DIR):
+        os.makedirs(GRAPHS_DIR)
+
+    milestones = get_milestones()
+    files = []
+
+    for m in milestones:
+        filename = gen_milestone_graph(m)
+        files.append(filename)
+
+    return files
     
+@app.route('/milestones_graphs/')
+@login_required
+def show_milestones_graphs(name=None):
+    files = gen_milestones_graphs()
+
+    date = datetime.datetime.now()
+    date = to_date(date)
+    return render_template('milestones_graphs.html', files=files, user=login.current_user, date=date)
+
 @app.route('/report/')
 @app.route('/report/<name>')
 @login_required
@@ -432,6 +514,15 @@ def serve(requestedfile):
 def serve_archive(requestedfile):
     try:
         with file('archive/' + requestedfile) as f:
+            return f.read()
+    except IOError as e:
+        return page_not_found(e)
+
+# Load requested file here 
+@app.route('/milestones_graphs/graphs/<requestedfile>')
+def serve_graph(requestedfile):
+    try:
+        with file('graphs/' + requestedfile) as f:
             return f.read()
     except IOError as e:
         return page_not_found(e)
