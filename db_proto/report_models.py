@@ -1,6 +1,7 @@
 
+import app
 from app import db
-
+import werkzeug.security
 
 ######################################################################
 #                               CLASS USER                           #
@@ -15,6 +16,12 @@ class User(db.Model):
     # Flask-Login integration
     def is_authenticated(self):
         return True
+
+    def hash_password(self, passwd):
+        return werkzeug.security.generate_password_hash(passwd + app.app.config['SECRET_KEY'])
+
+    def check_password(self, password):
+        return werkzeug.security.check_password_hash(self.password, password + app.app.config['SECRET_KEY'])
 
     def is_active(self):
         return True

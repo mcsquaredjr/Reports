@@ -91,7 +91,7 @@ class Login_Form(form.Form):
         if user is None:
             raise validators.ValidationError('Invalid user')
 
-        if user.password != self.password.data:
+        if not user.check_password(self.password.data):
             raise validators.ValidationError('Invalid password')
 
         return True
@@ -168,6 +168,7 @@ def register_view():
         user = User()
 
         form.populate_obj(user)
+        user.password = user.hash_password(user.password)
 
         # Set user permissions
         user.usertype = 0;
