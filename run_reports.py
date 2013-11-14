@@ -395,7 +395,10 @@ def gen_milestone_graph(m):
     filename = GRAPHS_DIR + '/milestone_' + str(milestone_id) + '.png'
     plt.savefig(filename)
 
-    return filename
+    if (len(xvalues) > 0):
+        return filename
+    else:
+        return None
 
 def gen_milestones_graphs():
     if not os.path.exists(GRAPHS_DIR):
@@ -406,7 +409,8 @@ def gen_milestones_graphs():
 
     for m in milestones:
         filename = gen_milestone_graph(m)
-        files.append(filename)
+        if filename is not None:
+            files.append(filename)
 
     return files
     
