@@ -171,6 +171,43 @@ def login_view():
 
     return render_template('login.html', form=form, user=login.current_user, error=error)
 
+from onelogin import saml
+@app.route('/saml/login') #, methods=('GET'))
+def saml_login():
+    url = saml.AuthRequest.create(**app.config.get("SAML"))
+    return redirect(url)
+
+@app.route('/saml/consume', methods=('GET', 'POST'))
+def saml_consume():
+    res = saml.Response(
+        request.args.get('SAMLResponse'),
+        app.config.get("SAML").get('idp_cert_fingerprint')
+    )
+
+    valid = res.is_valid()
+    name_id = res.name_id
+    if valid:
+        msg = 'The identity of {name_id} has been verified'.format(
+            name_id=name_id,
+            )
+        user = User()
+        user.email = name_id
+
+        #db.session.add(user)
+        #db.session.commit()
+
+        login.login_user(user)
+        return redirect("/")
+    else:
+        msg = '{name_id} is not authorized to use this resource'.format(
+            name_id=name_id,
+            )
+        form.email.data = ''
+        form.password.data = ''
+        error = 'Invalid credentials'
+
+        return render_template('login.html',  error=error)
+
 @app.route('/register', methods=('GET', 'POST'))
 def register_view():
     form = Registration_Form(request.form)
